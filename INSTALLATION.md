@@ -59,10 +59,10 @@ git --version
 cd /path/to/your/projects
 
 # Clone the repository
-git clone https://github.com/yourusername/skynestwindsurf.git
+git clone https://github.com/yourusername/Hotel-SkyNest.git
 
 # Navigate into project directory
-cd skynestwindsurf
+cd Hotel-SkyNest
 ```
 
 ### Step 2: Verify Project Structure
@@ -110,7 +110,29 @@ mysql -u root -p
 
 ### Step 3: Create Database and Import Schema
 
-**Option A: Using MySQL Command Line (Recommended)**
+**Option A: Using Single Setup File (Recommended - Easiest!)**
+
+```bash
+# Exit MySQL if you're in it
+exit
+
+# Navigate to database directory
+cd database
+
+# Run the complete setup file (creates everything in one go!)
+mysql -u root -p < COMPLETE_DATABASE_SETUP.sql
+```
+
+**That's it! One command sets up everything:**
+- ✅ Creates database
+- ✅ Creates all tables
+- ✅ Inserts seed data
+- ✅ Creates stored procedures
+- ✅ Creates triggers
+- ✅ Creates reports
+- ✅ Adds performance indexes
+
+**Option B: Using Individual Files (If you prefer step-by-step)**
 
 ```bash
 # Exit MySQL if you're in it

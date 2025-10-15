@@ -93,24 +93,39 @@ const getPayment = async (req, res, next) => {
 
 // @desc    Process payment
 // @route   POST /api/payments
-// @access  Private
+// @access  Private (Admin, Receptionist)
 const processPayment = async (req, res, next) => {
     try {
         const {
             booking_id, amount, payment_method, transaction_reference, notes
         } = req.body;
         
+        // Validate required fields
         if (!booking_id || !amount || !payment_method) {
             return res.status(400).json({
                 success: false,
-                message: 'Please provide all required fields'
+                message: 'Please provide booking_id, amount, and payment_method'
+            });
+        }
+
+        // Validate amount is positive
+        if (parseFloat(amount) <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Payment amount must be greater than zero'
             });
         }
         
         // Call stored procedure
         await promisePool.query(
             `CALL process_payment(?, ?, ?, ?, ?, @payment_id, @error_message)`,
-            [booking_id, amount, payment_method, transaction_reference || null, req.user.user_id]
+            [
+                parseInt(booking_id), 
+                parseFloat(amount), 
+                payment_method, 
+                transaction_reference || null, 
+                req.user.user_id
+            ]
         );
         
         // Get output parameters
@@ -118,10 +133,19 @@ const processPayment = async (req, res, next) => {
             'SELECT @payment_id as payment_id, @error_message as error_message'
         );
         
+        // Check for errors from stored procedure
         if (output[0].error_message) {
             return res.status(400).json({
                 success: false,
                 message: output[0].error_message
+            });
+        }
+
+        // Check if payment was created
+        if (!output[0].payment_id) {
+            return res.status(500).json({
+                success: false,
+                message: 'Payment processing failed. Please try again.'
             });
         }
         
@@ -141,7 +165,11 @@ const processPayment = async (req, res, next) => {
             }
         });
     } catch (error) {
-        next(error);
+        console.error('Payment processing error:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Failed to process payment'
+        });
     }
 };
 

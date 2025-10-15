@@ -14,7 +14,7 @@ router.use(verifyToken);
 
 router.route('/')
     .get(getAllPayments)
-    .post(processPayment);
+    .post(checkRole('Admin', 'Receptionist'), processPayment); // Allow Admin and Receptionist
 
 router.get('/booking/:bookingId', getBookingPayments);
 

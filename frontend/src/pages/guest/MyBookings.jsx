@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import Card from '../../components/Card';
+import Modal from '../../components/Modal';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import { bookingAPI } from '../../utils/api';
-import { formatDate, formatCurrency } from '../../utils/helpers';
+import { bookingAPI, paymentAPI, serviceAPI } from '../../utils/api';
+import { formatDate, formatCurrency, formatDateTime } from '../../utils/helpers';
+import { FaSync, FaTimes } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 import '../../styles/GuestDashboard.css';
 
 const MyBookings = () => {
@@ -12,17 +15,34 @@ const MyBookings = () => {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all'); // all, current, upcoming, past
+    const [selectedBooking, setSelectedBooking] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const [modalLoading, setModalLoading] = useState(false);
+    const [bookingDetails, setBookingDetails] = useState(null);
 
     useEffect(() => {
         fetchBookings();
+        
+        // Auto-refresh every 30 seconds
+        const interval = setInterval(() => {
+            fetchBookings();
+        }, 30000);
+        
+        return () => clearInterval(interval);
     }, []);
 
-    const fetchBookings = async () => {
+    const fetchBookings = async (showToast = false) => {
         try {
             const response = await bookingAPI.getAll();
             setBookings(response.data.data);
+            if (showToast) {
+                toast.success('Bookings refreshed!');
+            }
         } catch (error) {
             console.error('Error fetching bookings:', error);
+            if (showToast) {
+                toast.error('Failed to refresh bookings');
+            }
         } finally {
             setLoading(false);
         }
@@ -58,6 +78,35 @@ const MyBookings = () => {
         return classes[status] || 'badge-secondary';
     };
 
+    const handleViewBooking = async (booking) => {
+        setSelectedBooking(booking);
+        setShowModal(true);
+        setModalLoading(true);
+        
+        try {
+            const [servicesRes, paymentsRes] = await Promise.all([
+                serviceAPI.getUsage(booking.booking_id),
+                paymentAPI.getByBooking(booking.booking_id)
+            ]);
+            
+            setBookingDetails({
+                services: servicesRes.data.data || [],
+                payments: paymentsRes.data.data || []
+            });
+        } catch (error) {
+            console.error('Error fetching booking details:', error);
+            toast.error('Failed to load booking details');
+        } finally {
+            setModalLoading(false);
+        }
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
+        setSelectedBooking(null);
+        setBookingDetails(null);
+    };
+
     const filteredBookings = getBookingsByStatus();
 
     if (loading) {
@@ -71,9 +120,18 @@ const MyBookings = () => {
     return (
         <Layout>
             <div className="guest-dashboard">
-                <div className="dashboard-header">
-                    <h1>My Bookings</h1>
-                    <p>View and manage your hotel reservations</p>
+                <div className="dashboard-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                        <h1>My Bookings</h1>
+                        <p>View and manage your hotel reservations</p>
+                    </div>
+                    <button 
+                        className="btn btn-secondary"
+                        onClick={() => fetchBookings(true)}
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                    >
+                        <FaSync /> Refresh
+                    </button>
                 </div>
 
                 {/* Filter Tabs */}
@@ -163,7 +221,15 @@ const MyBookings = () => {
                                 </div>
 
                                 <div className="booking-card-footer">
-                                    <button className="btn btn-sm btn-primary">View Details</button>
+                                    <button 
+                                        className="btn btn-sm btn-primary"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleViewBooking(booking);
+                                        }}
+                                    >
+                                        View Details
+                                    </button>
                                     {booking.booking_status === 'Checked-In' && (
                                         <button 
                                             className="btn btn-sm btn-secondary"
@@ -180,6 +246,143 @@ const MyBookings = () => {
                         ))
                     )}
                 </div>
+
+                {/* Booking Details Modal */}
+                {showModal && selectedBooking && (
+                    <Modal isOpen={showModal} onClose={closeModal} title={`Booking #${selectedBooking.booking_id}`}>
+                        {modalLoading ? (
+                            <div style={{ textAlign: 'center', padding: '2rem' }}>
+                                <LoadingSpinner message="Loading details..." />
+                            </div>
+                        ) : (
+                            <div style={{ maxHeight: '70vh', overflowY: 'auto' }}>
+                                {/* Booking Info */}
+                                <div style={{ marginBottom: '1.5rem', padding: '1rem', background: '#f9fafb', borderRadius: '0.5rem' }}>
+                                    <h3 style={{ margin: '0 0 1rem 0', color: '#1f2937' }}>Booking Information</h3>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                                        <div>
+                                            <strong>Branch:</strong> {selectedBooking.branch_name}
+                                        </div>
+                                        <div>
+                                            <strong>Room:</strong> {selectedBooking.room_number} ({selectedBooking.room_type_name})
+                                        </div>
+                                        <div>
+                                            <strong>Check-in:</strong> {formatDate(selectedBooking.check_in_date)}
+                                        </div>
+                                        <div>
+                                            <strong>Check-out:</strong> {formatDate(selectedBooking.check_out_date)}
+                                        </div>
+                                        <div>
+                                            <strong>Status:</strong> <span className={`status-badge ${getStatusBadgeClass(selectedBooking.booking_status)}`}>{selectedBooking.booking_status}</span>
+                                        </div>
+                                        <div>
+                                            <strong>Guests:</strong> {selectedBooking.number_of_guests}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Financial Summary */}
+                                <div style={{ marginBottom: '1.5rem', padding: '1rem', background: '#f0fdf4', borderRadius: '0.5rem', border: '1px solid #86efac' }}>
+                                    <h3 style={{ margin: '0 0 1rem 0', color: '#166534' }}>Financial Summary</h3>
+                                    <div style={{ display: 'grid', gap: '0.5rem' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                            <span>Total Amount:</span>
+                                            <strong>{formatCurrency(selectedBooking.total_amount)}</strong>
+                                        </div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', color: '#059669' }}>
+                                            <span>Paid Amount:</span>
+                                            <strong>{formatCurrency(selectedBooking.paid_amount)}</strong>
+                                        </div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', color: selectedBooking.outstanding_amount > 0 ? '#dc2626' : '#059669', paddingTop: '0.5rem', borderTop: '1px solid #86efac' }}>
+                                            <span><strong>Outstanding:</strong></span>
+                                            <strong>{formatCurrency(selectedBooking.outstanding_amount)}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Services Used */}
+                                {bookingDetails && bookingDetails.services.length > 0 && (
+                                    <div style={{ marginBottom: '1.5rem' }}>
+                                        <h3 style={{ margin: '0 0 1rem 0', color: '#1f2937' }}>Services Used</h3>
+                                        <div style={{ border: '1px solid #e5e7eb', borderRadius: '0.5rem', overflow: 'hidden' }}>
+                                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                                <thead style={{ background: '#f9fafb' }}>
+                                                    <tr>
+                                                        <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>Service</th>
+                                                        <th style={{ padding: '0.75rem', textAlign: 'center', borderBottom: '1px solid #e5e7eb' }}>Qty</th>
+                                                        <th style={{ padding: '0.75rem', textAlign: 'right', borderBottom: '1px solid #e5e7eb' }}>Price</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {bookingDetails.services.map((service, index) => (
+                                                        <tr key={index}>
+                                                            <td style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>{service.service_name}</td>
+                                                            <td style={{ padding: '0.75rem', textAlign: 'center', borderBottom: '1px solid #e5e7eb' }}>{service.quantity}</td>
+                                                            <td style={{ padding: '0.75rem', textAlign: 'right', borderBottom: '1px solid #e5e7eb' }}>{formatCurrency(service.total_price)}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Payment History */}
+                                {bookingDetails && bookingDetails.payments.length > 0 && (
+                                    <div style={{ marginBottom: '1.5rem' }}>
+                                        <h3 style={{ margin: '0 0 1rem 0', color: '#1f2937' }}>Payment History</h3>
+                                        <div style={{ border: '1px solid #e5e7eb', borderRadius: '0.5rem', overflow: 'hidden' }}>
+                                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                                <thead style={{ background: '#f9fafb' }}>
+                                                    <tr>
+                                                        <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>Date</th>
+                                                        <th style={{ padding: '0.75rem', textAlign: 'left', borderBottom: '1px solid #e5e7eb' }}>Method</th>
+                                                        <th style={{ padding: '0.75rem', textAlign: 'right', borderBottom: '1px solid #e5e7eb' }}>Amount</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {bookingDetails.payments.map((payment, index) => (
+                                                        <tr key={index}>
+                                                            <td style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>{formatDateTime(payment.payment_date)}</td>
+                                                            <td style={{ padding: '0.75rem', borderBottom: '1px solid #e5e7eb' }}>{payment.payment_method}</td>
+                                                            <td style={{ padding: '0.75rem', textAlign: 'right', borderBottom: '1px solid #e5e7eb', color: '#059669', fontWeight: 600 }}>{formatCurrency(payment.amount)}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Action Buttons */}
+                                <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
+                                    <button 
+                                        className="btn btn-primary"
+                                        onClick={() => {
+                                            closeModal();
+                                            navigate(`/guest/bookings/${selectedBooking.booking_id}`);
+                                        }}
+                                        style={{ flex: 1 }}
+                                    >
+                                        Full Details
+                                    </button>
+                                    {selectedBooking.booking_status === 'Checked-In' && (
+                                        <button 
+                                            className="btn btn-secondary"
+                                            onClick={() => {
+                                                closeModal();
+                                                navigate(`/guest/request-service?booking=${selectedBooking.booking_id}`);
+                                            }}
+                                            style={{ flex: 1 }}
+                                        >
+                                            Request Service
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </Modal>
+                )}
             </div>
         </Layout>
     );

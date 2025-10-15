@@ -157,7 +157,7 @@ A comprehensive hotel management system built with React, Node.js, Express, and 
 ## 📁 Project Structure
 
 ```
-Skynestwindsurf/
+Hotel-SkyNest/
 │
 ├── backend/                      # Backend API
 │   ├── config/
@@ -274,10 +274,13 @@ See [INSTALLATION.md](./INSTALLATION.md) for detailed setup instructions.
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/skynestwindsurf.git
-cd skynestwindsurf
+git clone https://github.com/yourusername/Hotel-SkyNest.git
+cd Hotel-SkyNest
 
-# Setup database
+# Setup database (ONE COMMAND - Easy!)
+mysql -u root -p < database/COMPLETE_DATABASE_SETUP.sql
+
+# OR setup step-by-step (if preferred)
 mysql -u root -p < database/schema.sql
 mysql -u root -p < database/seed_data.sql
 mysql -u root -p < database/procedures.sql

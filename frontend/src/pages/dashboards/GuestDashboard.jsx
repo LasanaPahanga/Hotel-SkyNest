@@ -25,6 +25,13 @@ const GuestDashboard = () => {
 
     useEffect(() => {
         fetchDashboardData();
+        
+        // Auto-refresh every 30 seconds to update stats
+        const interval = setInterval(() => {
+            fetchDashboardData();
+        }, 30000);
+        
+        return () => clearInterval(interval);
     }, []);
 
     const fetchDashboardData = async () => {
@@ -35,8 +42,14 @@ const GuestDashboard = () => {
             // Calculate stats
             const active = bookings.filter(b => b.booking_status === 'Checked-In');
             const upcoming = bookings.filter(b => b.booking_status === 'Booked');
-            const totalSpent = bookings.reduce((sum, b) => sum + parseFloat(b.paid_amount || 0), 0);
-            const pendingPayments = bookings.reduce((sum, b) => sum + parseFloat(b.outstanding_amount || 0), 0);
+            const totalSpent = bookings.reduce((sum, b) => {
+                const paid = parseFloat(b.paid_amount || 0);
+                return sum + paid;
+            }, 0);
+            const pendingPayments = bookings.reduce((sum, b) => {
+                const outstanding = parseFloat(b.outstanding_amount || 0);
+                return sum + outstanding;
+            }, 0);
             
             setStats({
                 activeBookings: active.length,

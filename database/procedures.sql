@@ -358,6 +358,9 @@ CREATE PROCEDURE process_payment(
 )
 BEGIN
     DECLARE v_outstanding DECIMAL(10,2);
+    DECLARE v_paid DECIMAL(10,2);
+    DECLARE v_total DECIMAL(10,2);
+    DECLARE v_booking_status VARCHAR(20);
     
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -368,18 +371,29 @@ BEGIN
     
     START TRANSACTION;
     
-    -- Get outstanding amount
-    SELECT outstanding_amount INTO v_outstanding
+    -- Get booking details
+    SELECT outstanding_amount, paid_amount, total_amount, booking_status
+    INTO v_outstanding, v_paid, v_total, v_booking_status
     FROM bookings
     WHERE booking_id = p_booking_id;
     
+    -- Check if booking exists
+    IF v_booking_status IS NULL THEN
+        SET p_error_message = 'Booking not found';
+        SET p_payment_id = NULL;
+        ROLLBACK;
+    -- Cannot process payment for cancelled bookings
+    ELSEIF v_booking_status = 'Cancelled' THEN
+        SET p_error_message = 'Cannot process payment for cancelled bookings';
+        SET p_payment_id = NULL;
+        ROLLBACK;
     -- Validate payment amount
-    IF p_amount <= 0 THEN
+    ELSEIF p_amount <= 0 THEN
         SET p_error_message = 'Payment amount must be greater than zero';
         SET p_payment_id = NULL;
         ROLLBACK;
     ELSEIF p_amount > v_outstanding THEN
-        SET p_error_message = 'Payment amount exceeds outstanding balance';
+        SET p_error_message = CONCAT('Payment amount (', p_amount, ') exceeds outstanding balance (', v_outstanding, ')');
         SET p_payment_id = NULL;
         ROLLBACK;
     ELSE
@@ -393,8 +407,14 @@ BEGIN
         );
         
         SET p_payment_id = LAST_INSERT_ID();
-        SET p_error_message = NULL;
         
+        -- Update booking amounts (trigger will handle this, but doing it explicitly for safety)
+        UPDATE bookings
+        SET paid_amount = paid_amount + p_amount,
+            outstanding_amount = outstanding_amount - p_amount
+        WHERE booking_id = p_booking_id;
+        
+        SET p_error_message = NULL;
         COMMIT;
     END IF;
 END$$
