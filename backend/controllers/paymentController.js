@@ -5,22 +5,36 @@ const { promisePool } = require('../config/database');
 // @access  Private
 const getAllPayments = async (req, res, next) => {
     try {
-        const { booking_id, status, start_date, end_date } = req.query;
+        const { booking_id, status, start_date, end_date, branch_id } = req.query;
+        const userRole = req.user.role;
+        const userBranchId = req.user.branch_id;
         
         let query = `
             SELECT 
                 p.*,
-                b.booking_id, b.total_amount as booking_total,
+                b.booking_id, b.total_amount as booking_total, b.branch_id,
                 CONCAT(g.first_name, ' ', g.last_name) as guest_name,
-                u.full_name as processed_by_name
+                u.full_name as processed_by_name,
+                br.branch_name
             FROM payments p
             JOIN bookings b ON p.booking_id = b.booking_id
             JOIN guests g ON b.guest_id = g.guest_id
             LEFT JOIN users u ON p.processed_by = u.user_id
+            LEFT JOIN hotel_branches br ON b.branch_id = br.branch_id
             WHERE 1=1
         `;
         
         const params = [];
+        
+        // Receptionist can only see payments from their branch
+        if (userRole === 'Receptionist') {
+            query += ' AND b.branch_id = ?';
+            params.push(userBranchId);
+        } else if (branch_id) {
+            // Admin can filter by branch
+            query += ' AND b.branch_id = ?';
+            params.push(branch_id);
+        }
         
         if (booking_id) {
             query += ' AND p.booking_id = ?';
@@ -61,19 +75,33 @@ const getAllPayments = async (req, res, next) => {
 // @access  Private
 const getPayment = async (req, res, next) => {
     try {
-        const [payments] = await promisePool.query(
-            `SELECT 
+        const userRole = req.user.role;
+        const userBranchId = req.user.branch_id;
+        
+        let query = `
+            SELECT 
                 p.*,
-                b.booking_id, b.total_amount, b.paid_amount, b.outstanding_amount,
+                b.booking_id, b.total_amount, b.paid_amount, b.outstanding_amount, b.branch_id,
                 CONCAT(g.first_name, ' ', g.last_name) as guest_name,
-                u.full_name as processed_by_name
+                u.full_name as processed_by_name,
+                br.branch_name
             FROM payments p
             JOIN bookings b ON p.booking_id = b.booking_id
             JOIN guests g ON b.guest_id = g.guest_id
             LEFT JOIN users u ON p.processed_by = u.user_id
-            WHERE p.payment_id = ?`,
-            [req.params.id]
-        );
+            LEFT JOIN hotel_branches br ON b.branch_id = br.branch_id
+            WHERE p.payment_id = ?
+        `;
+        
+        const params = [req.params.id];
+        
+        // Receptionist can only see payments from their branch
+        if (userRole === 'Receptionist') {
+            query += ' AND b.branch_id = ?';
+            params.push(userBranchId);
+        }
+        
+        const [payments] = await promisePool.query(query, params);
         
         if (payments.length === 0) {
             return res.status(404).json({

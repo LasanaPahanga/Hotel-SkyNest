@@ -7,6 +7,8 @@ const bcrypt = require('bcryptjs');
 const getAllGuests = async (req, res, next) => {
     try {
         const { search } = req.query;
+        const userRole = req.user.role;
+        const userBranchId = req.user.branch_id;
         
         let query = `
             SELECT 
@@ -18,11 +20,22 @@ const getAllGuests = async (req, res, next) => {
         `;
         
         const params = [];
+        const whereConditions = [];
+        
+        // Receptionist can only see guests who have bookings at their branch
+        if (userRole === 'Receptionist') {
+            whereConditions.push('b.branch_id = ?');
+            params.push(userBranchId);
+        }
         
         if (search) {
-            query += ` WHERE g.first_name LIKE ? OR g.last_name LIKE ? OR g.email LIKE ? OR g.phone LIKE ?`;
+            whereConditions.push('(g.first_name LIKE ? OR g.last_name LIKE ? OR g.email LIKE ? OR g.phone LIKE ?)');
             const searchTerm = `%${search}%`;
             params.push(searchTerm, searchTerm, searchTerm, searchTerm);
+        }
+        
+        if (whereConditions.length > 0) {
+            query += ' WHERE ' + whereConditions.join(' AND ');
         }
         
         query += ' GROUP BY g.guest_id ORDER BY g.created_at DESC';
@@ -252,10 +265,136 @@ const deleteGuest = async (req, res, next) => {
     }
 };
 
+// @desc    Get current guest profile (for logged-in guest)
+// @route   GET /api/guests/me
+// @access  Private (Guest)
+const getMyProfile = async (req, res, next) => {
+    try {
+        // Get guest_id from token
+        const guestId = req.user.guest_id;
+        
+        if (!guestId) {
+            return res.status(404).json({
+                success: false,
+                message: 'Guest profile not found'
+            });
+        }
+        
+        const [guests] = await promisePool.query(
+            'SELECT * FROM guests WHERE guest_id = ?',
+            [guestId]
+        );
+        
+        if (guests.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Guest not found'
+            });
+        }
+        
+        res.json({
+            success: true,
+            data: guests[0]
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Update current guest profile (for logged-in guest)
+// @route   PUT /api/guests/me
+// @access  Private (Guest)
+const updateMyProfile = async (req, res, next) => {
+    try {
+        const guestId = req.user.guest_id;
+        
+        if (!guestId) {
+            return res.status(404).json({
+                success: false,
+                message: 'Guest profile not found'
+            });
+        }
+        
+        const {
+            first_name, last_name, phone, address, date_of_birth
+        } = req.body;
+        
+        const updates = [];
+        const params = [];
+        
+        if (first_name) {
+            updates.push('first_name = ?');
+            params.push(first_name);
+        }
+        
+        if (last_name) {
+            updates.push('last_name = ?');
+            params.push(last_name);
+        }
+        
+        if (phone) {
+            updates.push('phone = ?');
+            params.push(phone);
+        }
+        
+        if (address !== undefined) {
+            updates.push('address = ?');
+            params.push(address);
+        }
+        
+        if (date_of_birth !== undefined) {
+            updates.push('date_of_birth = ?');
+            params.push(date_of_birth);
+        }
+        
+        if (updates.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'No fields to update'
+            });
+        }
+        
+        params.push(guestId);
+        
+        await promisePool.query(
+            `UPDATE guests SET ${updates.join(', ')} WHERE guest_id = ?`,
+            params
+        );
+        
+        // Also update user's full_name if first_name or last_name changed
+        if (first_name || last_name) {
+            const [currentGuest] = await promisePool.query(
+                'SELECT first_name, last_name, email FROM guests WHERE guest_id = ?',
+                [guestId]
+            );
+            
+            if (currentGuest.length > 0) {
+                const updatedFirstName = first_name || currentGuest[0].first_name;
+                const updatedLastName = last_name || currentGuest[0].last_name;
+                const fullName = `${updatedFirstName} ${updatedLastName}`;
+                
+                await promisePool.query(
+                    'UPDATE users SET full_name = ? WHERE email = ?',
+                    [fullName, currentGuest[0].email]
+                );
+            }
+        }
+        
+        res.json({
+            success: true,
+            message: 'Profile updated successfully'
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllGuests,
     getGuest,
     createGuest,
     updateGuest,
-    deleteGuest
+    deleteGuest,
+    getMyProfile,
+    updateMyProfile
 };

@@ -29,6 +29,7 @@ import MyBookings from './pages/guest/MyBookings';
 import GuestBookingDetails from './pages/guest/BookingDetails';
 import RequestService from './pages/guest/RequestService';
 import ContactSupport from './pages/guest/ContactSupport';
+import MyProfile from './pages/guest/MyProfile';
 import SupportTickets from './pages/SupportTickets';
 import ServiceRequests from './pages/ServiceRequests';
 
@@ -107,6 +108,14 @@ function App() {
               element={
                 <PrivateRoute allowedRoles={['Guest']}>
                   <ContactSupport />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/guest/profile"
+              element={
+                <PrivateRoute allowedRoles={['Guest']}>
+                  <MyProfile />
                 </PrivateRoute>
               }
             />

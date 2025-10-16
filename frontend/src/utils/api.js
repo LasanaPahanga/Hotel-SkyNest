@@ -79,7 +79,9 @@ export const guestAPI = {
     getById: (id) => api.get(`/guests/${id}`),
     create: (data) => api.post('/guests', data),
     update: (id, data) => api.put(`/guests/${id}`, data),
-    delete: (id) => api.delete(`/guests/${id}`)
+    delete: (id) => api.delete(`/guests/${id}`),
+    getMyProfile: () => api.get('/guests/me'),
+    updateMyProfile: (data) => api.put('/guests/me', data)
 };
 
 export const serviceAPI = {

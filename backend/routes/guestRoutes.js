@@ -5,12 +5,19 @@ const {
     getGuest,
     createGuest,
     updateGuest,
-    deleteGuest
+    deleteGuest,
+    getMyProfile,
+    updateMyProfile
 } = require('../controllers/guestController');
 const { verifyToken, checkRole } = require('../middleware/auth');
 
 // All routes require authentication
 router.use(verifyToken);
+
+// Guest profile routes (must be before /:id routes)
+router.route('/me')
+    .get(getMyProfile)
+    .put(updateMyProfile);
 
 router.route('/')
     .get(getAllGuests)

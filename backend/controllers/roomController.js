@@ -6,6 +6,8 @@ const { promisePool } = require('../config/database');
 const getAllRooms = async (req, res, next) => {
     try {
         const { branch_id, status, room_type_id } = req.query;
+        const userRole = req.user.role;
+        const userBranchId = req.user.branch_id;
         
         let query = `
             SELECT 
@@ -20,7 +22,12 @@ const getAllRooms = async (req, res, next) => {
         
         const params = [];
         
-        if (branch_id) {
+        // Receptionist can only see their branch rooms
+        if (userRole === 'Receptionist') {
+            query += ' AND r.branch_id = ?';
+            params.push(userBranchId);
+        } else if (branch_id) {
+            // Admin can filter by branch
             query += ' AND r.branch_id = ?';
             params.push(branch_id);
         }
