@@ -1,0 +1,212 @@
+/* Signup.css - Similar to Login.css */
+
+:root {
+  --primary-color: #6896a7; 
+  --light-gray-color: #f0f2f5;
+  --border-color: #ddd;
+  --text-color-dark: #333;
+  --text-color-light: #666;
+  --white-color: #fff;
+  --font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+.signup-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-image: url('../assets/loginbg.jpg');
+  background-size: cover;
+  background-position: center;
+  font-family: var(--font-family);
+  padding: 40px 20px;
+}
+
+.signup-container {
+  background-color: rgba(255, 255, 255, 0.75);
+  padding: 32px;
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  box-sizing: border-box;
+  backdrop-filter: blur(8px);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.signup-header {
+  margin-bottom: 20px;
+}
+
+.signup-logo {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  color: var(--primary-color);
+  margin-bottom: 0px; 
+}
+
+@media (max-width: 420px) {
+  .signup-logo {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+.signup-header h1 {
+  font-size: 22px;
+  color: var(--text-color-dark);
+  margin: 0 0 6px;
+}
+
+.signup-header p {
+  font-size: 13px;
+  color: var(--text-color-light);
+  margin: 0;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: left;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 14px;
+  color: var(--text-color-dark);
+  margin-bottom: 8px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  font-family: var(--font-family);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(104, 150, 167, 0.2);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #999;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.signup-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #6896a7;
+  color: var(--white-color);
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background-color 0.18s ease, transform 0.12s ease;
+}
+
+.signup-btn:hover:not(:disabled) {
+  background-color: #3e5963; 
+  transform: translateY(-2px);
+}
+
+.signup-btn:disabled {
+  background-color: #a9b4d1;
+  cursor: not-allowed;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--text-color-dark);
+}
+
+.login-link a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+.signup-footer {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.signup-footer-note {
+  padding: 8px 6px;
+}
+
+.made-by {
+  margin: 0;
+  font-size: 13px;
+  color: black;
+  font-weight: 600; 
+}
+
+/* Scrollbar styling for signup container */
+.signup-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.signup-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.signup-container::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 10px;
+}
+
+.signup-container::-webkit-scrollbar-thumb:hover {
+  background: #3e5963;
+}

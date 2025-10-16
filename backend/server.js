@@ -2,10 +2,12 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const swaggerUi = require('swagger-ui-express');
 require('dotenv').config();
 
 const { testConnection } = require('./config/database');
 const { errorHandler, notFound } = require('./middleware/errorHandler');
+const swaggerSpec = require('./config/swagger');
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');
@@ -19,6 +21,8 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const branchRoutes = require('./routes/branchRoutes');
 const supportRoutes = require('./routes/supportRoutes');
+const taxDiscountRoutes = require('./routes/taxDiscountRoutes');
+const feeRoutes = require('./routes/feeRoutes');
 
 // Initialize express app
 const app = express();
@@ -32,6 +36,12 @@ app.use(cors({
 app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 app.use(morgan('dev')); // HTTP request logger
+
+// Swagger Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'SkyNest Hotels API Docs'
+}));
 
 // Health check route
 app.get('/health', (req, res) => {
@@ -54,6 +64,8 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/branches', branchRoutes);
 app.use('/api/support', supportRoutes);
+app.use('/api/tax-discount', taxDiscountRoutes);
+app.use('/api/fees', feeRoutes);
 
 // Error handling
 app.use(notFound);
@@ -77,7 +89,8 @@ const startServer = async () => {
             console.log(`\n🚀 Server is running on port ${PORT}`);
             console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
             console.log(`🌐 API URL: http://localhost:${PORT}`);
-            console.log(`💚 Health check: http://localhost:${PORT}/health\n`);
+            console.log(`💚 Health check: http://localhost:${PORT}/health`);
+            console.log(`📚 Swagger docs: http://localhost:${PORT}/api-docs\n`);
         });
     } catch (error) {
         console.error('❌ Failed to start server:', error);

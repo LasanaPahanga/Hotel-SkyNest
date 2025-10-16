@@ -8,6 +8,9 @@ import PrivateRoute from './components/PrivateRoute';
 
 // Pages
 import Login from './pages/Login';
+import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import AdminDashboard from './pages/dashboards/AdminDashboard';
 import ReceptionistDashboard from './pages/dashboards/ReceptionistDashboard';
 import GuestDashboard from './pages/dashboards/GuestDashboard';
@@ -33,6 +36,11 @@ import MyProfile from './pages/guest/MyProfile';
 import SupportTickets from './pages/SupportTickets';
 import ServiceRequests from './pages/ServiceRequests';
 
+// Management Pages
+import TaxDiscountManagement from './pages/TaxDiscountManagement';
+import FeeManagement from './pages/FeeManagement';
+import PaymentGateway from './pages/PaymentGateway';
+
 function App() {
   return (
     <Router>
@@ -41,6 +49,9 @@ function App() {
           <Routes>
             {/* Public Routes */}
             <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
             
             {/* Protected Routes - Admin */}
             <Route
@@ -194,6 +205,14 @@ function App() {
               }
             />
             <Route
+              path="/payment-gateway/:bookingId"
+              element={
+                <PrivateRoute allowedRoles={['Admin', 'Receptionist']}>
+                  <PaymentGateway />
+                </PrivateRoute>
+              }
+            />
+            <Route
               path="/reports"
               element={
                 <PrivateRoute allowedRoles={['Admin', 'Receptionist']}>
@@ -214,6 +233,22 @@ function App() {
               element={
                 <PrivateRoute allowedRoles={['Admin']}>
                   <Users />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/tax-discount"
+              element={
+                <PrivateRoute allowedRoles={['Admin', 'Receptionist']}>
+                  <TaxDiscountManagement />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/fees"
+              element={
+                <PrivateRoute allowedRoles={['Admin', 'Receptionist']}>
+                  <FeeManagement />
                 </PrivateRoute>
               }
             />

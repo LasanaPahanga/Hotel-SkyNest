@@ -7,7 +7,8 @@ const {
     createRoom,
     updateRoom,
     deleteRoom,
-    getRoomTypes
+    getRoomTypes,
+    getRoomWithGuest
 } = require('../controllers/roomController');
 const { verifyToken, checkRole } = require('../middleware/auth');
 
@@ -21,6 +22,8 @@ router.use(verifyToken);
 router.route('/')
     .get(getAllRooms)
     .post(checkRole('Admin'), createRoom);
+
+router.get('/:id/details', checkRole('Admin', 'Receptionist'), getRoomWithGuest);
 
 router.route('/:id')
     .get(getRoom)

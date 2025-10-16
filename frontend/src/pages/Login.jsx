@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getDashboardRoute } from '../utils/helpers';
 import { FaUser, FaLock } from 'react-icons/fa';
@@ -68,6 +68,10 @@ const Login = () => {
                         />
                     </div>
 
+                    <div className="forgot-password-link">
+                        <Link to="/forgot-password">Forgot Password?</Link>
+                    </div>
+
                     <button 
                         type="submit" 
                         className="login-btn"
@@ -75,6 +79,10 @@ const Login = () => {
                     >
                         {loading ? 'Logging in...' : 'Login'}
                     </button>
+
+                    <div className="signup-link">
+                        Don't have an account? <Link to="/signup">Sign Up</Link>
+                    </div>
                 </form>
 
                 <div className="login-footer">

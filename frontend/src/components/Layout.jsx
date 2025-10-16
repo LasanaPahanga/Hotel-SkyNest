@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { 
     FaHome, FaCalendarAlt, FaBed, FaUsers, FaConciergeBell, 
     FaMoneyBillWave, FaChartBar, FaUser, FaSignOutAlt, FaBars, FaTimes, FaUserCog,
-    FaHeadset
+    FaHeadset, FaPercent, FaFileInvoiceDollar
 } from 'react-icons/fa';
 import logoSky from '../assets/logosky.png';
 import '../styles/Layout.css';
@@ -54,6 +54,8 @@ const Layout = ({ children }) => {
             { path: '/guests', icon: FaUsers, label: 'Guests' },
             { path: '/service-requests', icon: FaConciergeBell, label: 'Service Requests' },
             { path: '/payments', icon: FaMoneyBillWave, label: 'Payments' },
+            { path: '/tax-discount', icon: FaPercent, label: 'Tax & Discounts' },
+            { path: '/fees', icon: FaFileInvoiceDollar, label: 'Fees' },
             { path: '/reports', icon: FaChartBar, label: 'Reports' },
             { path: '/support', icon: FaHeadset, label: 'Support' }
         ];

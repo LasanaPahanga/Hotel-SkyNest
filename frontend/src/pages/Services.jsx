@@ -329,11 +329,11 @@ const ServicesNew = () => {
                                                 <div>
                                                     {service.custom_price ? (
                                                         <>
-                                                            <div style={{ fontWeight: 600, color: '#059669' }}>
+                                                            <div style={{ fontWeight: 600 }}>
                                                                 {formatCurrency(service.custom_price)}
                                                             </div>
                                                             <div style={{ fontSize: '0.75rem', color: '#6b7280', textDecoration: 'line-through' }}>
-                                                                {formatCurrency(service.unit_price)}
+                                                                Base: {formatCurrency(service.unit_price)}
                                                             </div>
                                                         </>
                                                     ) : (

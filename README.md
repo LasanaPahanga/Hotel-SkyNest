@@ -1,477 +1,537 @@
-# 🏨 SkyNest Hotels - Reservation & Management System
+# 🏨 Hotel SkyNest Management System
 
-A comprehensive hotel management system built with React, Node.js, Express, and MySQL. This full-stack application provides complete hotel operations management including bookings, guest services, payments, and staff coordination.
-
-![License](https://img.shields.io/badge/license-ISC-blue.svg)
-![Node](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen.svg)
-![React](https://img.shields.io/badge/react-18.2.0-blue.svg)
-![MySQL](https://img.shields.io/badge/mysql-8.0-orange.svg)
-
----
+A comprehensive hotel management system built with React, Node.js, Express, and MySQL. This system provides complete hotel operations management including bookings, payments, service requests, and financial reporting.
 
 ## 📋 Table of Contents
 
 - [Features](#features)
 - [Tech Stack](#tech-stack)
-- [System Architecture](#system-architecture)
-- [Project Structure](#project-structure)
-- [Installation](#installation)
-- [Usage](#usage)
-- [API Documentation](#api-documentation)
 - [Database Schema](#database-schema)
+- [Payment & Financial System](#payment--financial-system)
+- [Installation](#installation)
+- [API Documentation](#api-documentation)
+- [Database Procedures](#database-procedures)
+- [Usage Examples](#usage-examples)
 - [Contributing](#contributing)
-- [License](#license)
-
----
 
 ## ✨ Features
 
-### 🔐 **Multi-Role Authentication**
-- **Admin**: Full system access and management
-- **Receptionist**: Branch-specific operations
-- **Guest**: Self-service portal
+### Core Features
+- 👥 **User Management** - Multi-role authentication (Admin, Staff, Guest)
+- 🏢 **Multi-Branch Support** - Manage multiple hotel branches
+- 🛏️ **Room Management** - Room types, availability tracking, and allocation
+- 📅 **Booking System** - Real-time booking with availability checking
+- 💰 **Advanced Payment Processing** - Multi-payment support with detailed breakdowns
+- 🧾 **Tax Management** - Flexible tax configuration (VAT, Service Tax, etc.)
+- 🎟️ **Discount System** - Configurable discounts with validation
+- 💵 **Fee Management** - Late fees and additional service fees
+- 🛎️ **Service Requests** - In-room services and amenities
+- 📊 **Comprehensive Reporting** - Revenue, occupancy, and service analytics
+- 🎫 **Support Tickets** - Guest support and issue tracking
+- 📧 **Email Verification** - Secure user registration
 
-### 📅 **Booking Management**
-- Real-time room availability checking
-- Double booking prevention with database triggers
-- Check-in/Check-out processing
-- Booking modifications and cancellations
-- Special requests handling
-
-### 🏠 **Room Management**
-- Multiple room types (Single, Double, Deluxe, Suite)
-- Room status tracking (Available, Occupied, Reserved, Maintenance)
-- Branch-wise room inventory
-- Dynamic pricing support
-
-### 👥 **Guest Management**
-- Guest profile management
-- Booking history tracking
-- Guest portal for self-service
-
-### 💰 **Payment Processing**
-- Partial payment support
-- Payment history tracking
-- Outstanding balance management
-- Automated bill calculation
-
-### 🛎️ **Service Management**
-- Service catalogue (Room Service, Spa, Laundry, etc.)
-- Guest service requests with approval workflow
-- Branch-specific service pricing
-- Service usage tracking and billing
-
-### 🎫 **Support System**
-- Ticket creation and management
-- Staff response system
-- Ticket status tracking (Open, In Progress, Resolved, Closed)
-
-### 📊 **Reports & Analytics**
-- Revenue reports by branch
-- Occupancy statistics
-- Service usage analytics
-- Payment summaries
-- Guest booking history
-
-### 🔔 **Real-time Updates**
-- Live booking status
-- Instant payment updates
-- Service request notifications
-- Support ticket alerts
-
----
+### Advanced Features
+- 🔄 **Real-time Room Availability** - Cached availability for performance
+- 📈 **Live Bill Calculation** - Dynamic billing with services and taxes
+- 🧮 **Automatic Tax Calculation** - Based on branch configuration
+- 💳 **Payment Breakdowns** - Detailed itemization of charges
+- 🧾 **Receipt Generation** - Automated receipt creation
+- 📉 **Audit Logging** - Complete activity tracking
+- 📱 **Responsive Design** - Mobile-friendly interface
 
 ## 🛠️ Tech Stack
 
-### **Frontend**
-- **React 18.2** - UI library
-- **React Router DOM 6** - Client-side routing
+### Frontend
+- **React** - UI framework
+- **React Router** - Navigation
 - **Axios** - HTTP client
-- **React Icons** - Icon library
-- **Recharts** - Data visualization
-- **React Toastify** - Notifications
-- **Date-fns** - Date manipulation
-- **Vite** - Build tool
+- **CSS3** - Styling
 
-### **Backend**
+### Backend
 - **Node.js** - Runtime environment
-- **Express.js 4.18** - Web framework
-- **MySQL2** - Database driver
+- **Express.js** - Web framework
+- **MySQL** - Relational database
 - **JWT** - Authentication
-- **Bcrypt.js** - Password hashing
-- **Express Validator** - Input validation
-- **Morgan** - HTTP logging
-- **Helmet** - Security headers
-- **CORS** - Cross-origin resource sharing
+- **bcrypt** - Password hashing
 
-### **Database**
-- **MySQL 8.0** - Relational database
+### Database
+- **MySQL 8.0+** - Primary database
 - **Stored Procedures** - Business logic
 - **Triggers** - Data integrity
-- **Views** - Query optimization
-- **Indexes** - Performance optimization
-
----
-
-## 🏗️ System Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        CLIENT LAYER                          │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │   Admin UI   │  │ Receptionist │  │   Guest UI   │      │
-│  │  Dashboard   │  │  Dashboard   │  │   Portal     │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
-│                    React + Vite                              │
-└─────────────────────────────────────────────────────────────┘
-                            ↕ HTTP/REST API
-┌─────────────────────────────────────────────────────────────┐
-│                     APPLICATION LAYER                        │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │              Express.js REST API                     │   │
-│  │  ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐       │   │
-│  │  │  Auth  │ │Booking │ │Payment │ │Service │       │   │
-│  │  │  JWT   │ │ Logic  │ │ Logic  │ │ Logic  │       │   │
-│  │  └────────┘ └────────┘ └────────┘ └────────┘       │   │
-│  └──────────────────────────────────────────────────────┘   │
-│                    Node.js + Express                         │
-└─────────────────────────────────────────────────────────────┘
-                            ↕ MySQL2
-┌─────────────────────────────────────────────────────────────┐
-│                      DATABASE LAYER                          │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │                   MySQL Database                     │   │
-│  │  ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐       │   │
-│  │  │ Tables │ │ Views  │ │Triggers│ │ Stored │       │   │
-│  │  │        │ │        │ │        │ │  Proc  │       │   │
-│  │  └────────┘ └────────┘ └────────┘ └────────┘       │   │
-│  └──────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 📁 Project Structure
-
-```
-Hotel-SkyNest/
-│
-├── backend/                      # Backend API
-│   ├── config/
-│   │   └── database.js          # MySQL connection pool
-│   ├── controllers/             # Business logic
-│   │   ├── authController.js
-│   │   ├── bookingController.js
-│   │   ├── guestController.js
-│   │   ├── paymentController.js
-│   │   ├── reportController.js
-│   │   ├── roomController.js
-│   │   ├── serviceController.js
-│   │   ├── serviceRequestController.js
-│   │   ├── supportController.js
-│   │   └── userController.js
-│   ├── middleware/
-│   │   ├── auth.js              # JWT authentication
-│   │   └── errorHandler.js      # Error handling
-│   ├── routes/                  # API routes
-│   │   ├── authRoutes.js
-│   │   ├── bookingRoutes.js
-│   │   ├── guestRoutes.js
-│   │   ├── paymentRoutes.js
-│   │   ├── reportRoutes.js
-│   │   ├── roomRoutes.js
-│   │   ├── serviceRoutes.js
-│   │   ├── serviceRequestRoutes.js
-│   │   ├── supportRoutes.js
-│   │   └── userRoutes.js
-│   ├── .env                     # Environment variables
-│   ├── .env.example             # Environment template
-│   ├── package.json
-│   └── server.js                # Entry point
-│
-├── frontend/                    # Frontend React app
-│   ├── src/
-│   │   ├── components/          # Reusable components
-│   │   │   ├── Card.jsx
-│   │   │   ├── Layout.jsx
-│   │   │   ├── LoadingSpinner.jsx
-│   │   │   ├── Modal.jsx
-│   │   │   ├── PrivateRoute.jsx
-│   │   │   ├── StatCard.jsx
-│   │   │   └── Table.jsx
-│   │   ├── context/
-│   │   │   └── AuthContext.jsx  # Authentication state
-│   │   ├── pages/               # Page components
-│   │   │   ├── dashboards/
-│   │   │   │   ├── AdminDashboard.jsx
-│   │   │   │   ├── GuestDashboard.jsx
-│   │   │   │   └── ReceptionistDashboard.jsx
-│   │   │   ├── guest/
-│   │   │   │   ├── BookingDetails.jsx
-│   │   │   │   ├── ContactSupport.jsx
-│   │   │   │   ├── MyBookings.jsx
-│   │   │   │   └── RequestService.jsx
-│   │   │   ├── BookingDetails.jsx
-│   │   │   ├── Bookings.jsx
-│   │   │   ├── CreateBooking.jsx
-│   │   │   ├── GuestDetails.jsx
-│   │   │   ├── Guests.jsx
-│   │   │   ├── Login.jsx
-│   │   │   ├── NotFound.jsx
-│   │   │   ├── Payments.jsx
-│   │   │   ├── Profile.jsx
-│   │   │   ├── Reports.jsx
-│   │   │   ├── Rooms.jsx
-│   │   │   ├── ServiceRequests.jsx
-│   │   │   ├── Services.jsx
-│   │   │   ├── SupportTickets.jsx
-│   │   │   └── Users.jsx
-│   │   ├── styles/              # CSS files
-│   │   │   ├── AdminDashboard.css
-│   │   │   ├── App.css
-│   │   │   ├── BookingDetails.css
-│   │   │   ├── Bookings.css
-│   │   │   ├── Card.css
-│   │   │   ├── CreateBooking.css
-│   │   │   ├── GuestDashboard.css
-│   │   │   ├── Guests.css
-│   │   │   ├── Layout.css
-│   │   │   ├── Login.css
-│   │   │   ├── Modal.css
-│   │   │   ├── Payments.css
-│   │   │   ├── ReceptionistDashboard.css
-│   │   │   ├── Reports.css
-│   │   │   └── Rooms.css
-│   │   ├── utils/
-│   │   │   ├── api.js           # API client
-│   │   │   └── helpers.js       # Utility functions
-│   │   ├── App.jsx              # Main app component
-│   │   └── main.jsx             # Entry point
-│   ├── index.html
-│   ├── package.json
-│   └── vite.config.js
-│
-└── database/                    # Database scripts
-    ├── schema.sql               # Database structure
-    ├── seed_data.sql            # Initial data
-    ├── procedures.sql           # Stored procedures
-    ├── triggers.sql             # Database triggers
-    ├── reports.sql              # Report procedures
-    ├── database_efficiency_improvements.sql
-    └── generate_hashes.js       # Password hash generator
-```
-
----
-
-## 🚀 Installation
-
-See [INSTALLATION.md](./INSTALLATION.md) for detailed setup instructions.
-
-**Quick Start:**
-
-```bash
-# Clone repository
-git clone https://github.com/yourusername/Hotel-SkyNest.git
-cd Hotel-SkyNest
-
-# Setup database (ONE COMMAND - Easy!)
-mysql -u root -p < database/COMPLETE_DATABASE_SETUP.sql
-
-# OR setup step-by-step (if preferred)
-mysql -u root -p < database/schema.sql
-mysql -u root -p < database/seed_data.sql
-mysql -u root -p < database/procedures.sql
-mysql -u root -p < database/triggers.sql
-mysql -u root -p < database/reports.sql
-mysql -u root -p < database/database_efficiency_improvements.sql
-
-# Setup backend
-cd backend
-npm install
-cp .env.example .env
-# Edit .env with your database credentials
-npm start
-
-# Setup frontend (in new terminal)
-cd frontend
-npm install
-npm run dev
-```
-
----
-
-## 💻 Usage
-
-### **Default Credentials**
-
-**Admin:**
-- Username: `admin`
-- Password: `Admin@123`
-
-**Receptionist (Colombo):**
-- Username: `receptionist1`
-- Password: `Recep@123`
-
-**Guest:**
-- Username: `john.doe`
-- Password: `Guest@123`
-
-### **Access URLs**
-
-- Frontend: `http://localhost:3000`
-- Backend API: `http://localhost:5000`
-
----
-
-## 📡 API Documentation
-
-### **Authentication**
-```
-POST   /api/auth/login          # User login
-POST   /api/auth/register       # Guest registration
-GET    /api/auth/me             # Get current user
-```
-
-### **Bookings**
-```
-GET    /api/bookings            # Get all bookings
-GET    /api/bookings/:id        # Get booking details
-POST   /api/bookings            # Create booking
-PUT    /api/bookings/:id        # Update booking
-DELETE /api/bookings/:id        # Cancel booking
-POST   /api/bookings/:id/checkin    # Check-in guest
-POST   /api/bookings/:id/checkout   # Check-out guest
-```
-
-### **Rooms**
-```
-GET    /api/rooms               # Get all rooms
-GET    /api/rooms/available     # Get available rooms
-POST   /api/rooms               # Create room
-PUT    /api/rooms/:id           # Update room
-DELETE /api/rooms/:id           # Delete room
-```
-
-### **Guests**
-```
-GET    /api/guests              # Get all guests
-GET    /api/guests/:id          # Get guest details
-POST   /api/guests              # Create guest
-PUT    /api/guests/:id          # Update guest
-```
-
-### **Payments**
-```
-GET    /api/payments            # Get all payments
-POST   /api/payments            # Process payment
-GET    /api/payments/booking/:id   # Get booking payments
-```
-
-### **Services**
-```
-GET    /api/services            # Get service catalogue
-POST   /api/services            # Add service
-PUT    /api/services/:id        # Update service
-```
-
-### **Service Requests**
-```
-GET    /api/service-requests    # Get all requests
-POST   /api/service-requests    # Create request
-PUT    /api/service-requests/:id/review  # Approve/Reject
-```
-
-### **Support**
-```
-GET    /api/support/tickets     # Get all tickets
-POST   /api/support/tickets     # Create ticket
-GET    /api/support/tickets/:id # Get ticket details
-PUT    /api/support/tickets/:id # Update ticket
-POST   /api/support/tickets/:id/response  # Add response
-```
-
-### **Reports**
-```
-GET    /api/reports/revenue     # Revenue report
-GET    /api/reports/occupancy   # Occupancy report
-GET    /api/reports/services    # Service usage report
-```
-
----
+- **Views** - Optimized queries
 
 ## 🗄️ Database Schema
 
-See [DATABASE_STRUCTURE.md](./DATABASE_STRUCTURE.md) for complete database documentation.
+### Core Tables
 
-**Core Tables:**
-- `hotel_branches` - Hotel branch information
-- `room_types` - Room type definitions
-- `rooms` - Individual room inventory
-- `users` - System users (Admin, Receptionist, Guest)                                                            
-- `guests` - Guest profiles
-- `bookings` - Room reservations
+#### Users & Authentication
+- `users` - User accounts and roles
+- `email_verification_tokens` - Email verification
+
+#### Hotel Structure
+- `hotel_branches` - Branch information
+- `room_types` - Room categories and pricing
+- `rooms` - Individual room records
+- `room_availability_cache` - Availability optimization
+
+#### Booking System
+- `bookings` - Reservation records
+- `guests` - Guest information
+- `booking_taxes` - Tax calculations per booking
+- `booking_discounts` - Applied discounts
+- `booking_fees` - Additional fees (late fees, etc.)
+
+#### Service Management
 - `service_catalogue` - Available services
-- `service_usage` - Services used by guests
-- `service_requests` - Guest service requests
-- `payments` - Payment transactions
-- `support_tickets` - Customer support tickets
-- `ticket_responses` - Support ticket responses
+- `branch_services` - Branch-specific services
+- `service_requests` - Service orders
+- `service_usage` - Consumed services with pricing
 
----
+#### Payment System
+- `payments` - Payment records
+- `payment_breakdowns` - Itemized payment details
+- `payment_receipts` - Generated receipts
 
-## 🎨 Styling Guide
+#### Configuration
+- `tax_configurations` - Tax definitions
+- `branch_tax_config` - Branch-specific taxes
+- `discount_configurations` - Discount rules
+- `branch_discount_config` - Branch-specific discounts
+- `fee_configurations` - Fee definitions
+- `branch_fee_config` - Branch-specific fees
 
-See [STYLING_GUIDE.md](./STYLING_GUIDE.md) for detailed styling instructions.
+#### Support & Audit
+- `support_tickets` - Guest support tickets
+- `ticket_responses` - Support responses
+- `audit_log` - System activity tracking
 
----
+## 💰 Payment & Financial System
 
-## 🐳 Docker Support
+### Tax Management
 
-See [Dockerfile](./Dockerfile) and [docker-compose.yml](./docker-compose.yml) for containerization.
+The system supports flexible tax configuration per branch with automatic calculation:
 
----
+#### Tax Types
+- **VAT (Value Added Tax)** - 12% on total booking amount (room + services)
+- **Service Tax** - 10% on service charges only
+- **Custom Taxes** - Configurable per branch
 
-## 🔄 CI/CD Pipeline
+#### Tax Calculation Process
+1. Calculate room charges (base price × nights)
+2. Add service charges (all consumed services)
+3. Apply applicable taxes based on branch configuration
+4. Generate `booking_taxes` records
 
-See [CICD_GUIDE.md](./CICD_GUIDE.md) for continuous integration and deployment setup.
+```sql
+-- Automatic tax calculation
+CALL calculate_booking_taxes(booking_id);
+```
 
----
+### Discount System
+
+#### Discount Types
+- **Percentage Discounts** - % off total amount
+- **Fixed Amount Discounts** - Flat rate reduction
+- **Early Bird Discounts** - Book X days in advance
+- **Loyalty Discounts** - Repeat customer benefits
+- **Seasonal Discounts** - Holiday/off-season rates
+
+#### Discount Configuration
+```javascript
+{
+  discount_name: "Early Bird 15%",
+  discount_type: "percentage",
+  value: 15.00,
+  min_booking_value: 5000.00,
+  min_nights: 2,
+  valid_from: "2024-01-01",
+  valid_to: "2024-12-31",
+  applies_to: "room_charges" // or "total_amount"
+}
+```
+
+#### Discount Validation
+- Minimum booking amount
+- Minimum nights requirement
+- Date range validation
+- Branch-specific availability
+- One discount per booking (highest value applied)
+
+### Fee Management
+
+#### Fee Types
+1. **Late Checkout Fee** - Charged per hour after checkout time
+2. **Early Checkin Fee** - Premium for early arrival
+3. **Cancellation Fee** - Based on cancellation policy
+4. **Damage Fee** - Room or property damage charges
+5. **Service Fees** - Additional service charges
+
+#### Late Fee Calculation
+```sql
+-- Calculate late checkout fees
+IF checkout_time > standard_checkout_time THEN
+  late_hours = CEIL(TIMESTAMPDIFF(MINUTE, standard_checkout_time, checkout_time) / 60);
+  late_fee = late_hours * hourly_rate;
+  INSERT INTO booking_fees (booking_id, fee_config_id, fee_amount);
+END IF;
+```
+
+### Payment Processing
+
+#### Payment Flow
+1. **Calculate Total**
+   - Room charges
+   - Service charges
+   - Taxes (VAT + Service Tax)
+   - Fees (late fees, etc.)
+   - Discounts applied
+   - **Grand Total**
+
+2. **Process Payment**
+   ```sql
+   CALL process_payment(
+     p_booking_id,
+     p_amount,
+     p_payment_method,
+     p_transaction_reference,
+     p_processed_by
+   );
+   ```
+
+3. **Generate Receipt**
+   ```sql
+   CALL generate_receipt_data(booking_id);
+   ```
+
+#### Payment Methods
+- Cash
+- Credit Card
+- Debit Card
+- Bank Transfer
+- Online Payment Gateway
+
+#### Payment Breakdown Structure
+```javascript
+{
+  room_charges: 8000.00,
+  service_charges: 1500.00,
+  subtotal: 9500.00,
+  
+  taxes: [
+    { tax_name: "VAT (12%)", amount: 1140.00 },
+    { tax_name: "Service Tax (10%)", amount: 150.00 }
+  ],
+  total_tax: 1290.00,
+  
+  discounts: [
+    { discount_name: "Early Bird 15%", amount: -1200.00 }
+  ],
+  total_discount: 1200.00,
+  
+  fees: [
+    { fee_name: "Late Checkout", amount: 500.00 }
+  ],
+  total_fees: 500.00,
+  
+  grand_total: 10090.00,
+  amount_paid: 5000.00,
+  balance_due: 5090.00
+}
+```
+
+### Live Bill Feature
+
+Get real-time bill calculation during guest stay:
+
+```sql
+CALL get_live_bill(booking_id);
+```
+
+**Returns:**
+- Current room charges
+- All service usage
+- Applied taxes
+- Applied discounts
+- Any fees
+- Current total
+- Payment history
+- Outstanding balance
+
+## 📦 Installation
+
+### Prerequisites
+- Node.js (v14 or higher)
+- MySQL (v8.0 or higher)
+- npm or yarn
+
+### Backend Setup
+
+```bash
+# Navigate to backend directory
+cd backend
+
+# Install dependencies
+npm install
+
+# Configure environment variables
+cp .env.example .env
+# Edit .env with your database credentials
+
+# Import database schema
+mysql -u root -p < database/schema.sql
+
+# Import stored procedures
+mysql -u root -p < database/procedures/*.sql
+
+# Start server
+npm start
+```
+
+### Frontend Setup
+
+```bash
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Configure API endpoint
+# Edit src/config.js with backend URL
+
+# Start development server
+npm start
+```
+
+### Environment Variables
+
+```env
+# Database
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=skynest_hotels
+
+# Server
+PORT=5000
+NODE_ENV=development
+
+# JWT
+JWT_SECRET=your_jwt_secret_key
+JWT_EXPIRE=7d
+
+# Email (if configured)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your_email@gmail.com
+SMTP_PASS=your_app_password
+```
+
+## 📚 API Documentation
+
+### Authentication
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - User login
+- `POST /api/auth/verify-email` - Verify email
+
+### Bookings
+- `GET /api/bookings` - List all bookings
+- `GET /api/bookings/:id` - Get booking details
+- `POST /api/bookings` - Create new booking
+- `PUT /api/bookings/:id` - Update booking
+- `DELETE /api/bookings/:id` - Cancel booking
+- `GET /api/bookings/:id/live-bill` - Get current bill
+
+### Payments
+- `POST /api/payments` - Process payment
+- `GET /api/payments/booking/:id` - Get booking payments
+- `GET /api/receipts/:id` - Get payment receipt
+
+### Services
+- `GET /api/services` - List available services
+- `POST /api/service-requests` - Request service
+- `GET /api/service-usage/:bookingId` - Get service usage
+
+### Reports
+- `GET /api/reports/revenue` - Revenue report
+- `GET /api/reports/occupancy` - Room occupancy
+- `GET /api/reports/services` - Service trends
+- `GET /api/reports/unpaid` - Unpaid bookings
+
+## 🔧 Database Procedures
+
+### Booking Procedures
+- `create_booking` - Create new reservation
+- `cancel_booking` - Cancel reservation with refund calculation
+- `check_booking_availability` - Verify room availability
+- `check_in_guest` - Process guest check-in
+- `check_out_guest` - Process checkout with final billing
+
+### Payment Procedures
+- `calculate_booking_total` - Calculate final amount
+- `calculate_booking_taxes` - Apply tax calculations
+- `process_payment` - Record payment transaction
+- `generate_receipt_data` - Create payment receipt
+- `get_live_bill` - Real-time bill calculation
+
+### Service Procedures
+- `get_branch_services` - List branch services
+- `delete_service_usage` - Remove service charge
+
+### Reporting Procedures
+- `get_revenue_report` - System-wide revenue
+- `get_branch_revenue_report` - Branch-specific revenue
+- `get_room_occupancy_report` - Occupancy statistics
+- `get_service_trends_report` - Service analytics
+- `get_branch_top_services` - Most used services
+- `get_unpaid_bookings_report` - Outstanding payments
+- `get_guest_history` - Guest booking history
+
+### Support Procedures
+- `create_support_ticket` - Create support ticket
+
+## 💡 Usage Examples
+
+### Creating a Booking with Payment
+
+```javascript
+// 1. Create booking
+const booking = await createBooking({
+  guest_id: 123,
+  room_id: 45,
+  check_in_date: '2024-02-01',
+  check_out_date: '2024-02-05',
+  number_of_guests: 2,
+  special_requests: 'Late checkout if possible'
+});
+
+// 2. Add services during stay
+await addServiceUsage({
+  booking_id: booking.booking_id,
+  service_id: 10, // Room service
+  quantity: 2,
+  unit_price: 1500.00
+});
+
+// 3. Get live bill
+const liveBill = await getLiveBill(booking.booking_id);
+console.log('Current total:', liveBill.grand_total);
+
+// 4. Process payment
+const payment = await processPayment({
+  booking_id: booking.booking_id,
+  amount: liveBill.grand_total,
+  payment_method: 'credit_card',
+  transaction_reference: 'TXN123456'
+});
+
+// 5. Generate receipt
+const receipt = await generateReceipt(payment.receipt_id);
+```
+
+### Applying Discounts
+
+```javascript
+// Discount automatically applied during booking if eligible
+const booking = await createBooking({
+  // ...booking details
+  discount_code: 'EARLYBIRD15' // Optional discount code
+});
+
+// System validates:
+// - Discount is active
+// - Booking meets minimum requirements
+// - Date range is valid
+// - Applies highest eligible discount
+```
+
+### Tax Calculation
+
+```javascript
+// Taxes calculated automatically on:
+// 1. Booking creation
+// 2. Service addition
+// 3. Payment processing
+
+// Manual recalculation if needed
+await calculateBookingTaxes(booking_id);
+
+// Tax breakdown available in live bill
+const bill = await getLiveBill(booking_id);
+console.log('VAT:', bill.taxes.find(t => t.tax_name === 'VAT'));
+console.log('Service Tax:', bill.taxes.find(t => t.tax_name === 'Service Tax'));
+```
+
+### Late Fee Assessment
+
+```javascript
+// Late fee automatically calculated on checkout
+await checkOutGuest({
+  booking_id: 123,
+  actual_checkout_time: '2024-02-05 18:30:00', // 6.5 hours late
+  checked_out_by: staff_user_id
+});
+
+// Late fee added to booking_fees
+// Reflected in final bill
+```
+
+## 📊 Reporting Features
+
+### Revenue Reports
+- Total revenue by date range
+- Revenue by branch
+- Revenue by payment method
+- Tax collected summary
+
+### Occupancy Reports
+- Room utilization percentage
+- Average occupancy rate
+- Peak booking periods
+- Available vs occupied rooms
+
+### Service Reports
+- Most popular services
+- Service revenue trends
+- Service usage by branch
+- Customer preferences
+
+### Financial Reports
+- Unpaid bookings
+- Outstanding balances
+- Payment collection rate
+- Discount usage statistics
+
+## 🔐 Security Features
+
+- JWT-based authentication
+- Password hashing with bcrypt
+- Role-based access control (RBAC)
+- Email verification
+- SQL injection prevention
+- Audit logging
+- Secure payment processing
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
----
+## 📝 License
 
-## 📄 License
-
-This project is licensed under the ISC License.
-
----
+This project is licensed under the MIT License.
 
 ## 👥 Authors
 
-**UOM CSE students**
-
----
-
-## 🙏 Acknowledgments
-
-- React community for excellent documentation
-- Express.js team for the robust framework
-- MySQL for reliable database management
-- All contributors and testers
-
----
+Hotel SkyNest Development Team
 
 ## 📞 Support
 
-For support, email sithijaseneviratne@gmail.com or create an issue in the repository.
+For support, email support@hotelskynest.com or create a support ticket in the system.
 
 ---
 
-**Made with ❤️ by UOM CSE students**
+**Built with ❤️ for modern hotel management**

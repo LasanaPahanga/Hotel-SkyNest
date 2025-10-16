@@ -256,9 +256,17 @@ const createBooking = async (req, res, next) => {
 
 // @desc    Check-in guest
 // @route   PUT /api/bookings/:id/checkin
-// @access  Private (Admin, Receptionist)
+// @access  Private (Admin, Receptionist) - GUESTS CANNOT CHECK-IN
 const checkInGuest = async (req, res, next) => {
     try {
+        // IMPORTANT: Guests cannot check-in themselves
+        if (req.user.role === 'Guest') {
+            return res.status(403).json({
+                success: false,
+                message: 'Guests cannot check-in. Please contact the receptionist.'
+            });
+        }
+
         // Call stored procedure
         await promisePool.query(
             `CALL check_in_guest(?, ?, @success, @error_message)`,
@@ -288,9 +296,19 @@ const checkInGuest = async (req, res, next) => {
 
 // @desc    Check-out guest
 // @route   PUT /api/bookings/:id/checkout
-// @access  Private (Admin, Receptionist)
+// @access  Private (Admin, Receptionist) - GUESTS CANNOT CHECK-OUT
 const checkOutGuest = async (req, res, next) => {
     try {
+        // IMPORTANT: Guests cannot check-out themselves
+        if (req.user.role === 'Guest') {
+            return res.status(403).json({
+                success: false,
+                message: 'Guests cannot check-out. Please contact the receptionist.'
+            });
+        }
+
+        const { actual_checkout_time } = req.body;
+
         // Call stored procedure
         await promisePool.query(
             `CALL check_out_guest(?, ?, @success, @error_message, @outstanding_amount)`,
@@ -309,6 +327,14 @@ const checkOutGuest = async (req, res, next) => {
                 outstanding_amount: output[0].outstanding_amount
             });
         }
+
+        // Apply late checkout fee if applicable
+        if (actual_checkout_time) {
+            await promisePool.query(
+                'CALL apply_late_checkout_fee(?, ?, ?, @fee_amount, @fee_message)',
+                [req.params.id, actual_checkout_time, req.user.user_id]
+            );
+        }
         
         res.json({
             success: true,
@@ -324,6 +350,37 @@ const checkOutGuest = async (req, res, next) => {
 // @access  Private
 const cancelBooking = async (req, res, next) => {
     try {
+        // IMPORTANT: Guests can only cancel bookings that are NOT checked-in
+        if (req.user.role === 'Guest') {
+            const [booking] = await promisePool.query(
+                'SELECT booking_status, guest_id FROM bookings WHERE booking_id = ?',
+                [req.params.id]
+            );
+
+            if (booking.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Booking not found'
+                });
+            }
+
+            // Check if booking belongs to the guest
+            if (booking[0].guest_id !== req.user.guest_id) {
+                return res.status(403).json({
+                    success: false,
+                    message: 'Access denied'
+                });
+            }
+
+            // Guests cannot cancel checked-in bookings
+            if (booking[0].booking_status === 'Checked-In') {
+                return res.status(403).json({
+                    success: false,
+                    message: 'Cannot cancel a checked-in booking. Please contact the receptionist.'
+                });
+            }
+        }
+
         // Call stored procedure
         await promisePool.query(
             `CALL cancel_booking(?, ?, @success, @error_message)`,

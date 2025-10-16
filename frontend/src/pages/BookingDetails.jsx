@@ -8,7 +8,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import { bookingAPI, serviceAPI, paymentAPI } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { formatDate, formatDateTime, formatCurrency, getStatusClass } from '../utils/helpers';
-import { FaCheckCircle, FaTimesCircle, FaBan, FaPlus } from 'react-icons/fa';
+import { FaCheckCircle, FaTimesCircle, FaBan, FaPlus, FaMoneyBillWave } from 'react-icons/fa';
 import dashboardImage from '../assets/dashboard.jpeg';
 import '../styles/BookingDetails.css';
 import '../styles/CommonPage.css';
@@ -285,12 +285,22 @@ const BookingDetails = () => {
                             </div>
                         </div>
                         {canManage && booking.outstanding_amount > 0 && (
-                            <button 
-                                className="btn btn-primary btn-block"
-                                onClick={() => setShowPaymentModal(true)}
-                            >
-                                Process Payment
-                            </button>
+                            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                                <button 
+                                    className="btn btn-primary"
+                                    style={{ flex: 1 }}
+                                    onClick={() => navigate(`/payment-gateway/${id}`)}
+                                >
+                                    <FaMoneyBillWave /> Make Payment (Full Breakdown)
+                                </button>
+                                <button 
+                                    className="btn btn-secondary"
+                                    style={{ flex: 1 }}
+                                    onClick={() => setShowPaymentModal(true)}
+                                >
+                                    Quick Payment
+                                </button>
+                            </div>
                         )}
                     </Card>
 

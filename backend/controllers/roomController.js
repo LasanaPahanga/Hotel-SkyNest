@@ -272,6 +272,59 @@ const getRoomTypes = async (req, res, next) => {
     }
 };
 
+// @desc    Get room with current guest details
+// @route   GET /api/rooms/:id/details
+// @access  Private (Admin, Receptionist)
+const getRoomWithGuest = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        // Use the rooms_with_current_guest view
+        const [rooms] = await promisePool.query(
+            `SELECT * FROM rooms_with_current_guest WHERE room_id = ?`,
+            [id]
+        );
+
+        if (rooms.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Room not found'
+            });
+        }
+
+        const room = rooms[0];
+
+        // Get booking taxes and discounts if there's a current booking
+        if (room.booking_id) {
+            const [taxes] = await promisePool.query(
+                'SELECT * FROM booking_taxes WHERE booking_id = ?',
+                [room.booking_id]
+            );
+
+            const [discounts] = await promisePool.query(
+                'SELECT * FROM booking_discounts WHERE booking_id = ?',
+                [room.booking_id]
+            );
+
+            const [fees] = await promisePool.query(
+                'SELECT * FROM booking_fees WHERE booking_id = ?',
+                [room.booking_id]
+            );
+
+            room.booking_taxes = taxes;
+            room.booking_discounts = discounts;
+            room.booking_fees = fees;
+        }
+
+        res.json({
+            success: true,
+            data: room
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllRooms,
     getAvailableRooms,
@@ -279,5 +332,6 @@ module.exports = {
     createRoom,
     updateRoom,
     deleteRoom,
-    getRoomTypes
+    getRoomTypes,
+    getRoomWithGuest
 };

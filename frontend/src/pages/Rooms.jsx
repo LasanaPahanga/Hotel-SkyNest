@@ -4,7 +4,7 @@ import Card from '../components/Card';
 import Modal from '../components/Modal';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useAuth } from '../context/AuthContext';
-import { roomAPI, branchAPI, roomTypeAPI } from '../utils/api';
+import api, { roomAPI, branchAPI, roomTypeAPI } from '../utils/api';
 import { formatCurrency, getStatusClass } from '../utils/helpers';
 import { FaEdit, FaEye, FaFilter, FaTimes, FaPlus } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -119,10 +119,16 @@ const Rooms = () => {
         });
     };
 
-    const handleViewRoom = (room) => {
-        console.log('View room clicked:', room);
-        setSelectedRoom(room);
-        setShowViewModal(true);
+    const handleViewRoom = async (room) => {
+        try {
+            // Fetch room details with current guest information
+            const response = await api.get(`/rooms/${room.room_id}/details`);
+            setSelectedRoom(response.data.data);
+            setShowViewModal(true);
+        } catch (error) {
+            console.error('Error fetching room details:', error);
+            toast.error('Failed to load room details');
+        }
     };
 
     const handleEditRoom = (room) => {
@@ -386,7 +392,7 @@ const Rooms = () => {
                                 <strong>Branch:</strong> {selectedRoom.branch_name}
                             </div>
                             <div>
-                                <strong>Room Type:</strong> {selectedRoom.type_name}
+                                <strong>Room Type:</strong> {selectedRoom.room_type}
                             </div>
                             <div>
                                 <strong>Floor:</strong> {selectedRoom.floor_number}
@@ -398,14 +404,68 @@ const Rooms = () => {
                                 <strong>Rate per Night:</strong> {formatCurrency(selectedRoom.base_rate)}
                             </div>
                             <div>
-                                <strong>Amenities:</strong> {selectedRoom.amenities || 'N/A'}
-                            </div>
-                            <div>
                                 <strong>Status:</strong>{' '}
                                 <span className={`status-badge ${getStatusClass(selectedRoom.status)}`}>
                                     {selectedRoom.status}
                                 </span>
                             </div>
+                            
+                            {/* Current Guest Information */}
+                            {selectedRoom.current_guest_name && (
+                                <>
+                                    <hr style={{ margin: '0.5rem 0', border: 'none', borderTop: '1px solid #e5e7eb' }} />
+                                    <div style={{ backgroundColor: '#f0f9ff', padding: '1rem', borderRadius: '0.5rem' }}>
+                                        <h4 style={{ margin: '0 0 0.75rem 0', color: '#0369a1' }}>Current Guest</h4>
+                                        <div style={{ display: 'grid', gap: '0.5rem' }}>
+                                            <div>
+                                                <strong>Name:</strong> {selectedRoom.current_guest_name}
+                                            </div>
+                                            <div>
+                                                <strong>Email:</strong> {selectedRoom.guest_email}
+                                            </div>
+                                            <div>
+                                                <strong>Phone:</strong> {selectedRoom.guest_phone}
+                                            </div>
+                                            <div>
+                                                <strong>Check-in:</strong> {new Date(selectedRoom.check_in_date).toLocaleDateString()}
+                                            </div>
+                                            <div>
+                                                <strong>Check-out:</strong> {new Date(selectedRoom.check_out_date).toLocaleDateString()}
+                                            </div>
+                                            <div>
+                                                <strong>Days Remaining:</strong>{' '}
+                                                <span style={{ 
+                                                    fontWeight: 600,
+                                                    color: selectedRoom.days_remaining < 0 ? '#dc2626' : 
+                                                           selectedRoom.days_remaining === 0 ? '#f59e0b' : 
+                                                           selectedRoom.days_remaining <= 2 ? '#eab308' : '#059669'
+                                                }}>
+                                                    {selectedRoom.days_remaining < 0 ? 'Overdue' : 
+                                                     selectedRoom.days_remaining === 0 ? 'Checkout Today' :
+                                                     `${selectedRoom.days_remaining} days`}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <strong>Status:</strong>{' '}
+                                                <span style={{ 
+                                                    padding: '0.25rem 0.5rem',
+                                                    borderRadius: '0.25rem',
+                                                    fontSize: '0.875rem',
+                                                    fontWeight: 600,
+                                                    backgroundColor: selectedRoom.occupancy_status === 'Overdue' ? '#fee2e2' :
+                                                                    selectedRoom.occupancy_status === 'Checkout Today' ? '#fef3c7' :
+                                                                    selectedRoom.occupancy_status === 'Checkout Soon' ? '#fef9c3' : '#d1fae5',
+                                                    color: selectedRoom.occupancy_status === 'Overdue' ? '#991b1b' :
+                                                           selectedRoom.occupancy_status === 'Checkout Today' ? '#92400e' :
+                                                           selectedRoom.occupancy_status === 'Checkout Soon' ? '#854d0e' : '#065f46'
+                                                }}>
+                                                    {selectedRoom.occupancy_status}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     )}
                 </Modal>

@@ -5,16 +5,29 @@ const {
     getPayment,
     processPayment,
     getBookingPayments,
-    updatePayment
+    updatePayment,
+    calculatePayment,
+    getBreakdown,
+    processPaymentWithBreakdown,
+    validatePromoCode,
+    getPaymentSummary
 } = require('../controllers/paymentController');
 const { verifyToken, checkRole } = require('../middleware/auth');
 
 // All routes require authentication
 router.use(verifyToken);
 
+// Payment calculation and breakdown routes
+router.post('/calculate', calculatePayment);
+router.post('/validate-promo', validatePromoCode);
+router.get('/breakdown/:bookingId', getBreakdown);
+router.get('/summary/:bookingId', getPaymentSummary);
+router.post('/process-with-breakdown', checkRole('Admin', 'Receptionist'), processPaymentWithBreakdown);
+
+// Standard payment routes
 router.route('/')
     .get(getAllPayments)
-    .post(checkRole('Admin', 'Receptionist'), processPayment); // Allow Admin and Receptionist
+    .post(checkRole('Admin', 'Receptionist'), processPayment);
 
 router.get('/booking/:bookingId', getBookingPayments);
 

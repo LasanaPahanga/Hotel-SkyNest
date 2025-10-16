@@ -222,18 +222,22 @@ const reviewServiceRequest = async (req, res, next) => {
 
             // If approved, add to service_usage
             if (status === 'Approved') {
-                const servicePrice = request[0].service_price;
-                const quantity = request[0].quantity;
-                const totalAmount = servicePrice * quantity;
+                const unitPrice = parseFloat(request[0].unit_price || request[0].base_price || 0);
+                const quantity = parseInt(request[0].quantity || 1);
+                const totalAmount = unitPrice * quantity;
+
+                if (unitPrice <= 0 || quantity <= 0) {
+                    throw new Error('Invalid service price or quantity');
+                }
 
                 await connection.query(
                     `INSERT INTO service_usage 
                      (booking_id, service_id, quantity, unit_price, total_price) 
                      VALUES (?, ?, ?, ?, ?)`,
-                    [request[0].booking_id, request[0].service_id, quantity, servicePrice, totalAmount]
+                    [request[0].booking_id, request[0].service_id, quantity, unitPrice, totalAmount]
                 );
 
-                // Update booking total_amount
+                // Update booking total_amount and outstanding_amount
                 await connection.query(
                     `UPDATE bookings 
                      SET total_amount = total_amount + ?,
