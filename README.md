@@ -47,11 +47,9 @@ A comprehensive hotel management system built with React, Node.js, Express, and 
 ### 👥 **Guest Management**
 - Guest profile management
 - Booking history tracking
-- ID verification (Passport, NIC, Driving License)
 - Guest portal for self-service
 
 ### 💰 **Payment Processing**
-- Multiple payment methods (Cash, Card, Online Transfer)
 - Partial payment support
 - Payment history tracking
 - Outstanding balance management
@@ -65,7 +63,6 @@ A comprehensive hotel management system built with React, Node.js, Express, and 
 
 ### 🎫 **Support System**
 - Ticket creation and management
-- Priority-based ticket handling (Low, Medium, High, Urgent)
 - Staff response system
 - Ticket status tracking (Open, In Progress, Resolved, Closed)
 
@@ -321,7 +318,7 @@ npm run dev
 
 ### **Access URLs**
 
-- Frontend: `http://localhost:5173`
+- Frontend: `http://localhost:3000`
 - Backend API: `http://localhost:5000`
 
 ---
@@ -410,7 +407,7 @@ See [DATABASE_STRUCTURE.md](./DATABASE_STRUCTURE.md) for complete database docum
 - `hotel_branches` - Hotel branch information
 - `room_types` - Room type definitions
 - `rooms` - Individual room inventory
-- `users` - System users (Admin, Receptionist, Guest)
+- `users` - System users (Admin, Receptionist, Guest)                                                            
 - `guests` - Guest profiles
 - `bookings` - Room reservations
 - `service_catalogue` - Available services
@@ -458,7 +455,7 @@ This project is licensed under the ISC License.
 
 ## 👥 Authors
 
-**SkyNest Hotels Development Team**
+**UOM CSE students**
 
 ---
 
@@ -473,8 +470,8 @@ This project is licensed under the ISC License.
 
 ## 📞 Support
 
-For support, email support@skynest.lk or create an issue in the repository.
+For support, email sithijaseneviratne@gmail.com or create an issue in the repository.
 
 ---
 
-**Made with ❤️ by SkyNest Hotels Team**
+**Made with ❤️ by UOM CSE students**
