@@ -1,0 +1,58 @@
+/* Common Page Styles - Dashboard UI Theme */
+.common-page {
+  max-width: 1400px;
+  position: relative;
+  min-height: 100vh !important;
+  background: #f8f9fa;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  padding: 32px 40px;
+  border-radius: 0;
+  margin: 0;
+}
+
+.common-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(248, 249, 250, 0.92);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.common-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+.common-page .page-header {
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 1;
+  padding: 0;
+}
+
+.common-page .page-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 0;
+  color: #212529;
+  letter-spacing: -0.01em;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .common-page {
+    padding: 20px;
+  }
+  
+  .common-page .page-header h1 {
+    font-size: 24px;
+  }
+}

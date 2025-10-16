@@ -4,6 +4,7 @@ import '../styles/Modal.css';
 
 const Modal = ({ isOpen, onClose, title, children, size = 'medium' }) => {
     useEffect(() => {
+        console.log('Modal isOpen:', isOpen);
         if (isOpen) {
             document.body.style.overflow = 'hidden';
         } else {
@@ -15,7 +16,12 @@ const Modal = ({ isOpen, onClose, title, children, size = 'medium' }) => {
         };
     }, [isOpen]);
 
-    if (!isOpen) return null;
+    if (!isOpen) {
+        console.log('Modal not rendering - isOpen is false');
+        return null;
+    }
+    
+    console.log('Modal rendering with title:', title);
 
     return (
         <div className="modal-overlay" onClick={onClose}>

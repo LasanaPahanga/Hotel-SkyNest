@@ -6,6 +6,8 @@ import { paymentAPI } from '../utils/api';
 import { formatDateTime, formatCurrency, getStatusClass } from '../utils/helpers';
 import { FaFilter, FaTimes, FaSearch, FaMoneyBillWave, FaCheckCircle, FaClock } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import dashboardImage from '../assets/dashboard.jpeg';
+import '../styles/CommonPage.css';
 
 const Payments = () => {
     const [payments, setPayments] = useState([]);
@@ -109,7 +111,7 @@ const Payments = () => {
 
     return (
         <Layout>
-            <div className="payments-page">
+            <div className="payments-page common-page" style={{ backgroundImage: `url(${dashboardImage})` }}>
                 <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                     <div>
                         <h1>Payments Management</h1>

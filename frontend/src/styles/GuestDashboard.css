@@ -198,12 +198,12 @@
 
 /* Bill Card */
 .bill-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: white;
+    color: #212529;
 }
 
 .bill-card h3 {
-    color: white;
+    color: #212529;
 }
 
 .bill-section {
@@ -250,24 +250,43 @@
 }
 
 .bill-item.paid {
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.bill-item.outstanding.has-outstanding {
-    color: #fef3c7;
+    color: #059669;
     font-weight: 600;
 }
 
+.bill-item.outstanding.has-outstanding {
+    color: #dc2626;
+    font-weight: 700;
+    background: #fee2e2;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    margin-top: 0.5rem;
+}
+
+.bill-item.outstanding.has-outstanding .amount {
+    color: #dc2626;
+    font-weight: 700;
+}
+
 .bill-alert {
-    background: rgba(255, 255, 255, 0.15);
+    background: #fef3c7;
+    border: 2px solid #fbbf24;
     padding: 1rem;
     border-radius: 0.5rem;
     margin-top: 1rem;
+    color: #92400e;
 }
 
 .bill-alert strong {
     display: block;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
+    color: #92400e;
+    font-size: 1rem;
+}
+
+.bill-alert p {
+    margin: 0;
+    color: #92400e;
 }
 
 /* Payment History */

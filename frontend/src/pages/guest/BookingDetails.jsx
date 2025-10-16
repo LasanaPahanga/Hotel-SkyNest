@@ -5,7 +5,9 @@ import Card from '../../components/Card';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { bookingAPI, paymentAPI, serviceAPI } from '../../utils/api';
 import { formatDate, formatCurrency, formatDateTime } from '../../utils/helpers';
+import dashboardImage from '../../assets/dashboard.jpeg';
 import '../../styles/GuestDashboard.css';
+import '../../styles/CommonPage.css';
 
 const BookingDetails = () => {
     const { id } = useParams();
@@ -65,7 +67,18 @@ const BookingDetails = () => {
 
     return (
         <Layout>
-            <div className="booking-details-page">
+            <div 
+                className="booking-details-page common-page" 
+                style={{ 
+                    backgroundImage: `url(${dashboardImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundAttachment: 'fixed',
+                    minHeight: '100vh',
+                    maxWidth: '1400px'
+                }}
+            >
                 <div className="page-header">
                     <button className="btn btn-secondary" onClick={() => navigate('/guest/bookings')}>
                         ← Back to Bookings

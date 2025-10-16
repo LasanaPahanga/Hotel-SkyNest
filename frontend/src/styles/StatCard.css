@@ -1,20 +1,46 @@
 .stat-card {
-  background-color: white;
-  border-radius: 0.5rem;
-  box-shadow: var(--shadow);
-  padding: 1.5rem;
-  border-left: 4px solid;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid #e8eaed;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
+  min-height: 90px;
 }
 
-.stat-card-blue { border-left-color: var(--primary-color); }
-.stat-card-green { border-left-color: var(--success-color); }
-.stat-card-purple { border-left-color: #8B5CF6; }
-.stat-card-orange { border-left-color: var(--warning-color); }
+.stat-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-color: #d0d5dd;
+}
+
+.stat-card-blue { 
+  border-left: none;
+  background: #ffffff;
+}
+
+.stat-card-green { 
+  border-left: none;
+  background: #ffffff;
+}
+
+.stat-card-purple { 
+  border-left: none;
+  background: #ffffff;
+}
+
+.stat-card-orange { 
+  border-left: none;
+  background: #ffffff;
+}
 
 .stat-card-content {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 16px;
 }
 
 .stat-card-text {
@@ -22,24 +48,86 @@
 }
 
 .stat-card-title {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  margin-bottom: 0.5rem;
+  font-size: 12px;
+  color: #6c757d;
+  margin-bottom: 10px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: 'Poppins', sans-serif;
 }
 
 .stat-card-value {
-  font-size: 2rem;
+  font-size: 24px;
   font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 0.25rem;
+  color: #212529;
+  margin-bottom: 6px;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
 }
 
 .stat-card-subtitle {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
+  font-size: 11px;
+  color: #adb5bd;
+  font-weight: 400;
+  letter-spacing: 0;
 }
 
 .stat-card-icon {
-  font-size: 3rem;
-  opacity: 0.2;
+  font-size: 28px;
+  opacity: 0.5;
+  color: #212529;
+  transition: all 0.3s ease;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 40px;
+  height: auto;
+}
+
+.stat-card:hover .stat-card-icon {
+  opacity: 0.7;
+  transform: scale(1.05);
+}
+
+.stat-card-blue .stat-card-icon {
+  color: #212529;
+  background: transparent;
+}
+
+.stat-card-green .stat-card-icon {
+  color: #212529;
+  background: transparent;
+}
+
+.stat-card-purple .stat-card-icon {
+  color: #212529;
+  background: transparent;
+}
+
+.stat-card-orange .stat-card-icon {
+  color: #212529;
+  background: transparent;
+}
+
+@media (max-width: 768px) {
+  .stat-card {
+    padding: 20px;
+  }
+  
+  .stat-card-value {
+    font-size: 20px;
+  }
+  
+  .stat-card-icon {
+    font-size: 32px;
+  }
+  
+  .stat-card-title {
+    font-size: 14px;
+  }
 }

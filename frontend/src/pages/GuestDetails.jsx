@@ -5,6 +5,8 @@ import Card from '../components/Card';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { guestAPI } from '../utils/api';
 import { formatDate, formatCurrency, getStatusClass } from '../utils/helpers';
+import dashboardImage from '../assets/dashboard.jpeg';
+import '../styles/CommonPage.css';
 
 const GuestDetails = () => {
     const { id } = useParams();
@@ -44,7 +46,7 @@ const GuestDetails = () => {
 
     return (
         <Layout>
-            <div className="guest-details-page">
+            <div className="guest-details-page common-page" style={{ backgroundImage: `url(${dashboardImage})` }}>
                 <div className="page-header">
                     <h1>{guest.first_name} {guest.last_name}</h1>
                 </div>

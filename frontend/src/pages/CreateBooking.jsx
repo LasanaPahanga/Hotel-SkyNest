@@ -6,7 +6,9 @@ import Card from '../components/Card';
 import { roomAPI, guestAPI, bookingAPI, branchAPI } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { formatCurrency, calculateNights } from '../utils/helpers';
+import dashboardImage from '../assets/dashboard.jpeg';
 import '../styles/CreateBooking.css';
+import '../styles/CommonPage.css';
 
 const CreateBooking = () => {
     const navigate = useNavigate();
@@ -119,7 +121,18 @@ const CreateBooking = () => {
 
     return (
         <Layout>
-            <div className="create-booking-page">
+            <div 
+                className="create-booking-page common-page" 
+                style={{ 
+                    backgroundImage: `url(${dashboardImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundAttachment: 'fixed',
+                    minHeight: '100vh',
+                    maxWidth: '1400px'
+                }}
+            >
                 <div className="page-header">
                     <h1>Create New Booking</h1>
                 </div>

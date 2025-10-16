@@ -7,6 +7,7 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 import { supportAPI, bookingAPI } from '../../utils/api';
 import { formatDateTime } from '../../utils/helpers';
 import { toast } from 'react-toastify';
+import dashboardImage from '../../assets/dashboard.jpeg';
 import '../../styles/GuestDashboard.css';
 
 const ContactSupport = () => {
@@ -151,7 +152,18 @@ const ContactSupport = () => {
 
     return (
         <Layout>
-            <div className="support-page">
+            <div 
+                className="contact-support-page common-page" 
+                style={{ 
+                    backgroundImage: `url(${dashboardImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundAttachment: 'fixed',
+                    minHeight: '100vh',
+                    maxWidth: '1400px'
+                }}
+            >
                 <div className="page-header">
                     <h1>Contact Support</h1>
                     <button 

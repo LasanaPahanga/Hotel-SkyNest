@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/Layout';
-import StatCard from '../../components/StatCard';
 import Card from '../../components/Card';
+import StatCard from '../../components/StatCard';
 import Table from '../../components/Table';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { reportAPI, bookingAPI } from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
 import { formatCurrency, formatDate, getStatusClass } from '../../utils/helpers';
-import { FaCalendarAlt, FaBed, FaCheckCircle, FaMoneyBillWave } from 'react-icons/fa';
+import { FaCalendarAlt, FaCheckCircle, FaBed, FaUsers } from 'react-icons/fa';
+import dashboardImage from '../../assets/dashboard.jpeg';
 import '../../styles/Dashboard.css';
+import '../../styles/CommonPage.css';
 
 const ReceptionistDashboard = () => {
     const { user } = useAuth();
@@ -80,7 +82,7 @@ const ReceptionistDashboard = () => {
 
     return (
         <Layout>
-            <div className="dashboard">
+            <div className="dashboard" style={{ backgroundImage: `url(${dashboardImage})` }}>
                 <div className="dashboard-header">
                     <h1>Receptionist Dashboard</h1>
                     <p>Welcome to {user?.branch?.branch_name}</p>
@@ -109,7 +111,7 @@ const ReceptionistDashboard = () => {
                     <StatCard
                         title="Current Guests"
                         value={stats?.current_checkins || 0}
-                        icon={FaMoneyBillWave}
+                        icon={FaUsers}
                         color="orange"
                     />
                 </div>

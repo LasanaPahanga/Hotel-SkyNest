@@ -8,6 +8,8 @@ import { roomAPI, branchAPI, roomTypeAPI } from '../utils/api';
 import { formatCurrency, getStatusClass } from '../utils/helpers';
 import { FaEdit, FaEye, FaFilter, FaTimes, FaPlus } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import dashboardImage from '../assets/dashboard.jpeg';
+import '../styles/CommonPage.css';
 
 const Rooms = () => {
     const { user } = useAuth();
@@ -118,11 +120,13 @@ const Rooms = () => {
     };
 
     const handleViewRoom = (room) => {
+        console.log('View room clicked:', room);
         setSelectedRoom(room);
         setShowViewModal(true);
     };
 
     const handleEditRoom = (room) => {
+        console.log('Edit room clicked:', room);
         setSelectedRoom(room);
         setShowEditModal(true);
     };
@@ -151,7 +155,7 @@ const Rooms = () => {
 
     return (
         <Layout>
-            <div className="rooms-page">
+            <div className="rooms-page common-page" style={{ backgroundImage: `url(${dashboardImage})`, overflow: 'visible' }}>
                 <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                     <div>
                         <h1>Rooms Management</h1>
@@ -314,7 +318,11 @@ const Rooms = () => {
                                             <td style={{ padding: '0.75rem', textAlign: 'center' }}>
                                                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
                                                     <button
-                                                        onClick={() => handleViewRoom(room)}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleViewRoom(room);
+                                                        }}
+                                                        className="btn btn-sm"
                                                         style={{
                                                             padding: '0.25rem 0.75rem',
                                                             fontSize: '0.875rem',
@@ -322,14 +330,21 @@ const Rooms = () => {
                                                             color: 'white',
                                                             border: 'none',
                                                             borderRadius: '0.25rem',
-                                                            cursor: 'pointer'
+                                                            cursor: 'pointer',
+                                                            display: 'inline-flex',
+                                                            alignItems: 'center',
+                                                            gap: '0.25rem'
                                                         }}
                                                     >
                                                         <FaEye /> View
                                                     </button>
-                                                    {(user.role === 'Admin' || user.role === 'Receptionist') && (
+                                                    {(user?.role === 'Admin' || user?.role === 'Receptionist') && (
                                                         <button
-                                                            onClick={() => handleEditRoom(room)}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleEditRoom(room);
+                                                            }}
+                                                            className="btn btn-sm"
                                                             style={{
                                                                 padding: '0.25rem 0.75rem',
                                                                 fontSize: '0.875rem',
@@ -337,7 +352,10 @@ const Rooms = () => {
                                                                 color: 'white',
                                                                 border: 'none',
                                                                 borderRadius: '0.25rem',
-                                                                cursor: 'pointer'
+                                                                cursor: 'pointer',
+                                                                display: 'inline-flex',
+                                                                alignItems: 'center',
+                                                                gap: '0.25rem'
                                                             }}
                                                         >
                                                             <FaEdit /> Edit
@@ -354,8 +372,15 @@ const Rooms = () => {
                 </Card>
 
                 {/* View Modal */}
-                {showViewModal && selectedRoom && (
-                    <Modal isOpen={showViewModal} onClose={() => setShowViewModal(false)} title={`Room ${selectedRoom.room_number} Details`}>
+                <Modal 
+                    isOpen={showViewModal} 
+                    onClose={() => {
+                        setShowViewModal(false);
+                        setSelectedRoom(null);
+                    }} 
+                    title={selectedRoom ? `Room ${selectedRoom.room_number} Details` : 'Room Details'}
+                >
+                    {selectedRoom && (
                         <div style={{ display: 'grid', gap: '1rem' }}>
                             <div>
                                 <strong>Branch:</strong> {selectedRoom.branch_name}
@@ -382,12 +407,19 @@ const Rooms = () => {
                                 </span>
                             </div>
                         </div>
-                    </Modal>
-                )}
+                    )}
+                </Modal>
 
                 {/* Edit Modal */}
-                {showEditModal && selectedRoom && (
-                    <Modal isOpen={showEditModal} onClose={() => setShowEditModal(false)} title={`Edit Room ${selectedRoom.room_number}`}>
+                <Modal 
+                    isOpen={showEditModal} 
+                    onClose={() => {
+                        setShowEditModal(false);
+                        setSelectedRoom(null);
+                    }} 
+                    title={selectedRoom ? `Edit Room ${selectedRoom.room_number}` : 'Edit Room'}
+                >
+                    {selectedRoom && (
                         <div style={{ display: 'grid', gap: '1rem' }}>
                             <div>
                                 <strong>Current Status:</strong>{' '}
@@ -422,8 +454,8 @@ const Rooms = () => {
                                 </p>
                             </div>
                         </div>
-                    </Modal>
-                )}
+                    )}
+                </Modal>
             </div>
         </Layout>
     );

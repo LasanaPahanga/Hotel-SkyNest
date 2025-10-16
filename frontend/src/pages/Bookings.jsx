@@ -8,6 +8,7 @@ import { bookingAPI } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { formatDate, formatCurrency, getStatusClass } from '../utils/helpers';
 import { FaPlus, FaFilter } from 'react-icons/fa';
+import dashboardImage from '../assets/dashboard.jpeg';
 import '../styles/Bookings.css';
 
 const Bookings = () => {
@@ -110,7 +111,7 @@ const Bookings = () => {
 
     return (
         <Layout>
-            <div className="bookings-page">
+            <div className="bookings-page" style={{ backgroundImage: `url(${dashboardImage})` }}>
                 <div className="page-header">
                     <h1>Bookings</h1>
                     {(user?.role === 'Admin' || user?.role === 'Receptionist') && (

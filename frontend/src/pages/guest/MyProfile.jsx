@@ -7,7 +7,10 @@ import { guestAPI } from '../../utils/api';
 import { formatDate } from '../../utils/helpers';
 import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaCalendar, FaIdCard, FaEdit, FaSave, FaTimes } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import dashboardImage from '../../assets/dashboard.jpeg';
+import '../../styles/CommonPage.css';
 import '../../styles/GuestDashboard.css';
+import '../../styles/MyProfile.css';
 
 const MyProfile = () => {
     const navigate = useNavigate();
@@ -112,10 +115,21 @@ const MyProfile = () => {
 
     return (
         <Layout>
-            <div className="container">
+            <div 
+                className="my-profile-page common-page" 
+                style={{ 
+                    backgroundImage: `url(${dashboardImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundAttachment: 'fixed',
+                    minHeight: '100vh',
+                    maxWidth: '1400px'
+                }}
+            >
                 <div className="page-header">
                     <h1>
-                        <FaUser className="me-2" />
+                        <FaUser style={{ marginRight: '0.5rem' }} />
                         My Profile
                     </h1>
                     {!editing && (
@@ -123,15 +137,14 @@ const MyProfile = () => {
                             className="btn btn-primary"
                             onClick={() => setEditing(true)}
                         >
-                            <FaEdit className="me-2" />
+                            <FaEdit style={{ marginRight: '0.5rem' }} />
                             Edit Profile
                         </button>
                     )}
                 </div>
 
-                <div className="row">
-                    <div className="col-lg-8 mx-auto">
-                        <Card>
+                <div style={{ maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+                    <Card style={{ position: 'relative', zIndex: 1 }}>
                             {editing ? (
                                 <form onSubmit={handleSubmit}>
                                     <div className="row g-3">
@@ -261,32 +274,34 @@ const MyProfile = () => {
                                         </div>
                                     </div>
 
-                                    <div className="d-flex gap-2 mt-4">
-                                        <button 
-                                            type="submit" 
-                                            className="btn btn-success"
-                                            disabled={saving}
-                                        >
-                                            {saving ? (
-                                                <>
-                                                    <span className="spinner-border spinner-border-sm me-2"></span>
-                                                    Saving...
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <FaSave className="me-2" />
-                                                    Save Changes
-                                                </>
-                                            )}
-                                        </button>
+                                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #dee2e6' }}>
                                         <button 
                                             type="button" 
                                             className="btn btn-secondary"
                                             onClick={handleCancel}
                                             disabled={saving}
+                                            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
                                         >
-                                            <FaTimes className="me-2" />
+                                            <FaTimes />
                                             Cancel
+                                        </button>
+                                        <button 
+                                            type="submit" 
+                                            className="btn btn-success"
+                                            disabled={saving}
+                                            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                                        >
+                                            {saving ? (
+                                                <>
+                                                    <span className="spinner-border spinner-border-sm"></span>
+                                                    Saving...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <FaSave />
+                                                    Save Changes
+                                                </>
+                                            )}
                                         </button>
                                     </div>
                                 </form>
@@ -388,7 +403,6 @@ const MyProfile = () => {
                                 </div>
                             )}
                         </Card>
-                    </div>
                 </div>
             </div>
 

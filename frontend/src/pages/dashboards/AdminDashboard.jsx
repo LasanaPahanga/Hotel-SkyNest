@@ -11,6 +11,7 @@ import {
     FaUsers, FaCheckCircle 
 } from 'react-icons/fa';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import dashboardImage from '../../assets/dashboard.jpeg';
 import '../../styles/Dashboard.css';
 
 const AdminDashboard = () => {
@@ -48,10 +49,10 @@ const AdminDashboard = () => {
 
     return (
         <Layout>
-            <div className="dashboard">
+            <div className="dashboard" style={{ backgroundImage: `url(${dashboardImage})` }}>
                 <div className="dashboard-header">
-                    <h1>Admin Dashboard</h1>
-                    <p>Welcome back! Here's what's happening today.</p>
+                    <h1>Welcome, SkyNest Team!</h1>
+                    <p className="dashboard-subtitle">Key Metrics</p>
                 </div>
 
                 {/* Stats Grid */}
@@ -96,8 +97,8 @@ const AdminDashboard = () => {
                                 <YAxis />
                                 <Tooltip formatter={(value) => formatCurrency(value)} />
                                 <Legend />
-                                <Bar dataKey="room_revenue" fill="#4F46E5" name="Room Revenue" />
-                                <Bar dataKey="service_revenue" fill="#10B981" name="Service Revenue" />
+                                <Bar dataKey="room_revenue" fill="#5b8697" name="Room Revenue" />
+                                <Bar dataKey="service_revenue" fill="#17a2b8" name="Service Revenue" />
                             </BarChart>
                         </ResponsiveContainer>
                     </Card>

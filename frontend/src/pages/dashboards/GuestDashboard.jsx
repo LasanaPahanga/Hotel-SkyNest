@@ -8,7 +8,9 @@ import { bookingAPI } from '../../utils/api';
 import { formatDate, formatCurrency } from '../../utils/helpers';
 import { FaCalendarCheck, FaConciergeBell, FaMoneyBillWave, FaClipboardList, FaHotel, FaClock } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import dashboardImage from '../../assets/dashboard.jpeg';
 import '../../styles/Dashboard.css';
+import '../../styles/CommonPage.css';
 
 const GuestDashboard = () => {
     const navigate = useNavigate();
@@ -136,7 +138,7 @@ const GuestDashboard = () => {
 
     return (
         <Layout>
-            <div className="dashboard">
+            <div className="guest-dashboard common-page" style={{ backgroundImage: `url(${dashboardImage})` }}>
                 <div className="dashboard-header">
                     <h1>Welcome, {user?.full_name}!</h1>
                     <p>Manage your bookings and services</p>
@@ -149,8 +151,8 @@ const GuestDashboard = () => {
                             <div style={{ fontSize: '2.5rem', opacity: 0.9 }}>
                                 <FaHotel />
                             </div>
-                            <div>
-                                <h3 style={{ fontSize: '2rem', margin: 0 }}>{stats.activeBookings}</h3>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                                <h3 style={{ fontSize: '1.5rem', margin: 0, wordBreak: 'break-word', overflow: 'hidden', textOverflow: 'ellipsis' }}>{stats.activeBookings}</h3>
                                 <p style={{ margin: 0, opacity: 0.9 }}>Active Stays</p>
                             </div>
                         </div>
@@ -161,8 +163,8 @@ const GuestDashboard = () => {
                             <div style={{ fontSize: '2.5rem', opacity: 0.9 }}>
                                 <FaClock />
                             </div>
-                            <div>
-                                <h3 style={{ fontSize: '2rem', margin: 0 }}>{stats.upcomingBookings}</h3>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                                <h3 style={{ fontSize: '1.5rem', margin: 0, wordBreak: 'break-word', overflow: 'hidden', textOverflow: 'ellipsis' }}>{stats.upcomingBookings}</h3>
                                 <p style={{ margin: 0, opacity: 0.9 }}>Upcoming Bookings</p>
                             </div>
                         </div>
@@ -173,8 +175,8 @@ const GuestDashboard = () => {
                             <div style={{ fontSize: '2.5rem', opacity: 0.9 }}>
                                 <FaMoneyBillWave />
                             </div>
-                            <div>
-                                <h3 style={{ fontSize: '2rem', margin: 0 }}>{formatCurrency(stats.totalSpent)}</h3>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                                <h3 style={{ fontSize: '1.5rem', margin: 0, wordBreak: 'break-word', overflow: 'hidden', textOverflow: 'ellipsis' }}>{formatCurrency(stats.totalSpent)}</h3>
                                 <p style={{ margin: 0, opacity: 0.9 }}>Total Spent</p>
                             </div>
                         </div>
@@ -185,8 +187,8 @@ const GuestDashboard = () => {
                             <div style={{ fontSize: '2.5rem', opacity: 0.9 }}>
                                 <FaConciergeBell />
                             </div>
-                            <div>
-                                <h3 style={{ fontSize: '2rem', margin: 0 }}>{formatCurrency(stats.pendingPayments)}</h3>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                                <h3 style={{ fontSize: '1.5rem', margin: 0, wordBreak: 'break-word', overflow: 'hidden', textOverflow: 'ellipsis' }}>{formatCurrency(stats.pendingPayments)}</h3>
                                 <p style={{ margin: 0, opacity: 0.9 }}>Pending Payments</p>
                             </div>
                         </div>

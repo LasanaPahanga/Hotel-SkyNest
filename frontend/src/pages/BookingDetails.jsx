@@ -9,7 +9,9 @@ import { bookingAPI, serviceAPI, paymentAPI } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { formatDate, formatDateTime, formatCurrency, getStatusClass } from '../utils/helpers';
 import { FaCheckCircle, FaTimesCircle, FaBan, FaPlus } from 'react-icons/fa';
+import dashboardImage from '../assets/dashboard.jpeg';
 import '../styles/BookingDetails.css';
+import '../styles/CommonPage.css';
 
 const BookingDetails = () => {
     const { id } = useParams();
@@ -160,7 +162,18 @@ const BookingDetails = () => {
 
     return (
         <Layout>
-            <div className="booking-details-page">
+            <div 
+                className="booking-details-page common-page" 
+                style={{ 
+                    backgroundImage: `url(${dashboardImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundAttachment: 'fixed',
+                    minHeight: '100vh',
+                    maxWidth: '1400px'
+                }}
+            >
                 <div className="page-header">
                     <h1>Booking #{booking.booking_id}</h1>
                     <div className="header-actions">
