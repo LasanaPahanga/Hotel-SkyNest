@@ -9,7 +9,9 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import { userAPI, branchAPI, authAPI } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { FaPlus, FaEdit, FaTrash, FaKey } from 'react-icons/fa';
+import dashboardImage from '../assets/dashboard.jpeg';
 import '../styles/Users.css';
+import '../styles/CommonPage.css';
 
 const Users = () => {
     const navigate = useNavigate();
@@ -187,7 +189,7 @@ const Users = () => {
 
     return (
         <Layout>
-            <div className="users-page">
+            <div className="users-page common-page" style={{ backgroundImage: `url(${dashboardImage})` }}>
                 <div className="page-header">
                     <h1>User Management</h1>
                     <button

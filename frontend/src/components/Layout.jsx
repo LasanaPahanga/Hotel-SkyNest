@@ -6,6 +6,7 @@ import {
     FaMoneyBillWave, FaChartBar, FaUser, FaSignOutAlt, FaBars, FaTimes, FaUserCog,
     FaHeadset
 } from 'react-icons/fa';
+import logoSky from '../assets/logosky.png';
 import '../styles/Layout.css';
 
 const Layout = ({ children }) => {
@@ -84,7 +85,11 @@ const Layout = ({ children }) => {
             {/* Sidebar */}
             <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
                 <div className="sidebar-header">
-                    <h2>SkyNest Hotels</h2>
+                    {sidebarOpen ? (
+                        <img src={logoSky} alt="SkyNest Hotels" className="sidebar-logo" />
+                    ) : (
+                        <img src={logoSky} alt="SkyNest" className="sidebar-logo-small" />
+                    )}
                     <button className="toggle-btn" onClick={toggleSidebar}>
                         {sidebarOpen ? <FaTimes /> : <FaBars />}
                     </button>

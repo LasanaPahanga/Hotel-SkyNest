@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import Card from '../components/Card';
-import LoadingSpinner from '../components/LoadingSpinner';
+import Table from '../components/Table';
 import Modal from '../components/Modal';
-import { useAuth } from '../context/AuthContext';
-import { serviceAPI, branchAPI } from '../utils/api';
+import LoadingSpinner from '../components/LoadingSpinner';
+import { serviceAPI } from '../utils/api';
 import { formatCurrency } from '../utils/helpers';
+import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
+import { toast } from 'react-toastify';
+import dashboardImage from '../assets/dashboard.jpeg';
+import '../styles/CommonPage.css';
+import { useAuth } from '../context/AuthContext';
+import { branchAPI } from '../utils/api';
 
 const ServicesNew = () => {
     const { user } = useAuth(); // Get user from AuthContext
@@ -244,7 +250,7 @@ const ServicesNew = () => {
 
     return (
         <Layout>
-            <div className="services-page">
+            <div className="services-page common-page" style={{ backgroundImage: `url(${dashboardImage})` }}>
                 <div className="page-header">
                     <h1>Services Management</h1>
                     {isAdmin && (

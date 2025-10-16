@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import Card from '../../components/Card';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import { serviceAPI, bookingAPI, serviceRequestAPI } from '../../utils/api';
+import { serviceRequestAPI, bookingAPI, serviceAPI } from '../../utils/api';
 import { formatCurrency, formatDateTime } from '../../utils/helpers';
 import { toast } from 'react-toastify';
+import dashboardImage from '../../assets/dashboard.jpeg';
+import '../../styles/CommonPage.css';
 import { FaClock, FaCheckCircle, FaTimesCircle, FaTrash } from 'react-icons/fa';
 import '../../styles/GuestDashboard.css';
 
@@ -147,7 +149,18 @@ const RequestService = () => {
 
     return (
         <Layout>
-            <div className="request-service-page">
+            <div 
+                className="request-service-page common-page" 
+                style={{ 
+                    backgroundImage: `url(${dashboardImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundAttachment: 'fixed',
+                    minHeight: '100vh',
+                    maxWidth: '1400px'
+                }}
+            >
                 <div className="page-header">
                     <div>
                         <h1>Request Services</h1>

@@ -7,6 +7,8 @@ import { serviceRequestAPI } from '../utils/api';
 import { formatDateTime, formatCurrency } from '../utils/helpers';
 import { toast } from 'react-toastify';
 import { FaCheckCircle, FaTimesCircle, FaClock, FaEye, FaFilter, FaTimes } from 'react-icons/fa';
+import dashboardImage from '../assets/dashboard.jpeg';
+import '../styles/CommonPage.css';
 
 const ServiceRequests = () => {
     const [requests, setRequests] = useState([]);
@@ -145,7 +147,7 @@ const ServiceRequests = () => {
 
     return (
         <Layout>
-            <div className="service-requests-page">
+            <div className="service-requests-page common-page" style={{ backgroundImage: `url(${dashboardImage})` }}>
                 <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                     <div>
                         <h1>Service Requests</h1>

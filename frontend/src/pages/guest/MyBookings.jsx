@@ -8,7 +8,9 @@ import { bookingAPI, paymentAPI, serviceAPI } from '../../utils/api';
 import { formatDate, formatCurrency, formatDateTime } from '../../utils/helpers';
 import { FaSync, FaTimes } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import dashboardImage from '../../assets/dashboard.jpeg';
 import '../../styles/GuestDashboard.css';
+import '../../styles/CommonPage.css';
 
 const MyBookings = () => {
     const navigate = useNavigate();
@@ -119,7 +121,18 @@ const MyBookings = () => {
 
     return (
         <Layout>
-            <div className="guest-dashboard">
+            <div 
+                className="my-bookings-page common-page" 
+                style={{ 
+                    backgroundImage: `url(${dashboardImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundAttachment: 'fixed',
+                    minHeight: '100vh',
+                    maxWidth: '1400px'
+                }}
+            >
                 <div className="dashboard-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
                         <h1>My Bookings</h1>

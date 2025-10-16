@@ -8,6 +8,8 @@ import { supportAPI } from '../utils/api';
 import { formatDateTime } from '../utils/helpers';
 import { toast } from 'react-toastify';
 import { FaEye, FaFilter, FaTimes, FaClock, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
+import dashboardImage from '../assets/dashboard.jpeg';
+import '../styles/CommonPage.css';
 
 const SupportTickets = () => {
     const navigate = useNavigate();
@@ -182,7 +184,18 @@ const SupportTickets = () => {
 
     return (
         <Layout>
-            <div className="support-tickets-page">
+            <div 
+                className="support-page common-page" 
+                style={{ 
+                    backgroundImage: `url(${dashboardImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundAttachment: 'fixed',
+                    minHeight: '100vh',
+                    maxWidth: '1400px'
+                }}
+            >
                 <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                     <div>
                         <h1>Support Tickets</h1>

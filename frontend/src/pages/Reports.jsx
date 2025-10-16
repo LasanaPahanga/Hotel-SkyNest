@@ -4,8 +4,11 @@ import Card from '../components/Card';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { reportAPI } from '../utils/api';
 import { formatCurrency, formatDate } from '../utils/helpers';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { FaDownload, FaChartBar, FaCalendar } from 'react-icons/fa';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
+import dashboardImage from '../assets/dashboard.jpeg';
 import '../styles/Reports.css';
+import '../styles/CommonPage.css';
 
 const Reports = () => {
     const [loading, setLoading] = useState(true);
@@ -55,7 +58,7 @@ const Reports = () => {
 
     return (
         <Layout>
-            <div className="reports-page">
+            <div className="reports-page common-page" style={{ backgroundImage: `url(${dashboardImage})` }}>
                 <div className="page-header">
                     <h1>Reports & Analytics</h1>
                 </div>

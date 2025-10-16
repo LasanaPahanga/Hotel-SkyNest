@@ -1,23 +1,35 @@
 .card {
-  background-color: white;
-  border-radius: 0.5rem;
-  box-shadow: var(--shadow);
-  margin-bottom: 1.5rem;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e8eaed;
+  margin-bottom: 24px;
   overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  position: relative;
+}
+
+.card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-color: #d0d5dd;
 }
 
 .card-header {
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid var(--border-color);
+  padding: 18px 24px;
+  border-bottom: 1px solid #e8eaed;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: #ffffff;
 }
 
 .card-title {
-  font-size: 1.125rem;
+  font-size: 15px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #212529;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 0;
 }
 
 .card-actions {
@@ -26,5 +38,47 @@
 }
 
 .card-body {
-  padding: 1.5rem;
+  padding: 24px;
+}
+
+.card-body .recharts-wrapper {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.04));
+}
+
+.card-body .recharts-cartesian-axis-tick-value {
+  fill: #6c757d !important;
+  font-size: 11px !important;
+  font-weight: 400 !important;
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.card-body .recharts-text {
+  fill: #495057 !important;
+  font-weight: 500 !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 12px !important;
+}
+
+.card-body .recharts-cartesian-grid-horizontal line,
+.card-body .recharts-cartesian-grid-vertical line {
+  stroke: #e8eaed !important;
+  stroke-dasharray: 2 2 !important;
+}
+
+@media (max-width: 768px) {
+  .card {
+    margin-bottom: 20px;
+  }
+  
+  .card-header {
+    padding: 16px 20px;
+  }
+  
+  .card-body {
+    padding: 20px;
+  }
+  
+  .card-title {
+    font-size: 16px;
+  }
 }

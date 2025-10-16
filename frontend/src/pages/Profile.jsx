@@ -4,6 +4,9 @@ import Layout from '../components/Layout';
 import Card from '../components/Card';
 import { useAuth } from '../context/AuthContext';
 import { authAPI } from '../utils/api';
+import { FaUser, FaLock } from 'react-icons/fa';
+import dashboardImage from '../assets/dashboard.jpeg';
+import '../styles/CommonPage.css';
 
 const Profile = () => {
     const { user } = useAuth();
@@ -48,7 +51,7 @@ const Profile = () => {
 
     return (
         <Layout>
-            <div className="profile-page">
+            <div className="profile-page common-page" style={{ backgroundImage: `url(${dashboardImage})` }}>
                 <div className="page-header">
                     <h1>My Profile</h1>
                 </div>
