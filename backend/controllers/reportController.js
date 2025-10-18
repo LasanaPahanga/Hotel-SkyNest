@@ -119,8 +119,8 @@ const getRevenueReport = async (req, res, next) => {
         const branchId = userRole === 'Receptionist' ? userBranchId : null;
         
         const [results] = await promisePool.query(
-            'CALL get_branch_revenue_report(?, ?, ?)',
-            [branchId, start_date, end_date]
+            'CALL get_revenue_report(?, ?, ?)',
+            [start_date, end_date, branchId]
         );
         
         res.json({

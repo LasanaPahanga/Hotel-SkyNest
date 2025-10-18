@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Layout from '../components/Layout';
 import Card from '../components/Card';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { reportAPI } from '../utils/api';
 import { formatCurrency, formatDate } from '../utils/helpers';
-import { FaDownload, FaChartBar, FaCalendar } from 'react-icons/fa';
+import { FaDownload, FaChartBar, FaCalendar, FaSearch, FaFilter } from 'react-icons/fa';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import dashboardImage from '../assets/dashboard.jpeg';
 import '../styles/Reports.css';
@@ -17,10 +17,16 @@ const Reports = () => {
     const [revenueData, setRevenueData] = useState([]);
     const [topServices, setTopServices] = useState([]);
     const [unpaidBookings, setUnpaidBookings] = useState([]);
+    const [serviceUsageData, setServiceUsageData] = useState([]);
     const [dateRange, setDateRange] = useState({
         start_date: new Date(new Date().setDate(1)).toISOString().split('T')[0],
         end_date: new Date().toISOString().split('T')[0]
     });
+    const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [roomTypeFilter, setRoomTypeFilter] = useState('all');
+    const [serviceSearchTerm, setServiceSearchTerm] = useState('');
+    const [serviceCategoryFilter, setServiceCategoryFilter] = useState('all');
 
     useEffect(() => {
         fetchReports();
@@ -45,6 +51,10 @@ const Reports = () => {
                 case 'unpaid':
                     const unpaidRes = await reportAPI.getUnpaid();
                     setUnpaidBookings(unpaidRes.data.data);
+                    break;
+                case 'usage':
+                    const usageRes = await reportAPI.getServiceUsage();
+                    setServiceUsageData(usageRes.data.data);
                     break;
             }
         } catch (error) {
@@ -89,6 +99,12 @@ const Reports = () => {
                         >
                             Unpaid Bookings
                         </button>
+                        <button
+                            className={`tab ${activeTab === 'usage' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('usage')}
+                        >
+                            Service Usage
+                        </button>
                     </div>
 
                     <div className="date-filters">
@@ -110,7 +126,45 @@ const Reports = () => {
                         <div className="report-content">
                             {activeTab === 'occupancy' && (
                                 <div>
-                                    <h3>Room Occupancy Report</h3>
+                                    <div className="report-header">
+                                        <h3>Room Occupancy Report</h3>
+                                        {occupancyData.length > 0 && (
+                                            <div className="occupancy-filters">
+                                                <div className="search-box">
+                                                    <FaSearch className="search-icon" />
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Search by room number or guest name..."
+                                                        value={searchTerm}
+                                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                                        className="search-input"
+                                                    />
+                                                </div>
+                                                <div className="filter-group">
+                                                    <FaFilter className="filter-icon" />
+                                                    <select
+                                                        value={statusFilter}
+                                                        onChange={(e) => setStatusFilter(e.target.value)}
+                                                        className="filter-select"
+                                                    >
+                                                        <option value="all">All Status</option>
+                                                        <option value="Occupied">Occupied</option>
+                                                        <option value="Available">Available</option>
+                                                    </select>
+                                                    <select
+                                                        value={roomTypeFilter}
+                                                        onChange={(e) => setRoomTypeFilter(e.target.value)}
+                                                        className="filter-select"
+                                                    >
+                                                        <option value="all">All Room Types</option>
+                                                        {[...new Set(occupancyData.map(item => item.room_type))].map(type => (
+                                                            <option key={type} value={type}>{type}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
                                     {occupancyData.length > 0 ? (
                                         <div className="occupancy-table">
                                             <table>
@@ -125,7 +179,23 @@ const Reports = () => {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {occupancyData.map((item, index) => (
+                                                    {occupancyData
+                                                        .filter(item => {
+                                                            // Search filter
+                                                            const searchLower = searchTerm.toLowerCase();
+                                                            const matchesSearch = searchTerm === '' ||
+                                                                item.room_number.toString().toLowerCase().includes(searchLower) ||
+                                                                (item.guest_name && item.guest_name.toLowerCase().includes(searchLower));
+                                                            
+                                                            // Status filter
+                                                            const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
+                                                            
+                                                            // Room type filter
+                                                            const matchesRoomType = roomTypeFilter === 'all' || item.room_type === roomTypeFilter;
+                                                            
+                                                            return matchesSearch && matchesStatus && matchesRoomType;
+                                                        })
+                                                        .map((item, index) => (
                                                         <tr key={index}>
                                                             <td>{item.branch_name}</td>
                                                             <td>{item.room_number}</td>
@@ -141,6 +211,29 @@ const Reports = () => {
                                                     ))}
                                                 </tbody>
                                             </table>
+                                            {occupancyData.filter(item => {
+                                                const searchLower = searchTerm.toLowerCase();
+                                                const matchesSearch = searchTerm === '' ||
+                                                    item.room_number.toString().toLowerCase().includes(searchLower) ||
+                                                    (item.guest_name && item.guest_name.toLowerCase().includes(searchLower));
+                                                const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
+                                                const matchesRoomType = roomTypeFilter === 'all' || item.room_type === roomTypeFilter;
+                                                return matchesSearch && matchesStatus && matchesRoomType;
+                                            }).length === 0 && (
+                                                <div className="no-results">
+                                                    <p>No results found matching your filters.</p>
+                                                    <button 
+                                                        className="btn-clear-filters"
+                                                        onClick={() => {
+                                                            setSearchTerm('');
+                                                            setStatusFilter('all');
+                                                            setRoomTypeFilter('all');
+                                                        }}
+                                                    >
+                                                        Clear Filters
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
                                     ) : (
                                         <p className="no-data">No occupancy data available for the selected date range.</p>
@@ -260,6 +353,147 @@ const Reports = () => {
                                             </tbody>
                                         </table>
                                     </div>
+                                </div>
+                            )}
+
+                            {activeTab === 'usage' && (
+                                <div>
+                                    <div className="report-header">
+                                        <h3>Service Usage Breakdown</h3>
+                                        {serviceUsageData.length > 0 && (
+                                            <div className="occupancy-filters">
+                                                <div className="search-box">
+                                                    <FaSearch className="search-icon" />
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Search by room, guest, or service..."
+                                                        value={serviceSearchTerm}
+                                                        onChange={(e) => setServiceSearchTerm(e.target.value)}
+                                                        className="search-input"
+                                                    />
+                                                </div>
+                                                <div className="filter-group">
+                                                    <FaFilter className="filter-icon" />
+                                                    <select
+                                                        value={serviceCategoryFilter}
+                                                        onChange={(e) => setServiceCategoryFilter(e.target.value)}
+                                                        className="filter-select"
+                                                    >
+                                                        <option value="all">All Categories</option>
+                                                        {[...new Set(serviceUsageData.map(item => item.service_category))].map(category => (
+                                                            <option key={category} value={category}>{category}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {serviceUsageData.length > 0 ? (
+                                        <>
+                                            {/* Summary Cards */}
+                                            <div className="revenue-summary">
+                                                <div className="summary-card">
+                                                    <h4>Total Services Used</h4>
+                                                    <p className="summary-value">{serviceUsageData.length}</p>
+                                                </div>
+                                                <div className="summary-card">
+                                                    <h4>Total Revenue</h4>
+                                                    <p className="summary-value">
+                                                        {formatCurrency(serviceUsageData.reduce((sum, item) => sum + parseFloat(item.total_price || 0), 0))}
+                                                    </p>
+                                                </div>
+                                                <div className="summary-card">
+                                                    <h4>Unique Guests</h4>
+                                                    <p className="summary-value">
+                                                        {new Set(serviceUsageData.map(item => item.guest_name)).size}
+                                                    </p>
+                                                </div>
+                                                <div className="summary-card">
+                                                    <h4>Service Categories</h4>
+                                                    <p className="summary-value">
+                                                        {new Set(serviceUsageData.map(item => item.service_category)).size}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {/* Service Usage Table */}
+                                            <div className="table-container">
+                                                <table className="report-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Branch</th>
+                                                            <th>Room</th>
+                                                            <th>Guest</th>
+                                                            <th>Service</th>
+                                                            <th>Category</th>
+                                                            <th>Usage Date</th>
+                                                            <th>Quantity</th>
+                                                            <th>Unit Price</th>
+                                                            <th>Total</th>
+                                                            <th>Notes</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {serviceUsageData
+                                                            .filter(item => {
+                                                                const searchLower = serviceSearchTerm.toLowerCase();
+                                                                const matchesSearch = serviceSearchTerm === '' ||
+                                                                    item.room_number.toString().toLowerCase().includes(searchLower) ||
+                                                                    item.guest_name.toLowerCase().includes(searchLower) ||
+                                                                    item.service_name.toLowerCase().includes(searchLower);
+                                                                const matchesCategory = serviceCategoryFilter === 'all' || 
+                                                                    item.service_category === serviceCategoryFilter;
+                                                                return matchesSearch && matchesCategory;
+                                                            })
+                                                            .map((item, index) => (
+                                                                <tr key={index}>
+                                                                    <td>{item.branch_name}</td>
+                                                                    <td>{item.room_number}</td>
+                                                                    <td>{item.guest_name}</td>
+                                                                    <td>{item.service_name}</td>
+                                                                    <td>
+                                                                        <span className="category-badge">{item.service_category}</span>
+                                                                    </td>
+                                                                    <td>{formatDate(item.usage_date)}</td>
+                                                                    <td>{item.quantity}</td>
+                                                                    <td>{formatCurrency(item.unit_price)}</td>
+                                                                    <td className="text-success">{formatCurrency(item.total_price)}</td>
+                                                                    <td>{item.notes || '-'}</td>
+                                                                </tr>
+                                                            ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            {/* Show message if no results after filtering */}
+                                            {serviceUsageData.filter(item => {
+                                                const searchLower = serviceSearchTerm.toLowerCase();
+                                                const matchesSearch = serviceSearchTerm === '' ||
+                                                    item.room_number.toString().toLowerCase().includes(searchLower) ||
+                                                    item.guest_name.toLowerCase().includes(searchLower) ||
+                                                    item.service_name.toLowerCase().includes(searchLower);
+                                                const matchesCategory = serviceCategoryFilter === 'all' || 
+                                                    item.service_category === serviceCategoryFilter;
+                                                return matchesSearch && matchesCategory;
+                                            }).length === 0 && (
+                                                <div className="no-results">
+                                                    <p>No results found</p>
+                                                    <button 
+                                                        className="btn-clear-filters"
+                                                        onClick={() => {
+                                                            setServiceSearchTerm('');
+                                                            setServiceCategoryFilter('all');
+                                                        }}
+                                                    >
+                                                        Clear Filters
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <p className="no-data">No service usage data available.</p>
+                                    )}
                                 </div>
                             )}
                         </div>
