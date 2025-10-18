@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import Card from '../components/Card';
+import StatCard from '../components/StatCard';
 import Modal from '../components/Modal';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useAuth } from '../context/AuthContext';
@@ -9,7 +10,7 @@ import { formatCurrency } from '../utils/helpers';
 import { FaEdit, FaTrash, FaPlus, FaPercent, FaTag, FaChartLine } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import dashboardImage from '../assets/dashboard.jpeg';
-import '../styles/CommonPage.css';
+import '../styles/Dashboard.css';
 
 const TaxDiscountManagement = () => {
     const { user } = useAuth();
@@ -214,60 +215,49 @@ const TaxDiscountManagement = () => {
             toast.error(error.response?.data?.message || 'Failed to save discount');
         }
     };
-        if (loading && !selectedBranch) {
+
+    if (loading && !selectedBranch) {
         return <Layout><LoadingSpinner /></Layout>;
     }
 
     return (
         <Layout>
-            <div className="page-container" style={{ backgroundImage: `url(${dashboardImage})` }}>
-                <div className="page-header">
-                    <div>
-                        <h1 className="page-title">Tax & Discount Management</h1>
-                        <p className="page-subtitle">Manage branch-wise taxes and discounts - Affects booking calculations</p>
-                    </div>
+            <div className="dashboard" style={{ backgroundImage: `url(${dashboardImage})` }}>
+                <div className="dashboard-header">
+                    <h1>Tax & Discount Management</h1>
+                    <p className="dashboard-subtitle">Key Metrics</p>
                 </div>
 
-                {/* Stats Cards */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-                    <Card>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                            <div style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#dbeafe', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <FaPercent style={{ fontSize: '1.5rem', color: '#3b82f6' }} />
-                            </div>
-                            <div>
-                                <p style={{ margin: 0, color: '#6b7280', fontSize: '0.875rem' }}>Active Taxes</p>
-                                <h2 style={{ margin: '0.25rem 0 0 0', fontSize: '1.75rem', fontWeight: 700 }}>{taxStats.count}</h2>
-                                <p style={{ margin: '0.25rem 0 0 0', color: '#3b82f6', fontSize: '0.875rem', fontWeight: 600 }}>Total Rate: {taxStats.total.toFixed(2)}%</p>
-                            </div>
-                        </div>
-                    </Card>
-
-                    <Card>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                            <div style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#dcfce7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <FaTag style={{ fontSize: '1.5rem', color: '#16a34a' }} />
-                            </div>
-                            <div>
-                                <p style={{ margin: 0, color: '#6b7280', fontSize: '0.875rem' }}>Active Discounts</p>
-                                <h2 style={{ margin: '0.25rem 0 0 0', fontSize: '1.75rem', fontWeight: 700 }}>{discountStats.count}</h2>
-                                <p style={{ margin: '0.25rem 0 0 0', color: '#16a34a', fontSize: '0.875rem', fontWeight: 600 }}>Total Usage: {discountStats.total}</p>
-                            </div>
-                        </div>
-                    </Card>
-
-                    <Card>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                            <div style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#fef3c7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <FaChartLine style={{ fontSize: '1.5rem', color: '#f59e0b' }} />
-                            </div>
-                            <div>
-                                <p style={{ margin: 0, color: '#6b7280', fontSize: '0.875rem' }}>Impact on Bookings</p>
-                                <h2 style={{ margin: '0.25rem 0 0 0', fontSize: '1.25rem', fontWeight: 700, color: '#f59e0b' }}>+{taxStats.total.toFixed(1)}% Tax</h2>
-                                <p style={{ margin: '0.25rem 0 0 0', color: '#6b7280', fontSize: '0.875rem' }}>Applied to all new bookings</p>
-                            </div>
-                        </div>
-                    </Card>
+                {/* Stats Grid */}
+                <div className="stats-grid">
+                    <StatCard
+                        title="Active Taxes"
+                        value={taxStats.count}
+                        icon={FaPercent}
+                        color="blue"
+                        subtitle={`Total Rate: ${taxStats.total.toFixed(2)}%`}
+                    />
+                    <StatCard
+                        title="Active Discounts"
+                        value={discountStats.count}
+                        icon={FaTag}
+                        color="green"
+                        subtitle={`Total Usage: ${discountStats.total}`}
+                    />
+                    <StatCard
+                        title="Tax Impact"
+                        value={`+${taxStats.total.toFixed(1)}%`}
+                        icon={FaChartLine}
+                        color="orange"
+                        subtitle="Applied to all new bookings"
+                    />
+                    <StatCard
+                        title="Discount Savings"
+                        value={discountStats.count > 0 ? 'Active' : 'None'}
+                        icon={FaTag}
+                        color="purple"
+                        subtitle={`${discountStats.count} promo codes available`}
+                    />
                 </div>
 
                 <Card>

@@ -62,8 +62,8 @@ const calculatePayment = async (bookingId, promoCode = null) => {
                     su.quantity,
                     su.total_price,
                     sc.service_name,
-                    sc.base_price as price,
-                    sc.category
+                    sc.unit_price as price,
+                    sc.service_category as category
                 FROM service_usage su
                 JOIN service_catalogue sc ON su.service_id = sc.service_id
                 WHERE su.booking_id = ?
@@ -268,10 +268,12 @@ const calculatePayment = async (bookingId, promoCode = null) => {
             // Taxes
             taxes: taxes,
             tax_amount: parseFloat(totalTax.toFixed(2)),
+            total_tax: parseFloat(totalTax.toFixed(2)),
             
             // Fees
             fees: fees,
             fees_amount: parseFloat(totalFees.toFixed(2)),
+            total_fees: parseFloat(totalFees.toFixed(2)),
             
             // Grand total
             grand_total: parseFloat(grandTotal.toFixed(2)),

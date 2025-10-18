@@ -121,6 +121,7 @@ export const reportAPI = {
     getBilling: () => api.get('/reports/billing'),
     getUnpaid: () => api.get('/reports/unpaid'),
     getServices: (params) => api.get('/reports/services', { params }),
+    getServiceUsage: (params) => api.get('/reports/services', { params }),
     getRevenue: (params) => api.get('/reports/revenue', { params }),
     getMonthlyRevenue: (params) => api.get('/reports/monthly-revenue', { params }),
     getTopServices: (params) => api.get('/reports/top-services', { params }),

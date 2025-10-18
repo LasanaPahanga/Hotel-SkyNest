@@ -250,6 +250,186 @@ CREATE TABLE room_availability_cache (
     INDEX idx_date (date),
     INDEX idx_available (is_available)
 ) ENGINE=InnoDB;
+
+-- ============================================
+-- TABLE: service_requests
+-- Stores service requests from guests
+-- ============================================
+CREATE TABLE service_requests (
+    request_id INT PRIMARY KEY AUTO_INCREMENT,
+    booking_id INT NOT NULL,
+    guest_id INT NOT NULL,
+    service_id INT NOT NULL,
+    branch_id INT NOT NULL,
+    quantity INT DEFAULT 1,
+    request_status ENUM('Pending', 'Approved', 'Rejected', 'Completed') DEFAULT 'Pending',
+    request_notes TEXT,
+    reviewed_by INT NULL,
+    reviewed_at DATETIME NULL,
+    review_notes TEXT,
+    requested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (booking_id) REFERENCES bookings(booking_id) ON DELETE CASCADE,
+    FOREIGN KEY (guest_id) REFERENCES guests(guest_id) ON DELETE CASCADE,
+    FOREIGN KEY (service_id) REFERENCES service_catalogue(service_id) ON DELETE RESTRICT,
+    FOREIGN KEY (branch_id) REFERENCES hotel_branches(branch_id) ON DELETE RESTRICT,
+    FOREIGN KEY (reviewed_by) REFERENCES users(user_id) ON DELETE SET NULL,
+    INDEX idx_booking (booking_id),
+    INDEX idx_guest (guest_id),
+    INDEX idx_status (request_status),
+    INDEX idx_branch (branch_id)
+) ENGINE=InnoDB;
+
+-- ============================================
+-- TABLE: support_tickets
+-- Stores guest support tickets
+-- ============================================
+CREATE TABLE support_tickets (
+    ticket_id INT PRIMARY KEY AUTO_INCREMENT,
+    guest_id INT NOT NULL,
+    booking_id INT NULL,
+    subject VARCHAR(200) NOT NULL,
+    description TEXT NOT NULL,
+    priority ENUM('Low', 'Medium', 'High', 'Urgent') DEFAULT 'Medium',
+    status ENUM('Open', 'In Progress', 'Resolved', 'Closed') DEFAULT 'Open',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (guest_id) REFERENCES guests(guest_id) ON DELETE CASCADE,
+    FOREIGN KEY (booking_id) REFERENCES bookings(booking_id) ON DELETE SET NULL,
+    INDEX idx_status (status),
+    INDEX idx_guest (guest_id),
+    INDEX idx_priority (priority)
+) ENGINE=InnoDB;
+
+-- ============================================
+-- TABLE: ticket_responses
+-- Stores responses to support tickets
+-- ============================================
+CREATE TABLE ticket_responses (
+    response_id INT PRIMARY KEY AUTO_INCREMENT,
+    ticket_id INT NOT NULL,
+    user_id INT NULL,
+    response_text TEXT NOT NULL,
+    is_staff_response BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ticket_id) REFERENCES support_tickets(ticket_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE SET NULL,
+    INDEX idx_ticket (ticket_id),
+    INDEX idx_created (created_at)
+) ENGINE=InnoDB;
+
+-- ============================================
+-- TABLE: branch_services
+-- Branch-specific service pricing
+-- ============================================
+CREATE TABLE branch_services (
+    branch_service_id INT PRIMARY KEY AUTO_INCREMENT,
+    branch_id INT NOT NULL,
+    service_id INT NOT NULL,
+    custom_price DECIMAL(10, 2) NULL,
+    is_available BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (branch_id) REFERENCES hotel_branches(branch_id) ON DELETE CASCADE,
+    FOREIGN KEY (service_id) REFERENCES service_catalogue(service_id) ON DELETE CASCADE,
+    UNIQUE KEY unique_branch_service (branch_id, service_id),
+    INDEX idx_branch (branch_id),
+    INDEX idx_service (service_id)
+) ENGINE=InnoDB;
+
+-- ============================================
+-- TABLE: branch_tax_config
+-- Branch-specific tax configurations
+-- ============================================
+CREATE TABLE branch_tax_config (
+    tax_config_id INT PRIMARY KEY AUTO_INCREMENT,
+    branch_id INT NOT NULL,
+    tax_name VARCHAR(100) NOT NULL,
+    tax_type ENUM('VAT', 'Service Tax', 'Tourism Tax', 'Other') NOT NULL,
+    tax_rate DECIMAL(5, 2) NOT NULL COMMENT 'Tax rate in percentage',
+    is_active BOOLEAN DEFAULT TRUE,
+    effective_from DATE NOT NULL,
+    effective_to DATE NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (branch_id) REFERENCES hotel_branches(branch_id) ON DELETE CASCADE,
+    CHECK (tax_rate >= 0 AND tax_rate <= 100),
+    INDEX idx_branch_active (branch_id, is_active),
+    INDEX idx_effective_dates (effective_from, effective_to)
+) ENGINE=InnoDB;
+
+-- ============================================
+-- TABLE: branch_discount_config
+-- Branch-specific discount configurations
+-- ============================================
+CREATE TABLE branch_discount_config (
+    discount_config_id INT PRIMARY KEY AUTO_INCREMENT,
+    branch_id INT NOT NULL,
+    discount_name VARCHAR(100) NOT NULL,
+    discount_type ENUM('Percentage', 'Fixed Amount') NOT NULL,
+    discount_value DECIMAL(10, 2) NOT NULL,
+    applicable_on ENUM('Room', 'Service', 'Total Bill') DEFAULT 'Total Bill',
+    min_booking_amount DECIMAL(10, 2) DEFAULT 0,
+    max_discount_amount DECIMAL(10, 2) NULL COMMENT 'Maximum discount cap',
+    is_active BOOLEAN DEFAULT TRUE,
+    valid_from DATE NOT NULL,
+    valid_to DATE NULL,
+    promo_code VARCHAR(50) NULL UNIQUE,
+    usage_limit INT NULL COMMENT 'Total times this discount can be used',
+    usage_count INT DEFAULT 0 COMMENT 'Times this discount has been used',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (branch_id) REFERENCES hotel_branches(branch_id) ON DELETE CASCADE,
+    CHECK (discount_value >= 0),
+    INDEX idx_branch_active (branch_id, is_active),
+    INDEX idx_promo_code (promo_code),
+    INDEX idx_valid_dates (valid_from, valid_to)
+) ENGINE=InnoDB;
+
+-- ============================================
+-- TABLE: branch_fee_config
+-- Branch-specific fee configurations
+-- ============================================
+CREATE TABLE branch_fee_config (
+    fee_config_id INT PRIMARY KEY AUTO_INCREMENT,
+    branch_id INT NOT NULL,
+    fee_type ENUM('Late Checkout', 'No Show', 'Early Checkout', 'Cancellation', 'Other') NOT NULL,
+    fee_calculation ENUM('Fixed Amount', 'Percentage of Total', 'Per Hour') NOT NULL,
+    fee_value DECIMAL(10, 2) NOT NULL,
+    grace_period_minutes INT DEFAULT 0 COMMENT 'Grace period before fee applies',
+    max_fee_amount DECIMAL(10, 2) NULL COMMENT 'Maximum fee cap',
+    is_active BOOLEAN DEFAULT TRUE,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (branch_id) REFERENCES hotel_branches(branch_id) ON DELETE CASCADE,
+    CHECK (fee_value >= 0),
+    INDEX idx_branch_type (branch_id, fee_type, is_active)
+) ENGINE=InnoDB;
+
+-- ============================================
+-- TABLE: payment_breakdowns
+-- Detailed payment breakdown for bookings
+-- ============================================
+CREATE TABLE payment_breakdowns (
+    breakdown_id INT PRIMARY KEY AUTO_INCREMENT,
+    booking_id INT NOT NULL UNIQUE,
+    room_charge DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    services_total DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    subtotal DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    discount_amount DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    discount_config_id INT NULL,
+    total_before_tax DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    tax_amount DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    fees_amount DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    grand_total DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    breakdown_json JSON NULL COMMENT 'Complete breakdown details in JSON format',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (booking_id) REFERENCES bookings(booking_id) ON DELETE CASCADE,
+    FOREIGN KEY (discount_config_id) REFERENCES branch_discount_config(discount_config_id) ON DELETE SET NULL,
+    INDEX idx_booking (booking_id)
+) ENGINE=InnoDB;
+
 -- SkyNest Hotels - Seed Data
 -- Initial data population for testing
 
@@ -450,18 +630,26 @@ VALUES
 (8, '2024-10-15 09:00:00', 10000.00, 'Credit Card', 'TXN001240', 'Completed', 4);
 
 -- ============================================
--- Update booking totals to include service charges
+-- Insert Tax Configurations (for each branch)
 -- ============================================
-UPDATE bookings b
-SET total_amount = (
-    SELECT calculate_room_charges(b.room_id, b.check_in_date, b.check_out_date) + 
-           COALESCE(calculate_service_charges(b.booking_id), 0)
-),
-outstanding_amount = (
-    SELECT calculate_room_charges(b.room_id, b.check_in_date, b.check_out_date) + 
-           COALESCE(calculate_service_charges(b.booking_id), 0) - b.paid_amount
-)
-WHERE b.booking_id IN (1, 2, 3, 4, 8);
+INSERT INTO branch_tax_config (branch_id, tax_name, tax_type, tax_rate, effective_from, is_active)
+SELECT branch_id, 'VAT', 'VAT', 12.00, CURDATE(), TRUE FROM hotel_branches;
+
+INSERT INTO branch_tax_config (branch_id, tax_name, tax_type, tax_rate, effective_from, is_active)
+SELECT branch_id, 'Service Tax', 'Service Tax', 10.00, CURDATE(), TRUE FROM hotel_branches;
+
+-- ============================================
+-- Insert Fee Configurations (for each branch)
+-- ============================================
+INSERT INTO branch_fee_config (branch_id, fee_type, fee_calculation, fee_value, grace_period_minutes, is_active)
+SELECT branch_id, 'Late Checkout', 'Per Hour', 1000.00, 60, TRUE FROM hotel_branches;
+
+INSERT INTO branch_fee_config (branch_id, fee_type, fee_calculation, fee_value, grace_period_minutes, is_active)
+SELECT branch_id, 'No Show', 'Percentage of Total', 50.00, 1440, TRUE FROM hotel_branches;
+
+INSERT INTO branch_fee_config (branch_id, fee_type, fee_calculation, fee_value, grace_period_minutes, is_active)
+SELECT branch_id, 'Cancellation', 'Percentage of Total', 25.00, 0, TRUE FROM hotel_branches;
+
 -- SkyNest Hotels - Stored Procedures and Functions
 -- Business logic implementation for ACID compliance
 
@@ -938,6 +1126,22 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+-- ============================================
+-- Update booking totals to include service charges
+-- Now that functions are defined, we can use them
+-- ============================================
+UPDATE bookings b
+SET total_amount = (
+    SELECT calculate_room_charges(b.room_id, b.check_in_date, b.check_out_date) + 
+           COALESCE(calculate_service_charges(b.booking_id), 0)
+),
+outstanding_amount = (
+    SELECT calculate_room_charges(b.room_id, b.check_in_date, b.check_out_date) + 
+           COALESCE(calculate_service_charges(b.booking_id), 0) - b.paid_amount
+)
+WHERE b.booking_id IN (1, 2, 3, 4, 8);
+
 -- SkyNest Hotels - Database Triggers
 -- Ensures ACID compliance and data consistency
 
@@ -1410,6 +1614,7 @@ END$$
 -- ============================================
 -- STORED PROCEDURE: get_revenue_report
 -- Generates comprehensive revenue report
+-- Filters by check-in/check-out dates (not booking_date)
 -- ============================================
 DROP PROCEDURE IF EXISTS get_revenue_report$$
 CREATE PROCEDURE get_revenue_report(
@@ -1420,23 +1625,73 @@ CREATE PROCEDURE get_revenue_report(
 BEGIN
     SELECT 
         b.branch_name,
+        b.branch_id,
         COUNT(DISTINCT bk.booking_id) AS total_bookings,
         COUNT(DISTINCT CASE WHEN bk.booking_status = 'Checked-Out' THEN bk.booking_id END) AS completed_bookings,
         COUNT(DISTINCT CASE WHEN bk.booking_status = 'Cancelled' THEN bk.booking_id END) AS cancelled_bookings,
         SUM(DATEDIFF(bk.check_out_date, bk.check_in_date)) AS total_room_nights,
-        SUM(calculate_room_charges(bk.room_id, bk.check_in_date, bk.check_out_date)) AS room_revenue,
-        SUM(COALESCE(calculate_service_charges(bk.booking_id), 0)) AS service_revenue,
+        
+        -- Room revenue: Calculate from room charges
+        SUM(
+            DATEDIFF(bk.check_out_date, bk.check_in_date) * 
+            (SELECT base_rate FROM room_types rt 
+             JOIN rooms r ON r.room_type_id = rt.room_type_id 
+             WHERE r.room_id = bk.room_id)
+        ) AS room_revenue,
+        
+        -- Service revenue: Sum from service_usage
+        COALESCE(SUM(
+            (SELECT SUM(su.total_price) 
+             FROM service_usage su 
+             WHERE su.booking_id = bk.booking_id)
+        ), 0) AS service_revenue,
+        
+        -- Totals
         SUM(bk.total_amount) AS total_revenue,
         SUM(bk.paid_amount) AS collected_revenue,
         SUM(bk.outstanding_amount) AS outstanding_revenue,
         AVG(bk.total_amount) AS avg_booking_value
     FROM bookings bk
     JOIN hotel_branches b ON bk.branch_id = b.branch_id
-    WHERE bk.booking_date BETWEEN p_start_date AND p_end_date
+    WHERE (
+        -- Include bookings that overlap with the date range
+        bk.check_in_date <= p_end_date 
+        AND bk.check_out_date >= p_start_date
+    )
     AND (p_branch_id IS NULL OR bk.branch_id = p_branch_id)
     AND bk.booking_status != 'Cancelled'
-    GROUP BY b.branch_id
+    GROUP BY b.branch_id, b.branch_name
     ORDER BY total_revenue DESC;
+END$$
+
+-- ============================================
+-- STORED PROCEDURE: get_branch_top_services
+-- Gets top services by revenue with branch filtering
+-- ============================================
+DROP PROCEDURE IF EXISTS get_branch_top_services$$
+CREATE PROCEDURE get_branch_top_services(
+    IN p_branch_id INT,
+    IN p_start_date DATE,
+    IN p_end_date DATE
+)
+BEGIN
+    SELECT 
+        b.branch_id,
+        b.branch_name,
+        sc.service_name,
+        sc.service_category,
+        COUNT(su.usage_id) AS usage_count,
+        SUM(su.quantity) AS total_quantity,
+        SUM(su.total_price) AS total_revenue,
+        AVG(su.total_price) AS avg_revenue_per_use
+    FROM service_usage su
+    JOIN service_catalogue sc ON su.service_id = sc.service_id
+    JOIN bookings bk ON su.booking_id = bk.booking_id
+    JOIN hotel_branches b ON bk.branch_id = b.branch_id
+    WHERE su.usage_date BETWEEN p_start_date AND p_end_date
+    AND (p_branch_id IS NULL OR bk.branch_id = p_branch_id)
+    GROUP BY b.branch_id, b.branch_name, sc.service_id, sc.service_name, sc.service_category
+    ORDER BY total_revenue DESC, usage_count DESC;
 END$$
 
 -- ============================================
@@ -1529,44 +1784,162 @@ USE skynest_hotels;
 -- These indexes complement existing ones in schema.sql
 -- and improve query performance for common operations
 
--- Note: Using CREATE INDEX IF NOT EXISTS for MySQL 5.7+ compatibility
--- If index already exists, it will be skipped without error
+-- Note: These indexes are optional performance improvements
+-- Using dynamic SQL for maximum MySQL version compatibility (5.6+)
+-- Indexes will only be created if they don't already exist
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS create_index_if_not_exists$$
+CREATE PROCEDURE create_index_if_not_exists(
+    IN p_table_name VARCHAR(64),
+    IN p_index_name VARCHAR(64),
+    IN p_index_columns VARCHAR(255)
+)
+BEGIN
+    DECLARE index_exists INT DEFAULT 0;
+    
+    -- Check if index exists
+    SELECT COUNT(*) INTO index_exists
+    FROM information_schema.statistics
+    WHERE table_schema = DATABASE()
+    AND table_name = p_table_name
+    AND index_name = p_index_name;
+    
+    -- Create index if it doesn't exist
+    IF index_exists = 0 THEN
+        SET @sql = CONCAT('CREATE INDEX ', p_index_name, ' ON ', p_table_name, '(', p_index_columns, ')');
+        PREPARE stmt FROM @sql;
+        EXECUTE stmt;
+        DEALLOCATE PREPARE stmt;
+    END IF;
+END$$
+
+DELIMITER ;
 
 -- Bookings: Composite index for date range queries
-CREATE INDEX IF NOT EXISTS idx_booking_date_range ON bookings(check_in_date, check_out_date, booking_status);
+CALL create_index_if_not_exists('bookings', 'idx_booking_date_range', 'check_in_date, check_out_date, booking_status');
 
 -- Bookings: Guest booking history queries
-CREATE INDEX IF NOT EXISTS idx_booking_guest_date ON bookings(guest_id, booking_date);
+CALL create_index_if_not_exists('bookings', 'idx_booking_guest_date', 'guest_id, booking_date');
 
 -- Guests: Full name search optimization
-CREATE INDEX IF NOT EXISTS idx_guest_fullname ON guests(first_name, last_name);
-
--- Service Requests: Status and date filtering
-CREATE INDEX IF NOT EXISTS idx_service_request_status_date ON service_requests(request_status, requested_at);
-
--- Service Requests: Branch filtering for receptionists
-CREATE INDEX IF NOT EXISTS idx_service_request_branch_status ON service_requests(branch_id, request_status);
-
--- Support Tickets: Priority and status filtering
-CREATE INDEX IF NOT EXISTS idx_support_priority_status ON support_tickets(priority, status);
-
--- Support Tickets: Branch-based filtering (via booking)
-CREATE INDEX IF NOT EXISTS idx_support_booking ON support_tickets(booking_id, status);
+CALL create_index_if_not_exists('guests', 'idx_guest_fullname', 'first_name, last_name');
 
 -- Service Usage: Date-based billing reports
-CREATE INDEX IF NOT EXISTS idx_service_usage_date ON service_usage(usage_date, booking_id);
+CALL create_index_if_not_exists('service_usage', 'idx_service_usage_date', 'usage_date, booking_id');
 
 -- Payments: Date range financial reports
-CREATE INDEX IF NOT EXISTS idx_payment_date_range ON payments(payment_date, payment_status);
-
--- Ticket Responses: Chronological retrieval
-CREATE INDEX IF NOT EXISTS idx_ticket_response_date ON ticket_responses(ticket_id, created_at);
+CALL create_index_if_not_exists('payments', 'idx_payment_date_range', 'payment_date, payment_status');
 
 -- Rooms: Multi-column search optimization
-CREATE INDEX IF NOT EXISTS idx_room_search ON rooms(branch_id, status, room_type_id);
+CALL create_index_if_not_exists('rooms', 'idx_room_search', 'branch_id, status, room_type_id');
 
 -- Users: Role-based queries
-CREATE INDEX IF NOT EXISTS idx_user_role_branch ON users(role, branch_id, is_active);
+CALL create_index_if_not_exists('users', 'idx_user_role_branch', 'role, branch_id, is_active');
+
+-- Service Requests: Status and date filtering
+CALL create_index_if_not_exists('service_requests', 'idx_service_request_status_date', 'request_status, requested_at');
+
+-- Service Requests: Branch filtering
+CALL create_index_if_not_exists('service_requests', 'idx_service_request_branch_status', 'branch_id, request_status');
+
+-- Support Tickets: Priority and status filtering
+CALL create_index_if_not_exists('support_tickets', 'idx_support_priority_status', 'priority, status');
+
+-- Support Tickets: Branch-based filtering
+CALL create_index_if_not_exists('support_tickets', 'idx_support_booking', 'booking_id, status');
+
+-- Ticket Responses: Chronological retrieval
+CALL create_index_if_not_exists('ticket_responses', 'idx_ticket_response_date', 'ticket_id, created_at');
+
+-- Clean up the helper procedure
+DROP PROCEDURE IF EXISTS create_index_if_not_exists;
+
+-- ============================================
+-- COMPATIBILITY VIEWS FOR PAYMENT SERVICES
+-- Maps new table names to old names used in payment services
+-- ============================================
+
+-- View: tax_configurations (maps to branch_tax_config)
+DROP VIEW IF EXISTS tax_configurations;
+CREATE VIEW tax_configurations AS
+SELECT 
+    tax_config_id,
+    branch_id,
+    tax_name,
+    tax_type,
+    tax_rate,
+    TRUE as is_percentage,
+    is_active,
+    effective_from,
+    effective_to,
+    created_at,
+    updated_at
+FROM branch_tax_config;
+
+-- View: discount_configurations (maps to branch_discount_config)
+DROP VIEW IF EXISTS discount_configurations;
+CREATE VIEW discount_configurations AS
+SELECT 
+    discount_config_id,
+    branch_id,
+    discount_name,
+    discount_type,
+    discount_value,
+    applicable_on,
+    min_booking_amount,
+    max_discount_amount,
+    is_active,
+    valid_from,
+    valid_to as valid_until,
+    promo_code,
+    usage_limit,
+    usage_count,
+    created_at,
+    updated_at
+FROM branch_discount_config;
+
+-- ============================================
+-- CRITICAL VIEW: service_requests_view
+-- Required by backend API
+-- ============================================
+DROP VIEW IF EXISTS service_requests_view;
+CREATE VIEW service_requests_view AS
+SELECT 
+    sr.request_id,
+    sr.booking_id,
+    sr.guest_id,
+    CONCAT(g.first_name, ' ', g.last_name) as guest_name,
+    g.email as guest_email,
+    g.phone as guest_phone,
+    sr.service_id,
+    sc.service_name,
+    sc.service_category,
+    sc.unit_price as base_price,
+    COALESCE(bs.custom_price, sc.unit_price) as unit_price,
+    sr.quantity,
+    (COALESCE(bs.custom_price, sc.unit_price) * sr.quantity) as total_amount,
+    sr.branch_id,
+    hb.branch_name,
+    sr.request_status,
+    sr.request_notes,
+    sr.reviewed_by,
+    u.full_name as reviewed_by_name,
+    sr.reviewed_at,
+    sr.review_notes,
+    sr.requested_at,
+    r.room_number,
+    b.check_in_date,
+    b.check_out_date
+FROM service_requests sr
+JOIN guests g ON sr.guest_id = g.guest_id
+JOIN service_catalogue sc ON sr.service_id = sc.service_id
+JOIN hotel_branches hb ON sr.branch_id = hb.branch_id
+JOIN bookings b ON sr.booking_id = b.booking_id
+JOIN rooms r ON b.room_id = r.room_id
+LEFT JOIN branch_services bs ON sr.service_id = bs.service_id AND sr.branch_id = bs.branch_id
+LEFT JOIN users u ON sr.reviewed_by = u.user_id;
 
 -- ============================================
 -- SECTION 2: PERFORMANCE-OPTIMIZED VIEWS

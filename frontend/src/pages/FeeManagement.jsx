@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import Card from '../components/Card';
+import StatCard from '../components/StatCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
 import { formatCurrency } from '../utils/helpers';
-import { FaEdit, FaTrash, FaPlus, FaMoneyBillWave } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaPlus, FaMoneyBillWave, FaClock, FaExclamationTriangle, FaChartLine } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import dashboardImage from '../assets/dashboard.jpeg';
-import '../styles/CommonPage.css';
+import '../styles/Dashboard.css';
 
 const FeeManagement = () => {
     const { user } = useAuth();
@@ -112,39 +113,43 @@ const FeeManagement = () => {
 
     return (
         <Layout>
-            <div className="page-container" style={{ backgroundImage: `url(${dashboardImage})` }}>
-                <div className="page-header">
-                    <div>
-                        <h1 className="page-title">Fee Management</h1>
-                        <p className="page-subtitle">Manage branch-wise fee configurations</p>
-                    </div>
+            <div className="dashboard" style={{ backgroundImage: `url(${dashboardImage})` }}>
+                <div className="dashboard-header">
+                    <h1>Fee Management</h1>
+                    <p className="dashboard-subtitle">Key Metrics</p>
                 </div>
 
-                {/* Stats Card */}
-                <Card>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem', padding: '1rem', backgroundColor: '#fef3c7', borderRadius: '0.5rem' }}>
-                        <div style={{ 
-                            width: '60px', 
-                            height: '60px', 
-                            borderRadius: '50%', 
-                            backgroundColor: '#fbbf24', 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            justifyContent: 'center' 
-                        }}>
-                            <FaMoneyBillWave style={{ fontSize: '1.5rem', color: 'white' }} />
-                        </div>
-                        <div>
-                            <p style={{ margin: 0, color: '#92400e', fontSize: '0.875rem', fontWeight: 600 }}>Active Fees Impact on Bookings</p>
-                            <h2 style={{ margin: '0.25rem 0 0 0', fontSize: '1.75rem', fontWeight: 700, color: '#b45309' }}>
-                                {feeStats.count} Active Fees
-                            </h2>
-                            <p style={{ margin: '0.25rem 0 0 0', color: '#92400e', fontSize: '0.875rem' }}>
-                                Total Fixed Fees: {formatCurrency(feeStats.totalAmount)} | Applied to late checkouts, no-shows, cancellations
-                            </p>
-                        </div>
-                    </div>
-                </Card>
+                {/* Stats Grid */}
+                <div className="stats-grid">
+                    <StatCard
+                        title="Active Fees"
+                        value={feeStats.count}
+                        icon={FaMoneyBillWave}
+                        color="orange"
+                        subtitle={`Total Fixed: ${formatCurrency(feeStats.totalAmount)}`}
+                    />
+                    <StatCard
+                        title="Late Checkout"
+                        value="Per Hour"
+                        icon={FaClock}
+                        color="blue"
+                        subtitle="Grace period: 60 minutes"
+                    />
+                    <StatCard
+                        title="No Show Fee"
+                        value="50%"
+                        icon={FaExclamationTriangle}
+                        color="purple"
+                        subtitle="Of total booking amount"
+                    />
+                    <StatCard
+                        title="Fee Impact"
+                        value="Active"
+                        icon={FaChartLine}
+                        color="green"
+                        subtitle="Applied when conditions met"
+                    />
+                </div>
 
                 <Card>
                     {user.role === 'Admin' && (
