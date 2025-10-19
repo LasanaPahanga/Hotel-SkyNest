@@ -151,6 +151,23 @@ Backend: ER_SP_DOES_NOT_EXIST - Stored procedure missing
 
 ---
 
+### Error 12: Support Ticket Creation Failed
+```
+Frontend: Error creating support ticket
+Backend: PROCEDURE skynest_hotels.create_support_ticket does not exist
+```
+
+**Cause**: Backend calls `create_support_ticket` stored procedure but it was missing from the database. Guests couldn't create support tickets.
+
+**Final Fix**: Added `create_support_ticket` stored procedure to COMPLETE_DATABASE_SETUP.sql with:
+- Guest validation
+- Transaction handling
+- Error handling with rollback
+- Returns ticket_id and error_message
+- Sets initial status to 'Open'
+
+---
+
 ## ✅ Final Solution
 
 ### The Universal Approach
@@ -335,7 +352,7 @@ mysql -u root -p < database/COMPLETE_DATABASE_SETUP.sql
 
 ---
 
-**Last Updated**: After fixing Error 11 (Top Services report missing procedure)  
-**Total Errors Fixed**: 11 (Database + Backend + Frontend errors)  
+**Last Updated**: After fixing Error 12 (Support ticket creation missing procedure)  
+**Total Errors Fixed**: 12 (Database + Backend + Frontend errors)  
 **MySQL Versions Tested**: 5.6, 5.7, 8.0  
 **Status**: ✅ ALL ISSUES RESOLVED - READY TO USE

@@ -72,6 +72,8 @@ const SupportTickets = () => {
 
     const handleViewDetails = async (ticket) => {
         try {
+            console.log('Ticket object:', ticket);
+            console.log('Ticket ID:', ticket.ticket_id);
             const res = await supportAPI.getTicketById(ticket.ticket_id);
             setSelectedTicket(res.data.data);
             setShowDetailsModal(true);
@@ -423,7 +425,7 @@ const SupportTickets = () => {
                                     </div>
                                 </div>
                                 <p style={{ padding: '1rem', backgroundColor: '#f9fafb', borderRadius: '0.5rem' }}>
-                                    {selectedTicket.ticket.message}
+                                    {selectedTicket.ticket.description}
                                 </p>
                             </div>
 
