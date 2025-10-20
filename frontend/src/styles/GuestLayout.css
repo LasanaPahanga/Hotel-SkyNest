@@ -1,0 +1,24 @@
+/* GuestLayout specific styles */
+.guest-layout-main {
+  margin-top: 0; /* Remove margin for top bar */
+  padding-top: 0; /* Remove padding for content to allow full background */
+  min-height: 100vh; /* Ensure full height */
+}
+
+/* Make sure the sidebar has proper styling */
+.role-guest .sidebar {
+  background: linear-gradient(180deg, #e7e7e7 0%, #ffffff 100%);
+  box-shadow: 2px 0 10px rgba(37, 99, 235, 0.18);
+  border-right: none;
+}
+
+/* Adjusted content area for guest layout */
+.guest-dashboard.without-topbar {
+  padding-top: 20px;
+}
+
+/* Welcome message styling with more padding */
+.guest-dashboard.without-topbar .dashboard-header {
+  padding-top: 20px;
+  margin-bottom: 30px;
+}

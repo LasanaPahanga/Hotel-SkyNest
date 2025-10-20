@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Layout from '../../components/Layout';
+import GuestLayout from '../../components/GuestLayout';
 import Card from '../../components/Card';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { useAuth } from '../../context/AuthContext';
@@ -131,43 +131,21 @@ const GuestDashboard = () => {
 
     if (loading) {
         return (
-            <Layout>
+            <GuestLayout>
                 <LoadingSpinner message="Loading dashboard..." />
-            </Layout>
+            </GuestLayout>
         );
     }
 
     return (
-        <Layout>
-            <div className="guest-dashboard common-page" style={{ backgroundImage: `url(${dashboardImage})` }}>
-                <div className="dashboard-header">
+        <GuestLayout>
+            <div className="guest-dashboard common-page without-topbar" style={{ backgroundImage: `url(${guestHeroImage})` }}>
+                <div className="dashboard-header no-glass-box">
                     <h1>Welcome, {user?.full_name}!</h1>
                     <p>Manage your bookings and services</p>
                 </div>
 
-                <div 
-                    className="hero-image-section"
-                    style={{
-                        width: '100%',
-                        height: '400px',
-                        borderRadius: '12px',
-                        overflow: 'hidden',
-                        marginBottom: '2rem',
-                        boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-                        border: '1px solid rgba(255,255,255,0.1)'
-                    }}
-                >
-                    <img 
-                        src={guestHeroImage} 
-                        alt="Hotel Luxury Experience"
-                        style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                            objectPosition: 'center'
-                        }}
-                    />
-                </div>
+                {/* Hero image section removed as the background image now covers the full page */}
 
                 {/* Stats Cards */}
                 <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
@@ -372,7 +350,7 @@ const GuestDashboard = () => {
                     </Card>
                 )}
             </div>
-        </Layout>
+        </GuestLayout>
     );
 };
 
