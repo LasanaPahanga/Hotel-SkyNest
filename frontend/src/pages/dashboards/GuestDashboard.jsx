@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-<<<<<<< HEAD
-=======
-import GuestLayout from '../../components/GuestLayout';
-import Card from '../../components/Card';
->>>>>>> 568c36f84d5dfd51cd9e536e6f9c7a7b3cdb5c48
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { useAuth } from '../../context/AuthContext';
 import { bookingAPI } from '../../utils/api';
@@ -138,20 +133,13 @@ const GuestDashboard = () => {
 
     if (loading) {
         return (
-<<<<<<< HEAD
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: '#ffffff' }}>
                 <LoadingSpinner message="Loading dashboard..." />
             </div>
-=======
-            <GuestLayout>
-                <LoadingSpinner message="Loading dashboard..." />
-            </GuestLayout>
->>>>>>> 568c36f84d5dfd51cd9e536e6f9c7a7b3cdb5c48
         );
     }
 
     return (
-<<<<<<< HEAD
         <div className="modern-guest-dashboard">
             {/* Top Header with Logo and Logout */}
             <div style={{ background: '#000000', color: '#ffffff', padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '3px solid #ffffff' }}>
@@ -217,16 +205,6 @@ const GuestDashboard = () => {
                         <p>Discover a world where sophistication meets comfort. Our meticulously designed spaces and exceptional service create an unforgettable experience tailored to your every need.</p>
                     </div>
                 </div>
-=======
-        <GuestLayout>
-            <div className="guest-dashboard common-page without-topbar" style={{ backgroundImage: `url(${guestHeroImage})` }}>
-                <div className="dashboard-header no-glass-box">
-                    <h1>Welcome, {user?.full_name}!</h1>
-                    <p>Manage your bookings and services</p>
-                </div>
-
-                {/* Hero image section removed as the background image now covers the full page */}
->>>>>>> 568c36f84d5dfd51cd9e536e6f9c7a7b3cdb5c48
 
                 {/* Stats Cards */}
                 <div className="modern-stats-grid">
@@ -394,11 +372,7 @@ const GuestDashboard = () => {
                     </div>
                 </div>
             </div>
-<<<<<<< HEAD
         </div>
-=======
-        </GuestLayout>
->>>>>>> 568c36f84d5dfd51cd9e536e6f9c7a7b3cdb5c48
     );
 };
 
