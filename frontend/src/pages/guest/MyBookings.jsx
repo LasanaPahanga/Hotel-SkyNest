@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import dashboardImage from '../../assets/dashboard.jpeg';
 import '../../styles/GuestDashboard.css';
 import '../../styles/CommonPage.css';
+import '../../styles/GuestTheme.css';
 
 const MyBookings = () => {
     const navigate = useNavigate();

@@ -7,6 +7,14 @@ import { formatDate, formatCurrency } from '../../utils/helpers';
 import { FaCalendarCheck, FaConciergeBell, FaMoneyBillWave, FaUser, FaHotel, FaClock, FaSignOutAlt, FaHome, FaChevronDown, FaHeadset, FaFileInvoice } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import hotelVideo from '../../assets/WhatsApp Video 2025-10-20 at 21.26.12_d1af48f8.mp4';
+import singleRoomImg from '../../assets/single.jpg';
+import doubleRoomImg from '../../assets/double room.png';
+import deluxeRoomImg from '../../assets/Deluxe-Double-Guestroom2.webp';
+import familyRoomImg from '../../assets/family.jpg';
+import presidentialSuiteImg from '../../assets/PRESIDENTIAL-SUITE-1-scaled.jpg';
+import personalizedServiceImg from '../../assets/PersonalizedService.jpg';
+import exceptionalDiningImg from '../../assets/Exceptionaldining.jpg';
+import worldClassAccommodationsImg from '../../assets/worldclassaccommodations.webp';
 import '../../styles/ModernGuestDashboard.css';
 
 const GuestDashboard = () => {
@@ -23,9 +31,66 @@ const GuestDashboard = () => {
     const [currentBooking, setCurrentBooking] = useState(null);
     const [upcomingBookings, setUpcomingBookings] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [currentSlide, setCurrentSlide] = useState(0);
+
+    const hotelFeatures = [
+        {
+            title: 'World-Class Accommodations',
+            description: 'Each room is a masterpiece of design, featuring premium furnishings, state-of-the-art technology, and breathtaking views that redefine luxury living.',
+            image: worldClassAccommodationsImg || singleRoomImg
+        },
+        {
+            title: 'Exceptional Dining',
+            description: 'Indulge in culinary excellence at our award-winning restaurants, where master chefs create unforgettable gastronomic experiences using the finest ingredients.',
+            image: exceptionalDiningImg || doubleRoomImg
+        },
+        {
+            title: 'Personalized Service',
+            description: 'Our dedicated concierge team anticipates your every need, ensuring a seamless and memorable stay from arrival to departure.',
+            image: personalizedServiceImg || deluxeRoomImg
+        }
+    ];
+
+    // Debug: Log image paths
+    useEffect(() => {
+        console.log('Image paths:', {
+            worldClass: worldClassAccommodationsImg,
+            dining: exceptionalDiningImg,
+            service: personalizedServiceImg,
+            fallbacks: { single: singleRoomImg, double: doubleRoomImg, deluxe: deluxeRoomImg }
+        });
+    }, []);
+
+    const nextSlide = () => {
+        setCurrentSlide((prev) => (prev + 1) % hotelFeatures.length);
+    };
+
+    const prevSlide = () => {
+        setCurrentSlide((prev) => (prev - 1 + hotelFeatures.length) % hotelFeatures.length);
+    };
+
+    // Auto-play slider
+    useEffect(() => {
+        const interval = setInterval(() => {
+            nextSlide();
+        }, 5000); // Change slide every 5 seconds
+
+        return () => clearInterval(interval);
+    }, [currentSlide]);
 
     const scrollToContent = () => {
         contentRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    // Get room image based on room type
+    const getRoomImage = (roomType) => {
+        const type = roomType?.toLowerCase() || '';
+        if (type.includes('presidential') || type.includes('suite')) return presidentialSuiteImg;
+        if (type.includes('deluxe')) return deluxeRoomImg;
+        if (type.includes('family')) return familyRoomImg;
+        if (type.includes('double')) return doubleRoomImg;
+        if (type.includes('single')) return singleRoomImg;
+        return doubleRoomImg; // default
     };
 
     const handleLogout = () => {
@@ -273,54 +338,81 @@ const GuestDashboard = () => {
 
                     {/* Current Stay */}
                     {currentBooking && (
-                        <div className="modern-current-stay">
-                            <h2>Current Stay</h2>
-                            <div className="stay-details-grid">
-                                <div className="stay-info">
-                                    <h3>{currentBooking.branch_name}</h3>
-                                    <p><strong>Room:</strong> {currentBooking.room_number} ({currentBooking.room_type})</p>
-                                    <p><strong>Check-in:</strong> {formatDate(currentBooking.check_in_date)}</p>
-                                    <p><strong>Check-out:</strong> {formatDate(currentBooking.check_out_date)}</p>
-                                    {currentBooking.outstanding_amount > 0 && (
-                                        <p className="outstanding">
-                                            <strong>Outstanding:</strong> {formatCurrency(currentBooking.outstanding_amount)}
-                                        </p>
-                                    )}
-                                </div>
-                                <div className="stay-actions">
-                                    <button 
-                                        className="modern-btn"
-                                        onClick={() => navigate(`/bookings/${currentBooking.booking_id}`)}
-                                    >
-                                        View Details
-                                    </button>
-                                    <button 
-                                        className="modern-btn modern-btn-secondary"
-                                        onClick={() => navigate(`/bookings/${currentBooking.booking_id}`)}
-                                    >
-                                        Request Service
-                                    </button>
+                        <div className="modern-current-stay" style={{
+                            backgroundImage: `url(${getRoomImage(currentBooking.room_type)})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
+                            position: 'relative'
+                        }}>
+                            <div className="current-stay-overlay">
+                                <h2>CURRENT STAY</h2>
+                                <div className="stay-details-grid">
+                                    <div className="stay-info">
+                                        <h3>{currentBooking.branch_name}</h3>
+                                        <p><strong>Room:</strong> {currentBooking.room_number} ({currentBooking.room_type})</p>
+                                        <p><strong>Check-in:</strong> {formatDate(currentBooking.check_in_date)}</p>
+                                        <p><strong>Check-out:</strong> {formatDate(currentBooking.check_out_date)}</p>
+                                        {currentBooking.outstanding_amount > 0 && (
+                                            <p className="outstanding">
+                                                <strong>Outstanding:</strong> {formatCurrency(currentBooking.outstanding_amount)}
+                                            </p>
+                                        )}
+                                    </div>
+                                    <div className="stay-actions">
+                                        <button 
+                                            className="modern-btn"
+                                            onClick={() => navigate(`/bookings/${currentBooking.booking_id}`)}
+                                        >
+                                            VIEW DETAILS
+                                        </button>
+                                        <button 
+                                            className="modern-btn modern-btn-secondary"
+                                            onClick={() => navigate(`/bookings/${currentBooking.booking_id}`)}
+                                        >
+                                            REQUEST SERVICE
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     )}
                 </div>
 
-                {/* Hotel Info Section */}
-                <div className="hotel-info-section">
-                    <div className="hotel-info-grid">
-                        <div className="info-card">
-                            <h3>World-Class Accommodations</h3>
-                            <p>Each room is a masterpiece of design, featuring premium furnishings, state-of-the-art technology, and breathtaking views that redefine luxury living.</p>
+                {/* Hotel Features Slider */}
+                <div className="hotel-slider-section">
+                    <div className="slider-container">
+                        <button className="slider-arrow slider-arrow-left" onClick={prevSlide}>
+                            <FaChevronDown style={{ transform: 'rotate(90deg)' }} />
+                        </button>
+                        
+                        <div className="slider-content">
+                            <div className="slider-image slider-fade" style={{
+                                backgroundImage: `url(${hotelFeatures[currentSlide].image})`,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                backgroundRepeat: 'no-repeat',
+                                backgroundColor: '#f0f0f0'
+                            }}>
+                            </div>
+                            <div className="slider-text slider-fade">
+                                <h2>{hotelFeatures[currentSlide].title}</h2>
+                                <p>{hotelFeatures[currentSlide].description}</p>
+                                <div className="slider-dots">
+                                    {hotelFeatures.map((_, index) => (
+                                        <button
+                                            key={index}
+                                            className={`slider-dot ${index === currentSlide ? 'active' : ''}`}
+                                            onClick={() => setCurrentSlide(index)}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
                         </div>
-                        <div className="info-card">
-                            <h3>Exceptional Dining</h3>
-                            <p>Indulge in culinary excellence at our award-winning restaurants, where master chefs create unforgettable gastronomic experiences using the finest ingredients.</p>
-                        </div>
-                        <div className="info-card">
-                            <h3>Personalized Service</h3>
-                            <p>Our dedicated concierge team anticipates your every need, ensuring a seamless and memorable stay from arrival to departure.</p>
-                        </div>
+                        
+                        <button className="slider-arrow slider-arrow-right" onClick={nextSlide}>
+                            <FaChevronDown style={{ transform: 'rotate(-90deg)' }} />
+                        </button>
                     </div>
                 </div>
 
@@ -368,29 +460,46 @@ const GuestDashboard = () => {
                         </div>
                     </div>
                 )}
+            </div>
 
-                {/* Amenities Section */}
-                <div className="amenities-section">
-                    <h2>Premium Amenities</h2>
-                    <div className="amenities-grid">
-                        <div className="amenity-card">
-                            <FaConciergeBell className="amenity-icon" />
-                            <h3>24/7 Concierge</h3>
-                            <p>Round-the-clock personalized assistance for all your needs</p>
+            {/* Footer */}
+            <footer className="guest-footer">
+                <div className="footer-content">
+                    <div className="footer-section">
+                        <div className="footer-logo">
+                            <FaHotel style={{ fontSize: '2rem', marginBottom: '1rem' }} />
+                            <h3>SkyNest Hotels</h3>
+                            <p>Experience Luxury Beyond Expectations</p>
                         </div>
-                        <div className="amenity-card">
-                            <FaHotel className="amenity-icon" />
-                            <h3>Spa & Wellness</h3>
-                            <p>Rejuvenate your mind and body in our world-class spa facilities</p>
-                        </div>
-                        <div className="amenity-card">
-                            <FaCalendarCheck className="amenity-icon" />
-                            <h3>Business Center</h3>
-                            <p>State-of-the-art meeting rooms and business services</p>
+                    </div>
+                    <div className="footer-section">
+                        <h4>Quick Links</h4>
+                        <ul>
+                            <li><a href="#" onClick={() => navigate('/guest/bookings')}>My Bookings</a></li>
+                            <li><a href="#" onClick={() => navigate('/guest/request-service')}>Request Service</a></li>
+                            <li><a href="#" onClick={() => navigate('/guest/support')}>Support</a></li>
+                            <li><a href="#" onClick={() => navigate('/guest/profile')}>My Profile</a></li>
+                        </ul>
+                    </div>
+                    <div className="footer-section">
+                        <h4>Contact</h4>
+                        <p>Email: info@skynesthotels.com</p>
+                        <p>Phone: +94 11 234 5678</p>
+                        <p>Address: Colombo, Sri Lanka</p>
+                    </div>
+                    <div className="footer-section">
+                        <h4>Follow Us</h4>
+                        <div className="social-links">
+                            <a href="#" aria-label="Facebook"><FaUser /></a>
+                            <a href="#" aria-label="Twitter"><FaUser /></a>
+                            <a href="#" aria-label="Instagram"><FaUser /></a>
                         </div>
                     </div>
                 </div>
-            </div>
+                <div className="footer-bottom">
+                    <p>&copy; 2025 SkyNest Hotels. All rights reserved.</p>
+                </div>
+            </footer>
         </div>
     );
 };

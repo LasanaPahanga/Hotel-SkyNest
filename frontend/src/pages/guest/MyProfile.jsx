@@ -11,6 +11,7 @@ import dashboardImage from '../../assets/dashboard.jpeg';
 import '../../styles/CommonPage.css';
 import '../../styles/GuestDashboard.css';
 import '../../styles/MyProfile.css';
+import '../../styles/GuestTheme.css';
 
 const MyProfile = () => {
     const navigate = useNavigate();

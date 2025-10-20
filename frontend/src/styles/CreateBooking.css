@@ -60,49 +60,78 @@
 }
 
 .room-card {
-  padding: 1.5rem;
+  padding: 0;
   border: 2px solid var(--border-color);
   border-radius: 0.5rem;
   cursor: pointer;
   transition: all 0.2s;
+  overflow: hidden;
+  min-height: 280px;
+  position: relative;
 }
 
 .room-card:hover {
   border-color: var(--primary-color);
   box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
 }
 
 .room-card.selected {
   border-color: var(--primary-color);
-  background-color: rgba(79, 70, 229, 0.05);
+  border-width: 3px;
 }
 
-.room-card h4 {
-  font-size: 1.125rem;
+.room-card.selected .room-card-overlay {
+  background: rgba(79, 70, 229, 0.85);
+}
+
+.room-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  transition: all 0.3s ease;
+}
+
+.room-card:hover .room-card-overlay {
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.room-card-overlay h4 {
+  font-size: 1.25rem;
   margin-bottom: 0.5rem;
-  color: var(--text-primary);
+  color: #ffffff;
+  font-weight: 700;
 }
 
-.room-card p {
+.room-card-overlay p {
   margin: 0.25rem 0;
-  color: var(--text-secondary);
+  color: #ffffff;
   font-size: 0.875rem;
 }
 
-.room-capacity {
-  color: var(--text-secondary);
+.room-card-overlay .room-capacity {
+  color: rgba(255, 255, 255, 0.9);
 }
 
-.room-rate {
+.room-card-overlay .room-rate {
   font-weight: 600;
-  color: var(--primary-color);
+  color: #ffffff;
   margin-top: 0.5rem;
+  font-size: 1rem;
 }
 
-.room-total {
+.room-card-overlay .room-total {
   font-weight: 700;
-  color: var(--text-primary);
-  font-size: 1rem;
+  color: #ffffff;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
 }
 
 .step-actions {

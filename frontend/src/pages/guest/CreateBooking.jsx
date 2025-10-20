@@ -7,8 +7,17 @@ import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import { formatCurrency, calculateNights } from '../../utils/helpers';
 import dashboardImage from '../../assets/dashboard.jpeg';
+import singleRoomImg from '../../assets/single.jpg';
+import doubleRoomImg from '../../assets/double room.png';
+import deluxeRoomImg from '../../assets/Deluxe-Double-Guestroom2.webp';
+import familyRoomImg from '../../assets/family.jpg';
+import presidentialSuiteImg from '../../assets/PRESIDENTIAL-SUITE-1-scaled.jpg';
+
+// Export for use in other components
+export { singleRoomImg, doubleRoomImg, deluxeRoomImg, familyRoomImg, presidentialSuiteImg };
 import '../../styles/CreateBooking.css';
 import '../../styles/CommonPage.css';
+import '../../styles/GuestTheme.css';
 
 const GuestCreateBooking = () => {
   const navigate = useNavigate();
@@ -18,6 +27,17 @@ const GuestCreateBooking = () => {
   const [resolvedGuestId, setResolvedGuestId] = useState(guestId || '');
 
   const [loading, setLoading] = useState(false);
+
+  // Room type to image mapping
+  const getRoomImage = (roomType) => {
+    const type = roomType?.toLowerCase() || '';
+    if (type.includes('presidential') || type.includes('suite')) return presidentialSuiteImg;
+    if (type.includes('deluxe')) return deluxeRoomImg;
+    if (type.includes('family')) return familyRoomImg;
+    if (type.includes('double')) return doubleRoomImg;
+    if (type.includes('single')) return singleRoomImg;
+    return doubleRoomImg; // default
+  };
   const [branches, setBranches] = useState([]);
   const [availableRooms, setAvailableRooms] = useState([]);
 
@@ -197,14 +217,22 @@ const GuestCreateBooking = () => {
                       key={room.room_id}
                       className={`room-card ${formData.room_id === room.room_id ? 'selected' : ''}`}
                       onClick={() => setFormData({ ...formData, room_id: room.room_id })}
+                      style={{
+                        backgroundImage: `url(${getRoomImage(room.type_name)})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        position: 'relative'
+                      }}
                     >
-                      <h4>{room.type_name}</h4>
-                      <p>Room {room.room_number}</p>
-                      <p className="room-capacity">Capacity: {room.capacity} guests</p>
-                      <p className="room-rate">{formatCurrency(room.base_rate)}/night</p>
-                      <p className="room-total">
-                        Total: {formatCurrency(room.total_price || 0)} ({nights} nights)
-                      </p>
+                      <div className="room-card-overlay">
+                        <h4>{room.type_name}</h4>
+                        <p>Room {room.room_number}</p>
+                        <p className="room-capacity">Capacity: {room.capacity} guests</p>
+                        <p className="room-rate">{formatCurrency(room.base_rate)}/night</p>
+                        <p className="room-total">
+                          Total: {formatCurrency(room.total_price || 0)} ({nights} nights)
+                        </p>
+                      </div>
                     </div>
                   ))}
                 </div>

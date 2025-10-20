@@ -10,6 +10,7 @@ import dashboardImage from '../../assets/dashboard.jpeg';
 import '../../styles/CommonPage.css';
 import { FaClock, FaCheckCircle, FaTimesCircle, FaTrash } from 'react-icons/fa';
 import '../../styles/GuestDashboard.css';
+import '../../styles/GuestTheme.css';
 
 const RequestService = () => {
     const navigate = useNavigate();

@@ -9,6 +9,7 @@ import { formatDateTime } from '../../utils/helpers';
 import { toast } from 'react-toastify';
 import dashboardImage from '../../assets/dashboard.jpeg';
 import '../../styles/GuestDashboard.css';
+import '../../styles/GuestTheme.css';
 
 const ContactSupport = () => {
     const navigate = useNavigate();

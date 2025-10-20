@@ -8,6 +8,7 @@ import { formatDate, formatCurrency, formatDateTime } from '../../utils/helpers'
 import dashboardImage from '../../assets/dashboard.jpeg';
 import '../../styles/GuestDashboard.css';
 import '../../styles/CommonPage.css';
+import '../../styles/GuestTheme.css';
 
 const BookingDetails = () => {
     const { id } = useParams();

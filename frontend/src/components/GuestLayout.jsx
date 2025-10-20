@@ -10,6 +10,7 @@ import logoSky from '../assets/logosky.png';
 import '../styles/Layout.css';
 import '../styles/GuestLayout.css';
 import '../styles/GuestDashboard.css';
+import '../styles/GuestTheme.css';
 
 const GuestLayout = ({ children }) => {
     const { user, logout } = useAuth();
@@ -44,56 +45,41 @@ const GuestLayout = ({ children }) => {
     };
 
     return (
-        <div className="layout role-guest">
-            {/* Sidebar */}
-            <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
-                <div className="sidebar-header">
-                    {sidebarOpen ? (
-                        <img src={logoSky} alt="SkyNest Hotels" className="sidebar-logo" />
-                    ) : (
-                        <img src={logoSky} alt="SkyNest" className="sidebar-logo-small" />
-                    )}
-                    <button className="toggle-btn" onClick={toggleSidebar}>
-                        {sidebarOpen ? <FaTimes /> : <FaBars />}
-                    </button>
-                </div>
-
-                <nav className="sidebar-nav">
-                    <Link 
-                        to="/guest" 
-                        className={`nav-item ${isActive('/guest')}`}
-                    >
-                        <FaHome className="nav-icon" />
-                        {sidebarOpen && <span>Dashboard</span>}
-                    </Link>
-
-                    {getNavItems().map((item) => (
-                        <Link 
-                            key={item.path}
-                            to={item.path} 
-                            className={`nav-item ${isActive(item.path)}`}
-                        >
-                            <item.icon className="nav-icon" />
-                            {sidebarOpen && <span>{item.label}</span>}
+        <div className="guest-full-layout">
+            {/* Top Navigation Bar */}
+            <div className="guest-top-bar">
+                <div className="guest-top-bar-content">
+                    <div className="guest-logo-section">
+                        <FaHome style={{ fontSize: '1.5rem' }} />
+                        <h1>SkyNest Hotels</h1>
+                    </div>
+                    <div className="guest-nav-links">
+                        <Link to="/guest" className={isActive('/guest')}>
+                            <FaHome /> HOME
                         </Link>
-                    ))}
-                </nav>
-
-                <div className="sidebar-footer">
-                    <button className="logout-btn" onClick={handleLogout}>
-                        <FaSignOutAlt className="nav-icon" />
-                        {sidebarOpen && <span>Logout</span>}
-                    </button>
+                        <Link to="/guest/bookings" className={isActive('/guest/bookings')}>
+                            <FaCalendarAlt /> MY BOOKINGS
+                        </Link>
+                        <Link to="/guest/request-service" className={isActive('/guest/request-service')}>
+                            <FaConciergeBell /> REQUEST SERVICE
+                        </Link>
+                        <Link to="/guest/support" className={isActive('/guest/support')}>
+                            <FaHeadset /> SUPPORT
+                        </Link>
+                    </div>
+                    <div className="guest-user-section">
+                        <span>{user?.full_name}</span>
+                        <button onClick={handleLogout} className="guest-logout-btn">
+                            <FaSignOutAlt /> Logout
+                        </button>
+                    </div>
                 </div>
-            </aside>
-
-            {/* Main Content - No Top Bar */}
-            <div className="main-content guest-layout-main">
-                {/* Page Content */}
-                <main className="page-content">
-                    {children}
-                </main>
             </div>
+
+            {/* Full Width Content */}
+            <main className="guest-main-content">
+                {children}
+            </main>
         </div>
     );
 };
