@@ -57,38 +57,40 @@ const Profile = () => {
                 </div>
 
                 <div className="profile-grid">
-                    <Card title="User Information">
-                        <div className="info-grid">
-                            <div className="info-item">
-                                <label>Full Name:</label>
-                                <span>{user?.full_name}</span>
-                            </div>
-                            <div className="info-item">
-                                <label>Username:</label>
-                                <span>{user?.username}</span>
-                            </div>
-                            <div className="info-item">
-                                <label>Email:</label>
-                                <span>{user?.email}</span>
-                            </div>
-                            <div className="info-item">
-                                <label>Role:</label>
-                                <span className="role-badge">{user?.role}</span>
-                            </div>
-                            {user?.phone && (
+                    <div style={{ marginBottom: '4rem' }}>
+                        <Card title="User Information">
+                            <div className="info-grid">
                                 <div className="info-item">
-                                    <label>Phone:</label>
-                                    <span>{user.phone}</span>
+                                    <label>Full Name:</label>
+                                    <span>{user?.full_name}</span>
                                 </div>
-                            )}
-                            {user?.branch && (
                                 <div className="info-item">
-                                    <label>Branch:</label>
-                                    <span>{user.branch.branch_name} - {user.branch.location}</span>
+                                    <label>Username:</label>
+                                    <span>{user?.username}</span>
                                 </div>
-                            )}
-                        </div>
-                    </Card>
+                                <div className="info-item">
+                                    <label>Email:</label>
+                                    <span>{user?.email}</span>
+                                </div>
+                                <div className="info-item">
+                                    <label>Role:</label>
+                                    <span className="role-badge">{user?.role}</span>
+                                </div>
+                                {user?.phone && (
+                                    <div className="info-item">
+                                        <label>Phone:</label>
+                                        <span>{user.phone}</span>
+                                    </div>
+                                )}
+                                {user?.branch && (
+                                    <div className="info-item">
+                                        <label>Branch:</label>
+                                        <span>{user.branch.branch_name} - {user.branch.location}</span>
+                                    </div>
+                                )}
+                            </div>
+                        </Card>
+                    </div>
 
                     <Card title="Change Password">
                         <form onSubmit={handlePasswordChange}>

@@ -197,3 +197,132 @@
 .signup-link a:hover {
   text-decoration: underline;
 }
+
+/* --- Split Layout Container --- */
+.login-split-container {
+  display: grid;
+  grid-template-columns: 45% 55%;
+  width: 100%;
+  max-width: 1400px;
+  min-height: 90vh;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* --- Left Side (Login Form) --- */
+.login-left {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.98);
+}
+
+.login-left .login-container {
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  max-width: 100%;
+}
+
+/* --- Right Side (Features) --- */
+.login-right {
+  background: linear-gradient(135deg, #6896a7 0%, #3e5963 100%);
+  padding: 60px 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.features-container {
+  max-width: 600px;
+}
+
+.features-container h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  color: #ffffff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.features-subtitle {
+  font-size: 1.125rem;
+  margin: 0 0 3rem 0;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.feature-item {
+  text-align: left;
+}
+
+.feature-icon {
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  font-size: 1.75rem;
+  color: #ffffff;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.feature-item h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  color: #ffffff;
+}
+
+.feature-item p {
+  font-size: 0.9rem;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.5;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 1024px) {
+  .login-split-container {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+  }
+
+  .login-right {
+    display: none;
+  }
+
+  .login-left {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .features-container h2 {
+    font-size: 2rem;
+  }
+
+  .features-subtitle {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+}

@@ -88,38 +88,36 @@ const Signup = () => {
                 </div>
 
                 <form className="signup-form" onSubmit={handleSubmit}>
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label htmlFor="firstName">
-                                <FaUser /> First Name *
-                            </label>
-                            <input
-                                type="text"
-                                id="firstName"
-                                name="firstName"
-                                value={formData.firstName}
-                                onChange={handleChange}
-                                placeholder="Enter first name"
-                                required
-                                disabled={loading}
-                            />
-                        </div>
+                    <div className="form-group">
+                        <label htmlFor="firstName">
+                            <FaUser /> First Name *
+                        </label>
+                        <input
+                            type="text"
+                            id="firstName"
+                            name="firstName"
+                            value={formData.firstName}
+                            onChange={handleChange}
+                            placeholder="Enter first name"
+                            required
+                            disabled={loading}
+                        />
+                    </div>
 
-                        <div className="form-group">
-                            <label htmlFor="lastName">
-                                <FaUser /> Last Name *
-                            </label>
-                            <input
-                                type="text"
-                                id="lastName"
-                                name="lastName"
-                                value={formData.lastName}
-                                onChange={handleChange}
-                                placeholder="Enter last name"
-                                required
-                                disabled={loading}
-                            />
-                        </div>
+                    <div className="form-group">
+                        <label htmlFor="lastName">
+                            <FaUser /> Last Name *
+                        </label>
+                        <input
+                            type="text"
+                            id="lastName"
+                            name="lastName"
+                            value={formData.lastName}
+                            onChange={handleChange}
+                            placeholder="Enter last name"
+                            required
+                            disabled={loading}
+                        />
                     </div>
 
                     <div className="form-group">
@@ -154,74 +152,70 @@ const Signup = () => {
                         />
                     </div>
 
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label htmlFor="password">
-                                <FaLock /> Password *
-                            </label>
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                placeholder="Enter password"
-                                required
-                                disabled={loading}
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="confirmPassword">
-                                <FaLock /> Confirm Password *
-                            </label>
-                            <input
-                                type="password"
-                                id="confirmPassword"
-                                name="confirmPassword"
-                                value={formData.confirmPassword}
-                                onChange={handleChange}
-                                placeholder="Confirm password"
-                                required
-                                disabled={loading}
-                            />
-                        </div>
+                    <div className="form-group">
+                        <label htmlFor="password">
+                            <FaLock /> Password *
+                        </label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            placeholder="Enter password"
+                            required
+                            disabled={loading}
+                        />
                     </div>
 
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label htmlFor="idType">
-                                <FaIdCard /> ID Type *
-                            </label>
-                            <select
-                                id="idType"
-                                name="idType"
-                                value={formData.idType}
-                                onChange={handleChange}
-                                required
-                                disabled={loading}
-                            >
-                                <option value="Passport">Passport</option>
-                                <option value="NIC">NIC</option>
-                                <option value="Driving License">Driving License</option>
-                            </select>
-                        </div>
+                    <div className="form-group">
+                        <label htmlFor="confirmPassword">
+                            <FaLock /> Confirm Password *
+                        </label>
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                            placeholder="Confirm password"
+                            required
+                            disabled={loading}
+                        />
+                    </div>
 
-                        <div className="form-group">
-                            <label htmlFor="idNumber">
-                                <FaIdCard /> ID Number *
-                            </label>
-                            <input
-                                type="text"
-                                id="idNumber"
-                                name="idNumber"
-                                value={formData.idNumber}
-                                onChange={handleChange}
-                                placeholder="Enter ID number"
-                                required
-                                disabled={loading}
-                            />
-                        </div>
+                    <div className="form-group">
+                        <label htmlFor="idType">
+                            <FaIdCard /> ID Type *
+                        </label>
+                        <select
+                            id="idType"
+                            name="idType"
+                            value={formData.idType}
+                            onChange={handleChange}
+                            required
+                            disabled={loading}
+                        >
+                            <option value="Passport">Passport</option>
+                            <option value="NIC">NIC</option>
+                            <option value="Driving License">Driving License</option>
+                        </select>
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="idNumber">
+                            <FaIdCard /> ID Number *
+                        </label>
+                        <input
+                            type="text"
+                            id="idNumber"
+                            name="idNumber"
+                            value={formData.idNumber}
+                            onChange={handleChange}
+                            placeholder="Enter ID number"
+                            required
+                            disabled={loading}
+                        />
                     </div>
 
                     <div className="form-group">
@@ -240,7 +234,7 @@ const Signup = () => {
                         />
                     </div>
 
-                    <div className="form-group">
+                    <div className="form-group full-width">
                         <label htmlFor="address">
                             Address
                         </label>

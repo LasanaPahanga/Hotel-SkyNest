@@ -23,17 +23,15 @@
 }
 
 .signup-container {
-  background-color: rgba(255, 255, 255, 0.75);
-  padding: 32px;
-  border-radius: 14px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  background-color: rgba(255, 255, 255, 0.65);
+  padding: 40px 50px;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   width: 100%;
-  max-width: 600px;
+  max-width: 1100px;
   text-align: center;
   box-sizing: border-box;
   backdrop-filter: blur(8px);
-  max-height: 90vh;
-  overflow-y: auto;
 }
 
 .signup-header {
@@ -69,21 +67,45 @@
 }
 
 .signup-form {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px 20px;
   text-align: left;
 }
 
 .form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  display: contents;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group.half-width {
+  grid-column: span 1;
+}
+
+.signup-btn {
+  grid-column: 1 / -1;
+}
+
+.login-link {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 900px) {
+  .signup-form {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 600px) {
-  .form-row {
+  .signup-form {
     grid-template-columns: 1fr;
+  }
+  
+  .signup-container {
+    padding: 30px 25px;
   }
 }
 
