@@ -129,3 +129,21 @@
     font-size: 14px;
   }
 }
+
+/* Guest-only DARK THEME (scoped) */
+.layout.role-guest .stat-card {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.94));
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+.layout.role-guest .stat-card:hover { box-shadow: 0 10px 24px rgba(0,0,0,0.6); border-color: rgba(255,255,255,0.10); }
+.layout.role-guest .stat-card-title { color: #94a3b8; }
+.layout.role-guest .stat-card-value { color: #e5e7eb; }
+.layout.role-guest .stat-card-subtitle { color: #94a3b8; }
+.layout.role-guest .stat-card-icon { color: #e5e7eb; opacity: 0.8; }
+.layout.role-guest .stat-card-blue { background: rgba(37,99,235,0.10); }
+.layout.role-guest .stat-card-green { background: rgba(16,185,129,0.10); }
+.layout.role-guest .stat-card-purple { background: rgba(139,92,246,0.10); }
+.layout.role-guest .stat-card-orange { background: rgba(245,158,11,0.10); }

@@ -9,6 +9,7 @@ import { formatDate, formatCurrency } from '../../utils/helpers';
 import { FaCalendarCheck, FaConciergeBell, FaMoneyBillWave, FaClipboardList, FaHotel, FaClock } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import dashboardImage from '../../assets/dashboard.jpeg';
+import guestHeroImage from '../../assets/premium_photo-1661964071015-d97428970584.avif';
 import '../../styles/Dashboard.css';
 import '../../styles/CommonPage.css';
 
@@ -144,9 +145,33 @@ const GuestDashboard = () => {
                     <p>Manage your bookings and services</p>
                 </div>
 
+                <div 
+                    className="hero-image-section"
+                    style={{
+                        width: '100%',
+                        height: '400px',
+                        borderRadius: '12px',
+                        overflow: 'hidden',
+                        marginBottom: '2rem',
+                        boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+                        border: '1px solid rgba(255,255,255,0.1)'
+                    }}
+                >
+                    <img 
+                        src={guestHeroImage} 
+                        alt="Hotel Luxury Experience"
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            objectPosition: 'center'
+                        }}
+                    />
+                </div>
+
                 {/* Stats Cards */}
                 <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-                    <Card style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white', border: 'none' }}>
+                    <Card style={{ background: 'linear-gradient(135deg,rgb(50, 75, 185) 0%,rgb(54, 21, 87) 100%)', color: 'white', border: 'none' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                             <div style={{ fontSize: '2.5rem', opacity: 0.9 }}>
                                 <FaHotel />
