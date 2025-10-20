@@ -119,105 +119,100 @@
     opacity: 1;
 }
 
-/* Filter Tabs - Glass Style */
+/* Filter Tabs - Black & White Theme */
 .filter-tabs {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     max-width: 900px;
     margin: 0 auto 32px auto;
-    background: linear-gradient(135deg, rgba(255,255,255,0.22), rgba(255,255,255,0.1));
-    backdrop-filter: blur(16px) saturate(160%);
-    -webkit-backdrop-filter: blur(16px) saturate(160%);
-    border: 1px solid rgba(255,255,255,0.45);
-    border-radius: 14px;
+    background: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 0;
     overflow: hidden;
-    box-shadow: 0 16px 40px rgba(31, 78, 107, 0.16), inset 0 1px 0 rgba(255,255,255,0.35);
+    box-shadow: none;
     justify-items: stretch;
     align-items: stretch;
     position: relative;
-    border-bottom: 2px solid rgba(31, 78, 107, 0.18);
 }
 
 .filter-tab {
     display: block;
     text-align: center;
-    padding: 20px 12px;
+    padding: 18px 12px;
     font-weight: 600;
-    color: #1f4e6b;
-    background: transparent;
+    color: #000000;
+    background: #ffffff;
     border: none;
     position: relative;
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: 'Poppins', sans-serif;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
 }
 
 /* vertical separators */
 .filter-tab + .filter-tab {
-    box-shadow: -1px 0 0 rgba(31, 78, 107, 0.12);
+    box-shadow: none;
 }
 
 .filter-tab:not(:last-child) {
-    border-right: 1px solid rgba(31, 78, 107, 0.12);
+    border-right: 2px solid #000000;
 }
 
 .filter-tab.active {
-    background: radial-gradient(120% 120% at 50% 0%, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.12) 70%);
-    color: #173b54;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.08);
-    box-shadow: inset 0 0 0 9999px rgba(255,255,255,0.03);
+    background: #000000;
+    color: #ffffff;
+    text-shadow: none;
+    box-shadow: none;
 }
 
 .filter-tab:hover:not(.active) {
-    background: rgba(255, 255, 255, 0.15);
+    background: #f3f4f6;
+    color: #000000;
 }
 
-/* Bookings Grid with Glass Cards */
+/* Bookings Grid - Black & White Theme */
 .bookings-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
     gap: 1.5rem;
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 0 auto 32px auto;
+    padding: 0 20px;
 }
 
 .booking-card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.12));
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 16px;
+    background: #ffffff;
+    border: 3px solid #000000;
+    border-radius: 0;
     padding: 24px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 
-        0 12px 40px rgba(31, 78, 107, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.1);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .booking-card::before {
     content: '';
     position: absolute;
     top: 0;
-    left: -100%;
+    left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s ease;
+    background: transparent;
+    transition: none;
 }
 
 .booking-card:hover::before {
-    left: 100%;
+    background: transparent;
 }
 
 .booking-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 
-        0 20px 50px rgba(31, 78, 107, 0.25),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4);
-    border-color: rgba(255, 255, 255, 0.6);
+    transform: translate(-4px, -4px);
+    box-shadow: 12px 12px 0 rgba(0, 0, 0, 0.15);
 }
 
 .booking-card-header {
@@ -226,22 +221,25 @@
     align-items: flex-start;
     margin-bottom: 1rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 2px solid #e5e7eb;
 }
 
 .booking-card-header h3 {
     margin: 0 0 0.25rem 0;
-    color: #1f4e6b;
-    font-size: 1.25rem;
-    font-weight: 600;
+    color: #000000;
+    font-size: 1.35rem;
+    font-weight: 700;
     font-family: 'Poppins', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
 }
 
 .booking-card-header .location {
     margin: 0;
-    color: #495057;
-    font-size: 0.9rem;
-    opacity: 0.8;
+    color: #6b7280;
+    font-size: 0.875rem;
+    opacity: 1;
+    font-weight: 500;
 }
 
 .booking-card-body {
@@ -261,80 +259,80 @@
 }
 
 .info-item .label {
-    font-size: 0.75rem;
-    color: #6b7280;
+    font-size: 0.7rem;
+    color: #9ca3af;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 0.25rem;
-    opacity: 0.8;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.35rem;
+    opacity: 1;
+    font-weight: 600;
 }
 
 .info-item .value {
-    font-weight: 500;
-    color: #1f4e6b;
+    font-weight: 600;
+    color: #1f2937;
     font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
 }
 
 .info-item .value.amount {
-    color: #059669;
-    font-size: 1.125rem;
-    font-weight: 600;
+    color: #10b981;
+    font-size: 1.25rem;
+    font-weight: 700;
 }
 
 .info-item .value.outstanding {
-    color: #dc2626;
-    font-size: 1.125rem;
-    font-weight: 600;
+    color: #ef4444;
+    font-size: 1.25rem;
+    font-weight: 700;
 }
 
 .booking-card-footer {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.75rem;
     padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid #e5e7eb;
 }
 
-/* Status Badges - Glass Style */
+/* Status Badges - Black & White Theme */
 .status-badge {
     padding: 0.5rem 1rem;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 600;
+    border-radius: 0;
+    font-size: 0.7rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.08em;
+    border: 2px solid;
 }
 
 .badge-info {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(96, 165, 250, 0.15));
+    background: #dbeafe;
     color: #1e40af;
-    border-color: rgba(59, 130, 246, 0.3);
+    border-color: #3b82f6;
 }
 
 .badge-success {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.15));
+    background: #d1fae5;
     color: #065f46;
-    border-color: rgba(16, 185, 129, 0.3);
+    border-color: #10b981;
 }
 
 .badge-warning {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.15));
+    background: #fef3c7;
     color: #92400e;
-    border-color: rgba(245, 158, 11, 0.3);
+    border-color: #f59e0b;
 }
 
 .badge-danger {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.15));
+    background: #fee2e2;
     color: #991b1b;
-    border-color: rgba(239, 68, 68, 0.3);
+    border-color: #ef4444;
 }
 
 .badge-secondary {
-    background: linear-gradient(135deg, rgba(156, 163, 175, 0.2), rgba(107, 114, 128, 0.15));
+    background: #f3f4f6;
     color: #4b5563;
-    border-color: rgba(156, 163, 175, 0.3);
+    border-color: #9ca3af;
 }
 
 /* Action Buttons Glass */
@@ -372,34 +370,42 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-/* No Bookings Glass Card */
-.empty-state {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.12));
-    backdrop-filter: blur(25px) saturate(180%);
-    -webkit-backdrop-filter: blur(25px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 20px;
+/* No Bookings - Black & White Theme */
+.bookings-grid .empty-state {
+    grid-column: 1 / -1;
+    background: #ffffff;
+    border: 3px solid #000000;
+    border-radius: 0;
     padding: 80px 40px;
     text-align: center;
     margin: 40px auto;
     max-width: 600px;
-    box-shadow: 
-        0 16px 48px rgba(31, 78, 107, 0.18),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.bookings-grid .empty-state:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.15);
 }
 
 .empty-state p {
-    color: #1f4e6b;
-    font-size: 24px;
-    font-weight: 600;
-    margin: 0 0 16px 0;
+    color: #000000;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 12px 0;
     font-family: 'Poppins', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
 }
 
 .empty-state small {
-    color: #495057;
+    color: #6b7280;
     font-size: 16px;
-    opacity: 0.8;
+    opacity: 1;
+    font-weight: 500;
+    display: block;
+    margin-top: 8px;
 }
 
 /* Search Bar Glass */
@@ -473,36 +479,73 @@
     
     .bookings-grid {
         grid-template-columns: 1fr;
+        padding: 0 10px;
     }
     
     .booking-info-row {
         grid-template-columns: 1fr;
     }
     
+    .booking-card {
+        box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.1);
+    }
+    
+    .booking-card:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.15);
+    }
+    
     .action-buttons-glass {
         flex-direction: column;
     }
     
-    .empty-state {
-        padding: 40px 24px;
+    .bookings-grid .empty-state {
+        padding: 60px 24px;
+        box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.1);
+    }
+    
+    .bookings-grid .empty-state:hover {
+        transform: translate(-1px, -1px);
+        box-shadow: 7px 7px 0 rgba(0, 0, 0, 0.15);
     }
     
     .empty-state p {
-        font-size: 20px;
+        font-size: 22px;
     }
 }
 
 @media (max-width: 480px) {
     .booking-card {
-        padding: 20px;
+        padding: 18px;
+        border-width: 2px;
+    }
+    
+    .booking-card-header h3 {
+        font-size: 1.1rem;
     }
     
     .booking-card-header {
         flex-direction: column;
         gap: 10px;
+        align-items: flex-start;
     }
     
     .booking-card-footer {
         flex-wrap: wrap;
+    }
+    
+    .bookings-grid .empty-state {
+        padding: 50px 20px;
+        border-width: 2px;
+        box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.1);
+    }
+    
+    .bookings-grid .empty-state:hover {
+        transform: translate(-1px, -1px);
+        box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.15);
+    }
+    
+    .empty-state p {
+        font-size: 20px;
     }
 }

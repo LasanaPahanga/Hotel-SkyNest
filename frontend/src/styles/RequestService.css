@@ -1,0 +1,527 @@
+/* Request Service Page - Black & White Theme */
+
+.request-service-page {
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+.request-service-page::before {
+    background: rgba(255, 255, 255, 0.75) !important;
+}
+
+.request-service-page .page-header {
+    border-bottom: 3px solid #000000;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.service-request-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Category Filters */
+.category-filters {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.category-btn {
+    padding: 0.625rem 1.25rem;
+    background: #ffffff;
+    color: #000000;
+    border: 2px solid #000000;
+    border-radius: 0;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+}
+
+.category-btn:hover {
+    background: #f3f4f6;
+}
+
+.category-btn.active {
+    background: #000000;
+    color: #ffffff;
+}
+
+/* Services Grid */
+.services-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.service-item {
+    background: #ffffff;
+    border: 3px solid #000000;
+    border-radius: 0;
+    padding: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+}
+
+.service-item:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.12);
+}
+
+.service-item.selected {
+    background: #000000;
+    color: #ffffff;
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.15);
+}
+
+.service-item.selected h4,
+.service-item.selected .service-description,
+.service-item.selected .service-category,
+.service-item.selected .service-price {
+    color: #ffffff;
+}
+
+.service-info {
+    flex: 1;
+}
+
+.service-info h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #000000;
+    text-transform: uppercase;
+    letter-spacing: -0.3px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.service-description {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.875rem;
+    color: #6b7280;
+    line-height: 1.4;
+}
+
+.service-category {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: #f3f4f6;
+    color: #4b5563;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 2px solid #e5e7eb;
+}
+
+.service-item.selected .service-category {
+    background: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
+}
+
+.service-action {
+    text-align: right;
+    margin-left: 1rem;
+}
+
+.service-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #000000;
+    font-family: 'Poppins', sans-serif;
+    display: block;
+}
+
+.service-price small {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.service-item.selected .service-price small {
+    color: #d1d5db;
+}
+
+.no-services {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #6b7280;
+    font-size: 1.125rem;
+    font-weight: 500;
+}
+
+/* Cart Section */
+.cart-section {
+    position: sticky;
+    top: 20px;
+    align-self: start;
+}
+
+.cart-section .card {
+    background: #ffffff;
+    border: 3px solid #000000;
+    border-radius: 0;
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.cart-section .card-header {
+    background: #000000;
+    color: #ffffff;
+    padding: 1rem 1.5rem;
+    margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+    border-bottom: 3px solid #000000;
+}
+
+.cart-section .card-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.3px;
+    color: #ffffff;
+}
+
+.empty-cart {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.empty-cart p {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #000000;
+    text-transform: uppercase;
+}
+
+.empty-cart small {
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Request Form */
+.request-form {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.selected-service-info {
+    padding: 1rem;
+    background: #f9fafb;
+    border-left: 3px solid #000000;
+}
+
+.selected-service-info label {
+    margin-bottom: 0.5rem;
+}
+
+.selected-service-info .service-name {
+    margin: 0.5rem 0 0.25rem 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #000000;
+}
+
+.selected-service-info .service-pricing {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.cart-section label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #000000;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+}
+
+.cart-section input,
+.cart-section textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #000000;
+    border-radius: 0;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.cart-section input:focus,
+.cart-section textarea:focus {
+    outline: none;
+    box-shadow: 4px 4px 0 #000000;
+    transform: translate(-2px, -2px);
+}
+
+.cart-section textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.total-summary {
+    padding: 1.25rem;
+    background: #000000;
+    color: #ffffff;
+    border: 2px solid #000000;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-size: 1.125rem;
+}
+
+.total-row strong {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.approval-note {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #d1d5db;
+    font-weight: 500;
+}
+
+/* My Requests */
+.request-item {
+    padding: 1.25rem;
+    border: 3px solid #000000;
+    border-radius: 0;
+    background: #ffffff;
+    margin-bottom: 1rem;
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.request-item:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 7px 7px 0 rgba(0, 0, 0, 0.12);
+}
+
+.request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.request-header strong {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #000000;
+    text-transform: uppercase;
+    letter-spacing: -0.3px;
+}
+
+.request-details {
+    margin: 0.5rem 0;
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.request-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 2px solid;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.request-status.pending {
+    background: #fef3c7;
+    color: #92400e;
+    border-color: #f59e0b;
+}
+
+.request-status.approved {
+    background: #d1fae5;
+    color: #065f46;
+    border-color: #10b981;
+}
+
+.request-status.completed {
+    background: #dbeafe;
+    color: #1e40af;
+    border-color: #3b82f6;
+}
+
+.request-status.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+    border-color: #ef4444;
+}
+
+.request-notes {
+    margin: 0.75rem 0;
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-left: 3px solid #000000;
+    font-size: 0.875rem;
+    font-style: italic;
+    color: #4b5563;
+}
+
+.request-review {
+    margin: 0.75rem 0;
+    padding: 0.75rem;
+    background: #000000;
+    color: #ffffff;
+    font-size: 0.875rem;
+    border: 2px solid #000000;
+}
+
+.request-review strong {
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.request-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid #e5e7eb;
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.cancel-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    background: #ef4444;
+    color: #ffffff;
+    border: 2px solid #dc2626;
+    border-radius: 0;
+    cursor: pointer;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cancel-btn:hover {
+    background: #dc2626;
+    transform: translate(-1px, -1px);
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Services Section Card */
+.services-section .card {
+    background: #ffffff;
+    border: 3px solid #000000;
+    border-radius: 0;
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .service-request-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .cart-section {
+        position: static;
+    }
+}
+
+@media (max-width: 768px) {
+    .service-request-layout {
+        padding: 0 10px;
+    }
+    
+    .category-filters {
+        gap: 0.5rem;
+    }
+    
+    .category-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+    
+    .service-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.08);
+    }
+    
+    .service-item:hover {
+        box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.12);
+    }
+    
+    .service-action {
+        margin-left: 0;
+        width: 100%;
+        text-align: left;
+    }
+    
+    .services-section .card,
+    .cart-section .card {
+        box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.1);
+    }
+    
+    .request-item {
+        box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.08);
+    }
+}
+
+@media (max-width: 480px) {
+    .service-item,
+    .request-item,
+    .services-section .card,
+    .cart-section .card {
+        border-width: 2px;
+    }
+    
+    .service-info h4 {
+        font-size: 1rem;
+    }
+    
+    .service-price {
+        font-size: 1.25rem;
+    }
+    
+    .category-filters {
+        flex-direction: column;
+    }
+    
+    .category-btn {
+        width: 100%;
+    }
+}

@@ -8,7 +8,7 @@ import { FaCalendarCheck, FaConciergeBell, FaMoneyBillWave, FaUser, FaHotel, FaC
 import { toast } from 'react-toastify';
 import hotelVideo from '../../assets/WhatsApp Video 2025-10-20 at 21.26.12_d1af48f8.mp4';
 import singleRoomImg from '../../assets/single.jpg';
-import doubleRoomImg from '../../assets/double room.png';
+import doubleRoomImg from '../../assets/doubleroom.png';
 import deluxeRoomImg from '../../assets/Deluxe-Double-Guestroom2.webp';
 import familyRoomImg from '../../assets/family.jpg';
 import presidentialSuiteImg from '../../assets/PRESIDENTIAL-SUITE-1-scaled.jpg';

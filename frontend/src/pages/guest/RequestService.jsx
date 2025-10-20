@@ -11,6 +11,7 @@ import '../../styles/CommonPage.css';
 import { FaClock, FaCheckCircle, FaTimesCircle, FaTrash } from 'react-icons/fa';
 import '../../styles/GuestDashboard.css';
 import '../../styles/GuestTheme.css';
+import '../../styles/RequestService.css';
 
 const RequestService = () => {
     const navigate = useNavigate();
@@ -158,8 +159,7 @@ const RequestService = () => {
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
                     backgroundAttachment: 'fixed',
-                    minHeight: '100vh',
-                    maxWidth: '1400px'
+                    minHeight: '100vh'
                 }}
             >
                 <div className="page-header">
@@ -194,7 +194,6 @@ const RequestService = () => {
                                             key={service.service_id} 
                                             className={`service-item ${selectedService?.service_id === service.service_id ? 'selected' : ''}`}
                                             onClick={() => handleSelectService(service)}
-                                            style={{ cursor: 'pointer' }}
                                         >
                                             <div className="service-info">
                                                 <h4>{service.service_name}</h4>
@@ -223,47 +222,41 @@ const RequestService = () => {
                                     <small>Click on a service to request it</small>
                                 </div>
                             ) : (
-                                <div style={{ display: 'grid', gap: '1rem' }}>
-                                    <div>
-                                        <strong>Selected Service:</strong>
-                                        <p>{selectedService.service_name}</p>
-                                        <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+                                <div className="request-form">
+                                    <div className="selected-service-info">
+                                        <label>Selected Service:</label>
+                                        <p className="service-name">{selectedService.service_name}</p>
+                                        <p className="service-pricing">
                                             {formatCurrency(selectedService.custom_price || selectedService.unit_price)} per {selectedService.unit_type || 'unit'}
                                         </p>
                                     </div>
 
                                     <div>
-                                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
-                                            Quantity
-                                        </label>
+                                        <label>Quantity</label>
                                         <input
                                             type="number"
                                             min="1"
                                             value={quantity}
                                             onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-                                            style={{ width: '100%', padding: '0.5rem', borderRadius: '0.375rem', border: '1px solid #d1d5db' }}
                                         />
                                     </div>
 
                                     <div>
-                                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
-                                            Special Instructions (Optional)
-                                        </label>
+                                        <label>Special Instructions (Optional)</label>
                                         <textarea
                                             value={notes}
                                             onChange={(e) => setNotes(e.target.value)}
                                             rows="3"
                                             placeholder="e.g., Room number, delivery time..."
-                                            style={{ width: '100%', padding: '0.5rem', borderRadius: '0.375rem', border: '1px solid #d1d5db' }}
                                         />
                                     </div>
 
-                                    <div style={{ padding: '1rem', background: '#f9fafb', borderRadius: '0.5rem' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                    <div className="total-summary">
+                                        <div className="total-row">
                                             <span>Estimated Total:</span>
                                             <strong>{formatCurrency((selectedService.custom_price || selectedService.unit_price) * quantity)}</strong>
                                         </div>
-                                        <p style={{ margin: 0, fontSize: '0.75rem', color: '#6b7280' }}>
+                                        <p className="approval-note">
                                             * Request will be sent to receptionist for approval
                                         </p>
                                     </div>
@@ -282,61 +275,45 @@ const RequestService = () => {
                         {/* My Requests */}
                         <Card title={`My Requests (${myRequests.length})`} style={{ marginTop: '1rem' }}>
                             {myRequests.length === 0 ? (
-                                <p style={{ textAlign: 'center', color: '#6b7280' }}>No requests yet</p>
+                                <div className="empty-cart">
+                                    <p>No requests yet</p>
+                                    <small>Your service requests will appear here</small>
+                                </div>
                             ) : (
-                                <div style={{ display: 'grid', gap: '0.75rem' }}>
+                                <div>
                                     {myRequests.map(request => (
-                                        <div 
-                                            key={request.request_id}
-                                            style={{
-                                                padding: '1rem',
-                                                border: '1px solid #e5e7eb',
-                                                borderRadius: '0.5rem',
-                                                display: 'grid',
-                                                gap: '0.5rem'
-                                            }}
-                                        >
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                                        <div key={request.request_id} className="request-item">
+                                            <div className="request-header">
                                                 <div>
                                                     <strong>{request.service_name}</strong>
-                                                    <p style={{ margin: '0.25rem 0', fontSize: '0.875rem', color: '#6b7280' }}>
+                                                    <p className="request-details">
                                                         Qty: {request.quantity} × {formatCurrency(request.service_price)} = {formatCurrency(request.total_amount)}
                                                     </p>
                                                 </div>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                <div className={`request-status ${request.request_status.toLowerCase()}`}>
                                                     {getStatusIcon(request.request_status)}
-                                                    <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>
-                                                        {request.request_status}
-                                                    </span>
+                                                    <span>{request.request_status}</span>
                                                 </div>
                                             </div>
 
                                             {request.request_notes && (
-                                                <p style={{ margin: 0, fontSize: '0.875rem', fontStyle: 'italic', color: '#6b7280' }}>
+                                                <div className="request-notes">
                                                     Note: {request.request_notes}
-                                                </p>
+                                                </div>
                                             )}
 
                                             {request.review_notes && (
-                                                <p style={{ margin: 0, fontSize: '0.875rem', padding: '0.5rem', background: '#f9fafb', borderRadius: '0.25rem' }}>
+                                                <div className="request-review">
                                                     <strong>Receptionist:</strong> {request.review_notes}
-                                                </p>
+                                                </div>
                                             )}
 
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', color: '#6b7280' }}>
+                                            <div className="request-footer">
                                                 <span>Requested: {formatDateTime(request.requested_at)}</span>
                                                 {request.request_status === 'Pending' && (
                                                     <button
                                                         onClick={() => handleCancelRequest(request.request_id)}
-                                                        style={{
-                                                            padding: '0.25rem 0.5rem',
-                                                            fontSize: '0.75rem',
-                                                            backgroundColor: '#ef4444',
-                                                            color: 'white',
-                                                            border: 'none',
-                                                            borderRadius: '0.25rem',
-                                                            cursor: 'pointer'
-                                                        }}
+                                                        className="cancel-btn"
                                                     >
                                                         <FaTrash /> Cancel
                                                     </button>

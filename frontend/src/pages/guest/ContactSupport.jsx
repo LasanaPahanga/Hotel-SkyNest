@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import dashboardImage from '../../assets/dashboard.jpeg';
 import '../../styles/GuestDashboard.css';
 import '../../styles/GuestTheme.css';
+import '../../styles/ContactSupport.css';
 
 const ContactSupport = () => {
     const navigate = useNavigate();
@@ -161,8 +162,7 @@ const ContactSupport = () => {
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
                     backgroundAttachment: 'fixed',
-                    minHeight: '100vh',
-                    maxWidth: '1400px'
+                    minHeight: '100vh'
                 }}
             >
                 <div className="page-header">
@@ -261,7 +261,6 @@ const ContactSupport = () => {
                                     key={ticket.ticket_id} 
                                     className="ticket-item"
                                     onClick={() => handleViewTicket(ticket)}
-                                    style={{ cursor: 'pointer' }}
                                 >
                                     <div className="ticket-header">
                                         <div>
@@ -305,21 +304,21 @@ const ContactSupport = () => {
                         title={`Ticket #${selectedTicket.ticket_id}`}
                     >
                         {loadingDetails ? (
-                            <div style={{ padding: '2rem', textAlign: 'center' }}>
+                            <div className="modal-loading">
                                 <p>Loading ticket details...</p>
                             </div>
                         ) : ticketDetails ? (
-                            <div style={{ display: 'grid', gap: '1.5rem' }}>
+                            <div className="modal-content">
                                 {/* Ticket Info */}
                                 <div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                                    <div className="ticket-details-header">
                                         <div>
-                                            <h3 style={{ margin: '0 0 0.5rem 0' }}>{ticketDetails.ticket.subject}</h3>
-                                            <p style={{ margin: 0, color: '#6b7280', fontSize: '0.875rem' }}>
+                                            <h3>{ticketDetails.ticket.subject}</h3>
+                                            <p className="ticket-details-meta">
                                                 Created {formatDateTime(ticketDetails.ticket.created_at)}
                                             </p>
                                         </div>
-                                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'start' }}>
+                                        <div className="ticket-badges">
                                             <span className={`status-badge ${getPriorityBadgeClass(ticketDetails.ticket.priority)}`}>
                                                 {ticketDetails.ticket.priority}
                                             </span>
@@ -328,42 +327,37 @@ const ContactSupport = () => {
                                             </span>
                                         </div>
                                     </div>
-                                    <div style={{ padding: '1rem', backgroundColor: '#f9fafb', borderRadius: '0.5rem', borderLeft: '4px solid #3b82f6' }}>
-                                        <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{ticketDetails.ticket.description}</p>
+                                    <div className="ticket-description">
+                                        <p>{ticketDetails.ticket.description}</p>
                                     </div>
                                 </div>
 
                                 {/* Responses */}
-                                <div>
-                                    <h4 style={{ marginBottom: '1rem', fontSize: '1rem', fontWeight: 600 }}>
+                                <div className="responses-section">
+                                    <h4>
                                         Responses ({ticketDetails.responses.length})
                                     </h4>
-                                    <div style={{ maxHeight: '300px', overflowY: 'auto', display: 'grid', gap: '0.75rem' }}>
+                                    <div className="responses-container">
                                         {ticketDetails.responses.length === 0 ? (
-                                            <p style={{ textAlign: 'center', color: '#6b7280', padding: '1rem' }}>
+                                            <p className="no-responses">
                                                 No responses yet. Staff will respond soon.
                                             </p>
                                         ) : (
                                             ticketDetails.responses.map((resp) => (
                                                 <div 
                                                     key={resp.response_id}
-                                                    style={{
-                                                        padding: '1rem',
-                                                        backgroundColor: resp.is_staff_response ? '#eff6ff' : '#f9fafb',
-                                                        borderLeft: `4px solid ${resp.is_staff_response ? '#3b82f6' : '#6b7280'}`,
-                                                        borderRadius: '0.25rem'
-                                                    }}
+                                                    className={`response-item ${resp.is_staff_response ? 'staff-response' : 'guest-response'}`}
                                                 >
-                                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
-                                                        <strong style={{ color: resp.is_staff_response ? '#1e40af' : '#374151' }}>
+                                                    <div className="response-header">
+                                                        <strong className={resp.is_staff_response ? 'response-author staff' : 'response-author'}>
                                                             {resp.responder_name || 'Guest'}
-                                                            {resp.is_staff_response && <span style={{ marginLeft: '0.5rem', fontSize: '0.75rem', color: '#3b82f6' }}>(Staff)</span>}
+                                                            {resp.is_staff_response && <span className="staff-badge">(Staff)</span>}
                                                         </strong>
-                                                        <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>
+                                                        <span className="response-time">
                                                             {formatDateTime(resp.created_at)}
                                                         </span>
                                                     </div>
-                                                    <p style={{ margin: 0, color: '#374151', whiteSpace: 'pre-wrap' }}>{resp.response_text}</p>
+                                                    <p className="response-text">{resp.response_text}</p>
                                                 </div>
                                             ))
                                         )}
@@ -372,8 +366,8 @@ const ContactSupport = () => {
 
                                 {/* Add Response */}
                                 {ticketDetails.ticket.status !== 'Closed' && (
-                                    <div>
-                                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
+                                    <div className="add-response-section">
+                                        <label>
                                             Add Your Response
                                         </label>
                                         <textarea
@@ -381,13 +375,6 @@ const ContactSupport = () => {
                                             onChange={(e) => setResponse(e.target.value)}
                                             rows="3"
                                             placeholder="Type your message..."
-                                            style={{ 
-                                                width: '100%', 
-                                                padding: '0.5rem', 
-                                                borderRadius: '0.375rem', 
-                                                border: '1px solid #d1d5db',
-                                                fontSize: '0.875rem'
-                                            }}
                                         />
                                         <button
                                             className="btn btn-primary"
@@ -401,8 +388,8 @@ const ContactSupport = () => {
                                 )}
 
                                 {ticketDetails.ticket.status === 'Closed' && (
-                                    <div style={{ padding: '1rem', backgroundColor: '#f3f4f6', borderRadius: '0.5rem', textAlign: 'center' }}>
-                                        <p style={{ margin: 0, color: '#6b7280' }}>
+                                    <div className="closed-notice">
+                                        <p>
                                             This ticket has been closed. No further responses can be added.
                                         </p>
                                     </div>

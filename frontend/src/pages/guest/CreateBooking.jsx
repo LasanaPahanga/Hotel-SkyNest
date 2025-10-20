@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import { formatCurrency, calculateNights } from '../../utils/helpers';
 import dashboardImage from '../../assets/dashboard.jpeg';
 import singleRoomImg from '../../assets/single.jpg';
-import doubleRoomImg from '../../assets/double room.png';
+import doubleRoomImg from '../../assets/doubleroom.png';
 import deluxeRoomImg from '../../assets/Deluxe-Double-Guestroom2.webp';
 import familyRoomImg from '../../assets/family.jpg';
 import presidentialSuiteImg from '../../assets/PRESIDENTIAL-SUITE-1-scaled.jpg';
@@ -148,8 +148,7 @@ const GuestCreateBooking = () => {
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
           backgroundAttachment: 'fixed',
-          minHeight: '100vh',
-          maxWidth: '1400px'
+          minHeight: '100vh'
         }}
       >
         <div className="page-header">

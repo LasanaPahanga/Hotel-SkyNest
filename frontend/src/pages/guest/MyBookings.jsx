@@ -130,8 +130,7 @@ const MyBookings = () => {
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
                     backgroundAttachment: 'fixed',
-                    minHeight: '100vh',
-                    maxWidth: '1400px'
+                    minHeight: '100vh'
                 }}
             >
                 <div className="dashboard-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -187,11 +186,9 @@ const MyBookings = () => {
                 {/* Bookings Grid */}
                 <div className="bookings-grid">
                     {filteredBookings.length === 0 ? (
-                        <Card>
-                            <div className="empty-state">
-                                <p>No bookings found</p>
-                            </div>
-                        </Card>
+                        <div className="empty-state">
+                            <p>No bookings found</p>
+                        </div>
                     ) : (
                         filteredBookings.map((booking) => (
                             <Card key={booking.booking_id} className="booking-card" onClick={() => navigate(`/guest/bookings/${booking.booking_id}`)}>

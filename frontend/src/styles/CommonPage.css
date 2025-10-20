@@ -1,6 +1,6 @@
 /* Common Page Styles - Dashboard UI Theme */
 .common-page {
-  max-width: 1400px;
+  width: 100%;
   position: relative;
   min-height: 100vh !important;
   background: #f8f9fa;
@@ -20,9 +20,19 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(248, 249, 250, 0.92);
+  background: rgba(248, 249, 250, 0.85);
   pointer-events: none;
   z-index: 0;
+}
+
+/* My Bookings Page - Full Width */
+.my-bookings-page {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+.my-bookings-page::before {
+  background: rgba(255, 255, 255, 0.75) !important;
 }
 
 .common-page > * {

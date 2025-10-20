@@ -7,27 +7,30 @@
 }
 
 .modern-guest-dashboard .dashboard-header {
-    background: linear-gradient(135deg, #000000 0%, #2d2d2d 100%);
-    color: #ffffff;
-    padding: 3rem 2rem;
-    text-align: center;
-    border-bottom: 4px solid #000000;
-    margin-bottom: 0;
+    background: transparent;
+    color: #000000;
+    padding: 2rem 2rem;
+    text-align: left;
+    border-bottom: 3px solid #000000;
+    margin-bottom: 2rem;
 }
 
 .modern-guest-dashboard .dashboard-header h1 {
-    font-size: 3rem;
-    font-weight: 800;
+    font-size: 2.5rem;
+    font-weight: 700;
     margin: 0 0 0.5rem 0;
-    letter-spacing: -1px;
+    letter-spacing: -0.5px;
+    color: #000000;
+    text-transform: uppercase;
 }
 
 .modern-guest-dashboard .dashboard-header p {
-    font-size: 1.2rem;
-    opacity: 0.9;
+    font-size: 1rem;
+    opacity: 0.8;
     margin: 0;
-    font-weight: 300;
-    letter-spacing: 1px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    color: #4b5563;
 }
 
 /* White Welcome Header */

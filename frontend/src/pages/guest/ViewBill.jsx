@@ -9,6 +9,7 @@ import { FaFileInvoice, FaPrint, FaDownload } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import '../../styles/GuestDashboard.css';
 import '../../styles/GuestTheme.css';
+import '../../styles/ViewBill.css';
 
 const ViewBill = () => {
     const navigate = useNavigate();
@@ -93,14 +94,13 @@ const ViewBill = () => {
     if (!currentBooking) {
         return (
             <GuestLayout>
-                <div style={{ padding: '4rem 2rem', textAlign: 'center' }}>
-                    <FaFileInvoice style={{ fontSize: '4rem', color: '#d1d5db', marginBottom: '1rem' }} />
+                <div className="no-booking-state">
+                    <FaFileInvoice />
                     <h2>No Active Booking</h2>
                     <p>You must have an active booking to view your bill.</p>
                     <button 
                         className="btn btn-primary"
                         onClick={() => navigate('/guest/bookings')}
-                        style={{ marginTop: '1rem' }}
                     >
                         View My Bookings
                     </button>
@@ -122,55 +122,25 @@ const ViewBill = () => {
 
     return (
         <GuestLayout>
-            <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem' }}>
+            <div className="view-bill-page">
                 {/* Page Header */}
-                <div style={{ 
-                    background: '#000000', 
-                    color: '#ffffff', 
-                    padding: '2rem', 
-                    marginBottom: '2rem',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                }}>
+                <div className="bill-header">
                     <div>
-                        <h1 style={{ margin: 0, fontSize: '2rem', textTransform: 'uppercase' }}>Invoice</h1>
-                        <p style={{ margin: '0.5rem 0 0 0', opacity: 0.9 }}>
+                        <h1>Invoice</h1>
+                        <p>
                             Booking ID: #{currentBooking.booking_id}
                         </p>
                     </div>
-                    <div style={{ display: 'flex', gap: '1rem' }}>
+                    <div className="bill-actions">
                         <button
                             onClick={handlePrint}
-                            style={{
-                                background: '#ffffff',
-                                color: '#000000',
-                                border: '2px solid #ffffff',
-                                padding: '0.75rem 1.5rem',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '0.5rem',
-                                fontWeight: '600',
-                                textTransform: 'uppercase'
-                            }}
+                            className="bill-action-btn"
                         >
                             <FaPrint /> Print
                         </button>
                         <button
                             onClick={handleDownload}
-                            style={{
-                                background: '#ffffff',
-                                color: '#000000',
-                                border: '2px solid #ffffff',
-                                padding: '0.75rem 1.5rem',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '0.5rem',
-                                fontWeight: '600',
-                                textTransform: 'uppercase'
-                            }}
+                            className="bill-action-btn"
                         >
                             <FaDownload /> Download
                         </button>
@@ -178,81 +148,74 @@ const ViewBill = () => {
                 </div>
 
                 {/* Bill Details */}
-                <Card>
+                <div className="bill-card">
                     {/* Hotel & Guest Info */}
-                    <div style={{ 
-                        display: 'grid', 
-                        gridTemplateColumns: '1fr 1fr', 
-                        gap: '2rem',
-                        marginBottom: '2rem',
-                        paddingBottom: '2rem',
-                        borderBottom: '2px solid #e5e7eb'
-                    }}>
-                        <div>
-                            <h3 style={{ margin: '0 0 1rem 0', textTransform: 'uppercase' }}>Hotel Details</h3>
-                            <p style={{ margin: '0.5rem 0' }}><strong>SkyNest Hotels</strong></p>
-                            <p style={{ margin: '0.5rem 0' }}>{currentBooking.branch_name}</p>
-                            <p style={{ margin: '0.5rem 0' }}>Colombo, Sri Lanka</p>
+                    <div className="bill-info-grid">
+                        <div className="bill-info-section">
+                            <h3>Hotel Details</h3>
+                            <p><strong>SkyNest Hotels</strong></p>
+                            <p>{currentBooking.branch_name}</p>
+                            <p>Colombo, Sri Lanka</p>
                         </div>
-                        <div>
-                            <h3 style={{ margin: '0 0 1rem 0', textTransform: 'uppercase' }}>Guest Details</h3>
-                            <p style={{ margin: '0.5rem 0' }}><strong>{currentBooking.guest_name}</strong></p>
-                            <p style={{ margin: '0.5rem 0' }}>Room: {currentBooking.room_number}</p>
-                            <p style={{ margin: '0.5rem 0' }}>Type: {currentBooking.room_type}</p>
+                        <div className="bill-info-section">
+                            <h3>Guest Details</h3>
+                            <p><strong>{currentBooking.guest_name}</strong></p>
+                            <p>Room: {currentBooking.room_number}</p>
+                            <p>Type: {currentBooking.room_type}</p>
                         </div>
                     </div>
 
                     {/* Stay Details */}
-                    <div style={{ marginBottom: '2rem', paddingBottom: '2rem', borderBottom: '2px solid #e5e7eb' }}>
-                        <h3 style={{ margin: '0 0 1rem 0', textTransform: 'uppercase' }}>Stay Details</h3>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                            <p style={{ margin: '0.5rem 0' }}>
+                    <div className="stay-details">
+                        <h3>Stay Details</h3>
+                        <div className="stay-details-grid">
+                            <p>
                                 <strong>Check-in:</strong> {formatDate(currentBooking.check_in_date)}
                             </p>
-                            <p style={{ margin: '0.5rem 0' }}>
+                            <p>
                                 <strong>Check-out:</strong> {formatDate(currentBooking.check_out_date)}
                             </p>
-                            <p style={{ margin: '0.5rem 0' }}>
+                            <p>
                                 <strong>Number of Nights:</strong> {nights}
                             </p>
-                            <p style={{ margin: '0.5rem 0' }}>
+                            <p>
                                 <strong>Status:</strong> {currentBooking.booking_status}
                             </p>
                         </div>
                     </div>
 
                     {/* Charges Breakdown */}
-                    <div style={{ marginBottom: '2rem' }}>
-                        <h3 style={{ margin: '0 0 1rem 0', textTransform: 'uppercase' }}>Charges</h3>
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <div className="bill-section">
+                        <h3>Charges</h3>
+                        <table className="bill-table">
                             <thead>
-                                <tr style={{ background: '#000000', color: '#ffffff' }}>
-                                    <th style={{ padding: '1rem', textAlign: 'left', textTransform: 'uppercase' }}>Description</th>
-                                    <th style={{ padding: '1rem', textAlign: 'right', textTransform: 'uppercase' }}>Amount</th>
+                                <tr>
+                                    <th>Description</th>
+                                    <th className="align-right">Amount</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
-                                    <td style={{ padding: '1rem' }}>
+                                <tr>
+                                    <td>
                                         Room Charges ({nights} nights)
                                     </td>
-                                    <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>
+                                    <td className="align-right">
                                         {formatCurrency(roomCharges)}
                                     </td>
                                 </tr>
                                 {services.length > 0 && services.map((service, index) => (
-                                    <tr key={index} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                                        <td style={{ padding: '1rem' }}>
+                                    <tr key={index}>
+                                        <td>
                                             {service.service_name} (x{service.quantity})
                                         </td>
-                                        <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>
+                                        <td className="align-right">
                                             {formatCurrency(service.total_price)}
                                         </td>
                                     </tr>
                                 ))}
-                                <tr style={{ background: '#f9fafb', fontWeight: '700', fontSize: '1.1rem' }}>
-                                    <td style={{ padding: '1rem' }}>TOTAL</td>
-                                    <td style={{ padding: '1rem', textAlign: 'right' }}>
+                                <tr className="total-row">
+                                    <td>TOTAL</td>
+                                    <td className="align-right">
                                         {formatCurrency(totalAmount)}
                                     </td>
                                 </tr>
@@ -262,33 +225,33 @@ const ViewBill = () => {
 
                     {/* Payment History */}
                     {payments.length > 0 && (
-                        <div style={{ marginBottom: '2rem' }}>
-                            <h3 style={{ margin: '0 0 1rem 0', textTransform: 'uppercase' }}>Payment History</h3>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                        <div className="bill-section">
+                            <h3>Payment History</h3>
+                            <table className="bill-table">
                                 <thead>
-                                    <tr style={{ background: '#000000', color: '#ffffff' }}>
-                                        <th style={{ padding: '1rem', textAlign: 'left', textTransform: 'uppercase' }}>Date</th>
-                                        <th style={{ padding: '1rem', textAlign: 'left', textTransform: 'uppercase' }}>Method</th>
-                                        <th style={{ padding: '1rem', textAlign: 'right', textTransform: 'uppercase' }}>Amount</th>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Method</th>
+                                        <th className="align-right">Amount</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {payments.map((payment, index) => (
-                                        <tr key={index} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                                            <td style={{ padding: '1rem' }}>
+                                        <tr key={index}>
+                                            <td>
                                                 {formatDateTime(payment.payment_date)}
                                             </td>
-                                            <td style={{ padding: '1rem' }}>
+                                            <td>
                                                 {payment.payment_method}
                                             </td>
-                                            <td style={{ padding: '1rem', textAlign: 'right', fontWeight: '600' }}>
+                                            <td className="align-right">
                                                 {formatCurrency(payment.amount)}
                                             </td>
                                         </tr>
                                     ))}
-                                    <tr style={{ background: '#f9fafb', fontWeight: '700' }}>
-                                        <td colSpan="2" style={{ padding: '1rem' }}>TOTAL PAID</td>
-                                        <td style={{ padding: '1rem', textAlign: 'right' }}>
+                                    <tr className="total-row">
+                                        <td colSpan="2">TOTAL PAID</td>
+                                        <td className="align-right">
                                             {formatCurrency(totalPaid)}
                                         </td>
                                     </tr>
@@ -298,42 +261,23 @@ const ViewBill = () => {
                     )}
 
                     {/* Outstanding Amount */}
-                    <div style={{ 
-                        background: outstandingAmount > 0 ? '#fef2f2' : '#f0fdf4',
-                        border: `2px solid ${outstandingAmount > 0 ? '#ef4444' : '#10b981'}`,
-                        padding: '1.5rem',
-                        marginTop: '2rem'
-                    }}>
-                        <div style={{ 
-                            display: 'flex', 
-                            justifyContent: 'space-between', 
-                            alignItems: 'center',
-                            fontSize: '1.5rem',
-                            fontWeight: '700'
-                        }}>
-                            <span style={{ textTransform: 'uppercase' }}>
-                                {outstandingAmount > 0 ? 'Outstanding Amount' : 'Fully Paid'}
-                            </span>
-                            <span style={{ color: outstandingAmount > 0 ? '#ef4444' : '#10b981' }}>
-                                {formatCurrency(Math.abs(outstandingAmount))}
-                            </span>
-                        </div>
+                    <div className={`outstanding-box ${outstandingAmount > 0 ? 'has-balance' : 'fully-paid'}`}>
+                        <span className="label">
+                            {outstandingAmount > 0 ? 'Outstanding Amount' : 'Fully Paid'}
+                        </span>
+                        <span className="amount">
+                            {formatCurrency(Math.abs(outstandingAmount))}
+                        </span>
                     </div>
 
                     {/* Footer Note */}
-                    <div style={{ 
-                        marginTop: '2rem', 
-                        paddingTop: '2rem', 
-                        borderTop: '2px solid #e5e7eb',
-                        textAlign: 'center',
-                        color: '#6b7280'
-                    }}>
-                        <p style={{ margin: '0.5rem 0' }}>Thank you for choosing SkyNest Hotels</p>
-                        <p style={{ margin: '0.5rem 0', fontSize: '0.875rem' }}>
+                    <div className="bill-footer">
+                        <p>Thank you for choosing SkyNest Hotels</p>
+                        <p>
                             For any queries, please contact our reception or support team
                         </p>
                     </div>
-                </Card>
+                </div>
             </div>
         </GuestLayout>
     );

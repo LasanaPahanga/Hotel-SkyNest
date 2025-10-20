@@ -103,7 +103,7 @@
 /* Main Content */
 .guest-main-content {
     padding: 0;
-    background: #ffffff;
+    background: #f8f9fa;
     min-height: calc(100vh - 70px);
 }
 
@@ -112,8 +112,8 @@
     background: #ffffff !important;
 }
 
-/* Page Header */
-.page-header,
+/* Page Header - Scoped to guest pages only */
+.modern-guest-dashboard .page-header,
 .guest-page-header {
     background: #000000 !important;
     color: #ffffff !important;
@@ -122,14 +122,17 @@
     border-bottom: 3px solid #ffffff;
 }
 
-.page-header h1,
-.page-header h2 {
+.modern-guest-dashboard .page-header h1,
+.modern-guest-dashboard .page-header h2,
+.guest-page-header h1,
+.guest-page-header h2 {
     color: #ffffff !important;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
-.page-header p {
+.modern-guest-dashboard .page-header p,
+.guest-page-header p {
     color: rgba(255, 255, 255, 0.9) !important;
 }
 

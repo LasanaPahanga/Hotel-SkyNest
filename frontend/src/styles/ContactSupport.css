@@ -1,0 +1,408 @@
+/* Contact Support Page - Black & White Theme */
+
+.contact-support-page {
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+.contact-support-page::before {
+    background: rgba(255, 255, 255, 0.75) !important;
+}
+
+.contact-support-page .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid #000000;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Support Form */
+.support-form {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.support-form .form-group {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.support-form label {
+    font-weight: 600;
+    color: #000000;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+}
+
+.support-form input,
+.support-form select,
+.support-form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #000000;
+    border-radius: 0;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+    background: #ffffff;
+}
+
+.support-form input:focus,
+.support-form select:focus,
+.support-form textarea:focus {
+    outline: none;
+    box-shadow: 4px 4px 0 #000000;
+    transform: translate(-2px, -2px);
+}
+
+.support-form textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+}
+
+/* Tickets List */
+.tickets-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.ticket-item {
+    background: #ffffff;
+    border: 3px solid #000000;
+    border-radius: 0;
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.08);
+}
+
+.ticket-item:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.12);
+}
+
+.ticket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    gap: 1rem;
+}
+
+.ticket-header h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #000000;
+    text-transform: uppercase;
+    letter-spacing: -0.3px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.ticket-meta {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.ticket-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.ticket-message {
+    margin: 0.75rem 0;
+    color: #374151;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.ticket-responses {
+    margin: 0.75rem 0 0 0;
+    padding-top: 0.75rem;
+    border-top: 2px solid #e5e7eb;
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+/* Empty State */
+.contact-support-page .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.contact-support-page .empty-state p {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #000000;
+    text-transform: uppercase;
+}
+
+.contact-support-page .empty-state small {
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Card Styling */
+.contact-support-page .card {
+    background: #ffffff;
+    border: 3px solid #000000;
+    border-radius: 0;
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.contact-support-page .card-header {
+    background: #000000;
+    color: #ffffff;
+    padding: 1rem 1.5rem;
+    margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+    border-bottom: 3px solid #000000;
+}
+
+.contact-support-page .card-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.3px;
+    color: #ffffff;
+}
+
+/* Modal Content Styling */
+.modal-content .ticket-details-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.modal-content .ticket-details-header h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #000000;
+    text-transform: uppercase;
+}
+
+.modal-content .ticket-details-meta {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.modal-content .ticket-description {
+    padding: 1.25rem;
+    background: #f9fafb;
+    border-left: 4px solid #000000;
+    margin: 1rem 0;
+}
+
+.modal-content .ticket-description p {
+    margin: 0;
+    white-space: pre-wrap;
+    line-height: 1.6;
+    color: #374151;
+}
+
+.modal-content .responses-section {
+    margin: 1.5rem 0;
+}
+
+.modal-content .responses-section h4 {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #000000;
+}
+
+.modal-content .responses-container {
+    max-height: 300px;
+    overflow-y: auto;
+    display: grid;
+    gap: 0.75rem;
+    padding: 0.5rem;
+}
+
+.modal-content .response-item {
+    padding: 1rem;
+    border-left: 4px solid;
+    background: #f9fafb;
+}
+
+.modal-content .response-item.staff-response {
+    background: #eff6ff;
+    border-left-color: #3b82f6;
+}
+
+.modal-content .response-item.guest-response {
+    background: #f9fafb;
+    border-left-color: #000000;
+}
+
+.modal-content .response-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.modal-content .response-author {
+    font-weight: 700;
+    color: #000000;
+}
+
+.modal-content .response-author.staff {
+    color: #1e40af;
+}
+
+.modal-content .staff-badge {
+    margin-left: 0.5rem;
+    font-size: 0.75rem;
+    color: #3b82f6;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.modal-content .response-time {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.modal-content .response-text {
+    margin: 0;
+    color: #374151;
+    white-space: pre-wrap;
+    line-height: 1.5;
+}
+
+.modal-content .no-responses {
+    text-align: center;
+    color: #6b7280;
+    padding: 2rem 1rem;
+    font-style: italic;
+}
+
+.modal-content .add-response-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid #e5e7eb;
+}
+
+.modal-content .add-response-section label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #000000;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+}
+
+.modal-content .add-response-section textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #000000;
+    border-radius: 0;
+    font-size: 0.875rem;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+    resize: vertical;
+}
+
+.modal-content .add-response-section textarea:focus {
+    outline: none;
+    box-shadow: 4px 4px 0 #000000;
+    transform: translate(-2px, -2px);
+}
+
+.modal-content .closed-notice {
+    padding: 1.25rem;
+    background: #f3f4f6;
+    border: 2px solid #9ca3af;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.modal-content .closed-notice p {
+    margin: 0;
+    color: #4b5563;
+    font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .contact-support-page .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .ticket-header {
+        flex-direction: column;
+    }
+    
+    .ticket-badges {
+        width: 100%;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .form-actions button {
+        width: 100%;
+    }
+    
+    .contact-support-page .card {
+        box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.1);
+    }
+    
+    .ticket-item {
+        box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.08);
+    }
+    
+    .ticket-item:hover {
+        box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.12);
+    }
+}
+
+@media (max-width: 480px) {
+    .contact-support-page .card,
+    .ticket-item {
+        border-width: 2px;
+    }
+    
+    .ticket-header h4 {
+        font-size: 1rem;
+    }
+    
+    .support-form input,
+    .support-form select,
+    .support-form textarea {
+        font-size: 0.875rem;
+    }
+}

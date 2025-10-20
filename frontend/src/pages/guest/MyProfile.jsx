@@ -97,18 +97,14 @@ const MyProfile = () => {
     if (!profile) {
         return (
             <GuestLayout>
-                <div className="container">
-                    <Card>
-                        <div className="text-center py-5">
-                            <h3>Profile not found</h3>
-                            <button 
-                                className="btn btn-primary mt-3"
-                                onClick={() => navigate('/guest/dashboard')}
-                            >
-                                Back to Dashboard
-                            </button>
-                        </div>
-                    </Card>
+                <div className="profile-not-found">
+                    <h3>Profile not found</h3>
+                    <button 
+                        className="btn btn-primary"
+                        onClick={() => navigate('/guest/dashboard')}
+                    >
+                        Back to Dashboard
+                    </button>
                 </div>
             </GuestLayout>
         );
@@ -124,8 +120,7 @@ const MyProfile = () => {
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
                     backgroundAttachment: 'fixed',
-                    minHeight: '100vh',
-                    maxWidth: '1400px'
+                    minHeight: '100vh'
                 }}
             >
                 <div className="page-header">
@@ -145,7 +140,7 @@ const MyProfile = () => {
                 </div>
 
                 <div style={{ maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-                    <Card style={{ position: 'relative', zIndex: 1 }}>
+                    <Card>
                             {editing ? (
                                 <form onSubmit={handleSubmit}>
                                     <div className="row g-3">
@@ -275,13 +270,12 @@ const MyProfile = () => {
                                         </div>
                                     </div>
 
-                                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #dee2e6' }}>
+                                    <div className="form-actions">
                                         <button 
                                             type="button" 
                                             className="btn btn-secondary"
                                             onClick={handleCancel}
                                             disabled={saving}
-                                            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
                                         >
                                             <FaTimes />
                                             Cancel
@@ -290,7 +284,6 @@ const MyProfile = () => {
                                             type="submit" 
                                             className="btn btn-success"
                                             disabled={saving}
-                                            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
                                         >
                                             {saving ? (
                                                 <>
@@ -406,48 +399,6 @@ const MyProfile = () => {
                         </Card>
                 </div>
             </div>
-
-            <style jsx>{`
-                .profile-view {
-                    padding: 1rem 0;
-                }
-
-                .profile-field {
-                    margin-bottom: 1rem;
-                }
-
-                .profile-field label {
-                    font-weight: 600;
-                    color: #6c757d;
-                    font-size: 0.875rem;
-                    text-transform: uppercase;
-                    letter-spacing: 0.5px;
-                    margin-bottom: 0.5rem;
-                    display: flex;
-                    align-items: center;
-                }
-
-                .profile-field .value {
-                    font-size: 1rem;
-                    color: #212529;
-                    margin: 0;
-                    padding: 0.5rem;
-                    background-color: #f8f9fa;
-                    border-radius: 0.375rem;
-                }
-
-                .form-label {
-                    font-weight: 600;
-                    color: #495057;
-                    display: flex;
-                    align-items: center;
-                }
-
-                .form-control:disabled {
-                    background-color: #e9ecef;
-                    cursor: not-allowed;
-                }
-            `}</style>
         </GuestLayout>
     );
 };
