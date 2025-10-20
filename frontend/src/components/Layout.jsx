@@ -82,8 +82,10 @@ const Layout = ({ children }) => {
         return '/login';
     };
 
+    const roleClass = user?.role ? `role-${user.role.toLowerCase()}` : '';
+
     return (
-        <div className="layout">
+        <div className={`layout ${roleClass}`}>
             {/* Sidebar */}
             <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
                 <div className="sidebar-header">
