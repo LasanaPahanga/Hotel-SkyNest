@@ -5,7 +5,7 @@
 
 /* Guest-only: blue-green gradient for sidebar and top bar */
 .layout.role-guest .sidebar {
-  background: linear-gradient(180deg, #1e3a8a 0%, #2563eb 100%);
+  background: linear-gradient(180deg, #e7e7e7 0%, #ffffff 100%);
   color: #ffffff;
   box-shadow: 2px 0 10px rgba(37, 99, 235, 0.18);
   border-right: none;
@@ -291,7 +291,7 @@
 
 /* Guest-only DARK THEME (scoped) */
 .layout.role-guest .sidebar {
-  background: linear-gradient(180deg, #1429cf 0%, #000000 100%);
+  background: linear-gradient(180deg, #bdbdbd 0%, #000000 100%);
   color: #ffffff;
   box-shadow: 2px 0 8px rgba(224, 220, 220, 0);
   border-right: 1px solid rgba(255,255,255,0.06);
@@ -304,7 +304,7 @@
 .layout.role-guest .logout-btn:hover { background-color: rgba(239, 68, 68, 0.12); color: #fca5a5; }
 
 .layout.role-guest .top-bar {
-  background: linear-gradient(90deg, #1429cf 0%, #111214 100%);
+  background: linear-gradient(90deg, #ffffff 0%, #ffffff 100%);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
   border-bottom: 1px solid rgba(255,255,255,0.06);
   color: #e5e7eb;

@@ -26,6 +26,19 @@
     z-index: 0;
 }
 
+/* Styles for the guest dashboard without top bar */
+.guest-dashboard.without-topbar {
+    padding-top: 0;
+    margin-top: 0;
+    height: 100vh;
+    max-width: none; /* Remove max-width constraint */
+    width: 100%;
+}
+
+.guest-dashboard.without-topbar::before {
+    background: rgba(0, 0, 0, 0.3); /* Darker overlay for better text visibility */
+}
+
 /* Ensure content is above background */
 .guest-dashboard > * {
     position: relative;
@@ -60,22 +73,26 @@
     margin-bottom: 32px;
 }
 
-/* Dashboard Header Glass Card */
+/* Dashboard Header - No Glass Card */
 .dashboard-header {
     margin-bottom: 2rem;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.14));
-    backdrop-filter: blur(18px) saturate(170%);
-    -webkit-backdrop-filter: blur(18px) saturate(170%);
-    border: 1px solid rgba(255, 255, 255, 0.42);
-    border-radius: 18px;
-    padding: 32px;
-    box-shadow: 0 18px 50px rgba(31, 78, 107, 0.18), inset 0 1px 0 rgba(255,255,255,0.35);
     text-align: center;
+}
+
+/* Remove glass box for the special no-glass-box class */
+.dashboard-header.no-glass-box {
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: none;
+    border-radius: 0;
+    padding: 32px;
+    box-shadow: none;
 }
 
 .dashboard-header h1 {
     margin: 0 0 0.5rem 0;
-    color: #1f4e6b;
+    color: #000000;
     font-size: 32px;
     font-weight: 700;
     font-family: 'Poppins', sans-serif;
@@ -84,10 +101,22 @@
 
 .dashboard-header p {
     margin: 0;
-    color: #495057;
+    color: #1e2023;
     font-size: 18px;
     font-weight: 500;
     opacity: 0.9;
+}
+
+/* Styles for no glass box header */
+.dashboard-header.no-glass-box h1 {
+    color: #ffffff;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.dashboard-header.no-glass-box p {
+    color: #ffffff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    opacity: 1;
 }
 
 /* Filter Tabs - Glass Style */
