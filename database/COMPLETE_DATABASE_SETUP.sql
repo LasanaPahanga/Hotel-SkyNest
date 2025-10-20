@@ -1722,6 +1722,61 @@ BEGIN
 END$$
 
 -- ============================================
+-- STORED PROCEDURE: create_support_ticket
+-- Creates a new support ticket
+-- ============================================
+DROP PROCEDURE IF EXISTS create_support_ticket$$
+CREATE PROCEDURE create_support_ticket(
+    IN p_guest_id INT,
+    IN p_booking_id INT,
+    IN p_subject VARCHAR(255),
+    IN p_message TEXT,
+    IN p_priority ENUM('Low', 'Medium', 'High', 'Urgent'),
+    OUT p_ticket_id INT,
+    OUT p_error_message VARCHAR(255)
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        SET p_error_message = 'Error creating support ticket';
+        SET p_ticket_id = NULL;
+        ROLLBACK;
+    END;
+    
+    START TRANSACTION;
+    
+    -- Validate guest exists
+    IF NOT EXISTS (SELECT 1 FROM guests WHERE guest_id = p_guest_id) THEN
+        SET p_error_message = 'Guest not found';
+        SET p_ticket_id = NULL;
+        ROLLBACK;
+    ELSE
+        -- Insert support ticket
+        INSERT INTO support_tickets (
+            guest_id,
+            booking_id,
+            subject,
+            description,
+            priority,
+            status,
+            created_at
+        ) VALUES (
+            p_guest_id,
+            p_booking_id,
+            p_subject,
+            p_message,
+            p_priority,
+            'Open',
+            NOW()
+        );
+        
+        SET p_ticket_id = LAST_INSERT_ID();
+        SET p_error_message = NULL;
+        COMMIT;
+    END IF;
+END$$
+
+-- ============================================
 -- STORED PROCEDURE: get_guest_history
 -- Gets complete history for a guest
 -- ============================================
@@ -2124,11 +2179,190 @@ ANALYZE TABLE support_tickets;
 ANALYZE TABLE ticket_responses;
 
 -- ============================================
+-- SECTION 4: ADDITIONAL VIEWS AND COMPATIBILITY
+-- ============================================
+
+-- ============================================
+-- VIEW: service_requests_view
+-- Comprehensive view for service requests (from add_missing_view.sql)
+-- ============================================
+DROP VIEW IF EXISTS service_requests_view;
+CREATE VIEW service_requests_view AS
+SELECT 
+    sr.request_id,
+    sr.booking_id,
+    sr.guest_id,
+    CONCAT(g.first_name, ' ', g.last_name) as guest_name,
+    g.email as guest_email,
+    g.phone as guest_phone,
+    sr.service_id,
+    sc.service_name,
+    sc.service_category,
+    sc.unit_price as base_price,
+    COALESCE(bs.custom_price, sc.unit_price) as unit_price,
+    sr.quantity,
+    (COALESCE(bs.custom_price, sc.unit_price) * sr.quantity) as total_amount,
+    sr.branch_id,
+    hb.branch_name,
+    sr.request_status,
+    sr.request_notes,
+    sr.reviewed_by,
+    u.full_name as reviewed_by_name,
+    sr.reviewed_at,
+    sr.review_notes,
+    sr.requested_at,
+    r.room_number,
+    b.check_in_date,
+    b.check_out_date
+FROM service_requests sr
+JOIN guests g ON sr.guest_id = g.guest_id
+JOIN service_catalogue sc ON sr.service_id = sc.service_id
+JOIN hotel_branches hb ON sr.branch_id = hb.branch_id
+JOIN bookings b ON sr.booking_id = b.booking_id
+JOIN rooms r ON b.room_id = r.room_id
+LEFT JOIN branch_services bs ON sr.service_id = bs.service_id AND sr.branch_id = bs.branch_id
+LEFT JOIN users u ON sr.reviewed_by = u.user_id;
+
+-- ============================================
+-- VIEW: tax_configurations
+-- Compatibility view mapping to branch_tax_config (from fix_table_name_mismatch.sql)
+-- ============================================
+DROP VIEW IF EXISTS tax_configurations;
+CREATE VIEW tax_configurations AS
+SELECT 
+    tax_config_id,
+    branch_id,
+    tax_name,
+    tax_type,
+    tax_rate,
+    TRUE as is_percentage,
+    is_active,
+    effective_from,
+    effective_to,
+    created_at,
+    updated_at
+FROM branch_tax_config;
+
+-- ============================================
+-- VIEW: discount_configurations
+-- Compatibility view mapping to branch_discount_config (from fix_table_name_mismatch.sql)
+-- ============================================
+DROP VIEW IF EXISTS discount_configurations;
+CREATE VIEW discount_configurations AS
+SELECT 
+    discount_config_id,
+    branch_id,
+    discount_name,
+    discount_type,
+    discount_value,
+    applicable_on,
+    min_booking_amount,
+    max_discount_amount,
+    is_active,
+    valid_from,
+    valid_to as valid_until,
+    promo_code,
+    usage_limit,
+    usage_count,
+    created_at,
+    updated_at
+FROM branch_discount_config;
+
+-- ============================================
+-- SECTION 5: ALTERNATIVE TABLE STRUCTURES (from fix_tax_discount_tables.sql)
+-- These provide alternative table structures if needed
+-- ============================================
+
+-- Alternative Tax Configurations Table
+CREATE TABLE IF NOT EXISTS tax_configurations_alt (
+    tax_config_id INT PRIMARY KEY AUTO_INCREMENT,
+    branch_id INT NOT NULL,
+    tax_name VARCHAR(100) NOT NULL,
+    tax_type ENUM('VAT', 'Service Tax', 'Tourism Tax', 'Other') NOT NULL DEFAULT 'VAT',
+    tax_rate DECIMAL(5,2) NOT NULL,
+    is_percentage BOOLEAN DEFAULT TRUE,
+    effective_from DATE NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (branch_id) REFERENCES hotel_branches(branch_id) ON DELETE CASCADE,
+    INDEX idx_branch_active (branch_id, is_active)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Alternative Discount Configurations Table
+CREATE TABLE IF NOT EXISTS discount_configurations_alt (
+    discount_config_id INT PRIMARY KEY AUTO_INCREMENT,
+    branch_id INT NOT NULL,
+    discount_name VARCHAR(100) NOT NULL,
+    discount_type ENUM('Percentage', 'Fixed Amount') NOT NULL DEFAULT 'Percentage',
+    discount_value DECIMAL(10,2) NOT NULL,
+    promo_code VARCHAR(50) UNIQUE,
+    min_booking_amount DECIMAL(10,2) DEFAULT 0,
+    max_discount_amount DECIMAL(10,2),
+    usage_limit INT,
+    usage_count INT DEFAULT 0,
+    valid_from DATE,
+    valid_until DATE,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (branch_id) REFERENCES hotel_branches(branch_id) ON DELETE CASCADE,
+    INDEX idx_promo_code (promo_code),
+    INDEX idx_branch_active (branch_id, is_active)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Alternative Fee Configurations Table
+CREATE TABLE IF NOT EXISTS fee_configurations (
+    fee_config_id INT PRIMARY KEY AUTO_INCREMENT,
+    branch_id INT NOT NULL,
+    fee_type ENUM('Late Checkout', 'No-Show', 'Cancellation', 'Damage', 'Other') NOT NULL,
+    fee_calculation ENUM('Fixed Amount', 'Percentage', 'Per Hour') NOT NULL DEFAULT 'Fixed Amount',
+    fee_value DECIMAL(10,2) NOT NULL,
+    grace_period_minutes INT DEFAULT 0,
+    max_fee_amount DECIMAL(10,2),
+    description TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (branch_id) REFERENCES hotel_branches(branch_id) ON DELETE CASCADE,
+    INDEX idx_branch_active (branch_id, is_active)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ============================================
+-- SECTION 6: PAYMENT CALCULATION TEST QUERIES
+-- Verification queries from test_payment_calculation.sql
+-- ============================================
+
+-- Test 1: Verify views exist
+SELECT 'Verifying compatibility views...' as Test;
+SHOW FULL TABLES WHERE Table_type = 'VIEW' AND Tables_in_skynest_hotels LIKE '%configurations';
+
+-- Test 2: Verify tax configurations
+SELECT 'Verifying tax configurations...' as Test;
+SELECT COUNT(*) as tax_count FROM branch_tax_config;
+
+-- Test 3: Verify discount configurations
+SELECT 'Verifying discount configurations...' as Test;
+SELECT COUNT(*) as discount_count FROM branch_discount_config;
+
+-- Test 4: Verify fee configurations
+SELECT 'Verifying fee configurations...' as Test;
+SELECT COUNT(*) as fee_count FROM branch_fee_config;
+
+-- Test 5: Verify payment breakdowns table
+SELECT 'Verifying payment_breakdowns table...' as Test;
+SELECT COUNT(*) as breakdown_count FROM payment_breakdowns;
+
+-- ============================================
 -- COMPLETION MESSAGE
 -- ============================================
 
-SELECT '✅ Database efficiency improvements applied successfully!' as Status;
-SELECT 'Added 12 performance indexes' as Detail1;
-SELECT 'Created 6 optimized views' as Detail2;
-SELECT 'Analyzed all tables for query optimization' as Detail3;
-SELECT 'No existing functionality changed' as Detail4;
+SELECT '✅ Database setup completed successfully!' as Status;
+SELECT 'Schema with all tables created' as Detail1;
+SELECT 'Seed data inserted' as Detail2;
+SELECT 'Stored procedures and functions created' as Detail3;
+SELECT 'Triggers configured' as Detail4;
+SELECT 'Performance indexes added' as Detail5;
+SELECT 'Optimized views created' as Detail6;
+SELECT 'Compatibility views for tax/discount/fee tables' as Detail7;
+SELECT 'Payment calculation structures verified' as Detail8;
