@@ -84,6 +84,23 @@ CREATE TABLE users (
 ) ENGINE=InnoDB;
 
 -- ============================================
+-- TABLE: email_verification_tokens
+-- Stores tokens for email verification and password reset
+-- ============================================
+CREATE TABLE email_verification_tokens (
+    token_id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    token VARCHAR(255) NOT NULL UNIQUE,
+    token_type ENUM('Email Verification', 'Password Reset', 'Signup') NOT NULL,
+    expires_at DATETIME NOT NULL,
+    used BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_email (email),
+    INDEX idx_token (token),
+    INDEX idx_expires (expires_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================
 -- TABLE: guests
 -- Stores guest information
 -- ============================================

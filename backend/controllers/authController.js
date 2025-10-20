@@ -416,7 +416,7 @@ const verifyEmail = async (req, res, next) => {
         // Find token
         const [tokens] = await promisePool.query(
             `SELECT * FROM email_verification_tokens 
-             WHERE token = ? AND token_type = 'Signup' AND is_used = FALSE AND expires_at > NOW()`,
+             WHERE token = ? AND token_type = 'Signup' AND used = FALSE AND expires_at > NOW()`,
             [token]
         );
 
@@ -470,7 +470,7 @@ const verifyEmail = async (req, res, next) => {
 
             // Mark token as used
             await connection.query(
-                'UPDATE email_verification_tokens SET is_used = TRUE WHERE token_id = ?',
+                'UPDATE email_verification_tokens SET used = TRUE WHERE token_id = ?',
                 [tokenData.token_id]
             );
 
@@ -570,7 +570,7 @@ const resetPassword = async (req, res, next) => {
         // Find valid token
         const [tokens] = await promisePool.query(
             `SELECT * FROM email_verification_tokens 
-             WHERE token = ? AND token_type = 'Password Reset' AND is_used = FALSE AND expires_at > NOW()`,
+             WHERE token = ? AND token_type = 'Password Reset' AND used = FALSE AND expires_at > NOW()`,
             [token]
         );
 
@@ -595,7 +595,7 @@ const resetPassword = async (req, res, next) => {
 
         // Mark token as used
         await promisePool.query(
-            'UPDATE email_verification_tokens SET is_used = TRUE WHERE token_id = ?',
+            'UPDATE email_verification_tokens SET used = TRUE WHERE token_id = ?',
             [tokenData.token_id]
         );
 
