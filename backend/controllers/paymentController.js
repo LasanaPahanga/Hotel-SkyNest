@@ -378,13 +378,13 @@ const validatePromoCode = async (req, res, next) => {
 
         const { branch_id, total_amount } = bookings[0];
 
-        // Check promo code
+        // Check promo code against branch_discount_config (actual schema)
         const [discounts] = await promisePool.query(`
             SELECT 
                 discount_config_id, discount_name, discount_type, 
                 discount_value, min_booking_amount, max_discount_amount,
-                usage_limit, usage_count, valid_from, valid_until
-            FROM discount_configurations
+                usage_limit, usage_count, valid_from, valid_to
+            FROM branch_discount_config
             WHERE branch_id = ? 
             AND promo_code = ? 
             AND is_active = TRUE
@@ -407,7 +407,7 @@ const validatePromoCode = async (req, res, next) => {
             });
         }
 
-        if (discount.valid_until && new Date(discount.valid_until) < new Date()) {
+        if (discount.valid_to && new Date(discount.valid_to) < new Date()) {
             return res.status(400).json({
                 success: false,
                 message: 'Promo code has expired'

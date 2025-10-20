@@ -6,7 +6,7 @@ import Card from '../components/Card';
 import Table from '../components/Table';
 import Modal from '../components/Modal';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { userAPI, branchAPI, authAPI } from '../utils/api';
+import { userAPI, branchAPI, authAPI, guestAPI } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { FaPlus, FaEdit, FaTrash, FaKey } from 'react-icons/fa';
 import dashboardImage from '../assets/dashboard.jpeg';
@@ -31,6 +31,15 @@ const Users = () => {
         role: 'Receptionist',
         branch_id: '',
         phone: ''
+    });
+
+    // Extra fields required when creating a Guest (to also create guests record)
+    const [guestFields, setGuestFields] = useState({
+        country: '',
+        id_type: 'Passport',
+        id_number: '',
+        address: '',
+        date_of_birth: ''
     });
 
     const [resetData, setResetData] = useState({
@@ -72,8 +81,37 @@ const Users = () => {
         }
 
         try {
-            await authAPI.register(formData);
-            toast.success('User created successfully');
+            if (formData.role === 'Guest') {
+                // Validate required guest fields
+                const [firstName, ...lastParts] = (formData.full_name || '').trim().split(' ');
+                const lastName = lastParts.join(' ').trim();
+                if (!firstName || !lastName) {
+                    toast.error('Please enter a full name with first and last name');
+                    return;
+                }
+                if (!guestFields.country || !guestFields.id_number) {
+                    toast.error('Country and ID Number are required for Guest');
+                    return;
+                }
+
+                // Create guest (backend will also create the user with default password)
+                await guestAPI.create({
+                    first_name: firstName,
+                    last_name: lastName,
+                    email: formData.email,
+                    phone: formData.phone,
+                    id_type: guestFields.id_type,
+                    id_number: guestFields.id_number,
+                    address: guestFields.address || undefined,
+                    country: guestFields.country,
+                    date_of_birth: guestFields.date_of_birth || undefined
+                });
+                toast.success('Guest and user account created successfully');
+            } else {
+                // Non-guest user creation (Admin/Receptionist)
+                await authAPI.register(formData);
+                toast.success('User created successfully');
+            }
             setShowCreateModal(false);
             setFormData({
                 username: '',
@@ -84,6 +122,7 @@ const Users = () => {
                 branch_id: '',
                 phone: ''
             });
+            setGuestFields({ country: '', id_type: 'Passport', id_number: '', address: '', date_of_birth: '' });
             fetchUsers();
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to create user');
@@ -289,6 +328,56 @@ const Users = () => {
                                 </select>
                                 <small>Required for Receptionists</small>
                             </div>
+
+                            {formData.role === 'Guest' && (
+                                <>
+                                    <div className="form-group">
+                                        <label>Country *</label>
+                                        <input
+                                            type="text"
+                                            value={guestFields.country}
+                                            onChange={(e) => setGuestFields({ ...guestFields, country: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>ID Type *</label>
+                                        <select
+                                            value={guestFields.id_type}
+                                            onChange={(e) => setGuestFields({ ...guestFields, id_type: e.target.value })}
+                                        >
+                                            <option value="Passport">Passport</option>
+                                            <option value="NIC">NIC</option>
+                                            <option value="Driving License">Driving License</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>ID Number *</label>
+                                        <input
+                                            type="text"
+                                            value={guestFields.id_number}
+                                            onChange={(e) => setGuestFields({ ...guestFields, id_number: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Address</label>
+                                        <input
+                                            type="text"
+                                            value={guestFields.address}
+                                            onChange={(e) => setGuestFields({ ...guestFields, address: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Date of Birth</label>
+                                        <input
+                                            type="date"
+                                            value={guestFields.date_of_birth}
+                                            onChange={(e) => setGuestFields({ ...guestFields, date_of_birth: e.target.value })}
+                                        />
+                                    </div>
+                                </>
+                            )}
                         </div>
 
                         <div className="modal-actions">

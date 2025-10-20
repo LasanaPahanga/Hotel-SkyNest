@@ -67,11 +67,14 @@ CREATE TABLE users (
     username VARCHAR(50) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
+    email_verified BOOLEAN DEFAULT FALSE,
+    email_verified_at DATETIME NULL,
     full_name VARCHAR(100) NOT NULL,
     role ENUM('Admin', 'Receptionist', 'Guest') NOT NULL,
     branch_id INT NULL,
     phone VARCHAR(20),
     is_active BOOLEAN DEFAULT TRUE,
+    last_login_at DATETIME NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (branch_id) REFERENCES hotel_branches(branch_id) ON DELETE SET NULL,
@@ -430,7 +433,105 @@ CREATE TABLE payment_breakdowns (
     INDEX idx_booking (booking_id)
 ) ENGINE=InnoDB;
 
+-- ============================================
+-- TABLE: booking_taxes
+-- Detailed tax lines applied per booking
+-- ============================================
+CREATE TABLE booking_taxes (
+    booking_tax_id INT PRIMARY KEY AUTO_INCREMENT,
+    booking_id INT NOT NULL,
+    tax_config_id INT NULL,
+    tax_name VARCHAR(100) NOT NULL,
+    tax_rate DECIMAL(5, 2) NOT NULL,
+    taxable_amount DECIMAL(10, 2) NOT NULL,
+    tax_amount DECIMAL(10, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (booking_id) REFERENCES bookings(booking_id) ON DELETE CASCADE,
+    FOREIGN KEY (tax_config_id) REFERENCES branch_tax_config(tax_config_id) ON DELETE SET NULL,
+    INDEX idx_booking (booking_id)
+) ENGINE=InnoDB;
+
+-- ============================================
+-- TABLE: booking_discounts
+-- Discounts applied per booking (promo, etc.)
+-- ============================================
+CREATE TABLE booking_discounts (
+    booking_discount_id INT PRIMARY KEY AUTO_INCREMENT,
+    booking_id INT NOT NULL,
+    discount_config_id INT NULL,
+    discount_name VARCHAR(100) NOT NULL,
+    discount_type ENUM('Percentage', 'Fixed Amount') NOT NULL,
+    discount_value DECIMAL(10, 2) NOT NULL,
+    discount_amount DECIMAL(10, 2) NOT NULL,
+    promo_code VARCHAR(50) NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (booking_id) REFERENCES bookings(booking_id) ON DELETE CASCADE,
+    FOREIGN KEY (discount_config_id) REFERENCES branch_discount_config(discount_config_id) ON DELETE SET NULL,
+    INDEX idx_booking (booking_id)
+) ENGINE=InnoDB;
+
+-- ============================================
+-- TABLE: booking_fees
+-- Additional fees applied per booking (late checkout, etc.)
+-- ============================================
+CREATE TABLE booking_fees (
+    booking_fee_id INT PRIMARY KEY AUTO_INCREMENT,
+    booking_id INT NOT NULL,
+    fee_config_id INT NULL,
+    fee_type ENUM('Late Checkout', 'No Show', 'Early Checkout', 'Cancellation', 'Other') NOT NULL,
+    fee_amount DECIMAL(10, 2) NOT NULL,
+    fee_reason TEXT,
+    calculation_details JSON COMMENT 'Details of how fee was calculated',
+    applied_by INT NULL,
+    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (booking_id) REFERENCES bookings(booking_id) ON DELETE CASCADE,
+    FOREIGN KEY (fee_config_id) REFERENCES branch_fee_config(fee_config_id) ON DELETE SET NULL,
+    FOREIGN KEY (applied_by) REFERENCES users(user_id) ON DELETE SET NULL,
+    INDEX idx_booking (booking_id),
+    INDEX idx_fee_type (fee_type)
+) ENGINE=InnoDB;
+
 -- SkyNest Hotels - Seed Data
+-- ============================================
+-- VIEW: service_requests_view
+-- Aggregated view used by service requests API
+-- ============================================
+DROP VIEW IF EXISTS service_requests_view;
+CREATE VIEW service_requests_view AS
+SELECT 
+    sr.request_id,
+    sr.booking_id,
+    sr.guest_id,
+    CONCAT(g.first_name, ' ', g.last_name) as guest_name,
+    g.email as guest_email,
+    g.phone as guest_phone,
+    sr.service_id,
+    sc.service_name,
+    sc.service_category,
+    sc.unit_price as base_price,
+    COALESCE(bs.custom_price, sc.unit_price) as unit_price,
+    sr.quantity,
+    (COALESCE(bs.custom_price, sc.unit_price) * sr.quantity) as total_amount,
+    sr.branch_id,
+    hb.branch_name,
+    sr.request_status,
+    sr.request_notes,
+    sr.reviewed_by,
+    u.full_name as reviewed_by_name,
+    sr.reviewed_at,
+    sr.review_notes,
+    sr.requested_at,
+    r.room_number,
+    b.check_in_date,
+    b.check_out_date
+FROM service_requests sr
+JOIN guests g ON sr.guest_id = g.guest_id
+JOIN service_catalogue sc ON sr.service_id = sc.service_id
+JOIN hotel_branches hb ON sr.branch_id = hb.branch_id
+JOIN bookings b ON sr.booking_id = b.booking_id
+JOIN rooms r ON b.room_id = r.room_id
+LEFT JOIN branch_services bs ON sr.service_id = bs.service_id AND sr.branch_id = bs.branch_id
+LEFT JOIN users u ON sr.reviewed_by = u.user_id;
 -- Initial data population for testing
 
 USE skynest_hotels;

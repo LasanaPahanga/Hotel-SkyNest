@@ -120,7 +120,11 @@ const login = async (req, res, next) => {
 // @access  Private/Admin
 const register = async (req, res, next) => {
     try {
-        const { username, password, email, full_name, role, branch_id, phone } = req.body;
+        const { 
+            username, password, email, full_name, role, branch_id, phone,
+            // Optional guest-specific fields when role === 'Guest'
+            firstName, lastName, idType, idNumber, address, country, dateOfBirth
+        } = req.body;
 
         // Validation
         if (!username || !password || !email || !full_name || !role) {
@@ -154,11 +158,53 @@ const register = async (req, res, next) => {
             [username, password_hash, email, full_name, role, branch_id || null, phone || null]
         );
 
+        const newUserId = result.insertId;
+
+        // If admin is creating a Guest user, also create a guests record
+        if (role === 'Guest') {
+            // Derive names if not provided separately
+            const fName = firstName || (full_name ? full_name.split(' ')[0] : null);
+            const lName = lastName || (full_name ? full_name.split(' ').slice(1).join(' ') || '' : null);
+
+            // Validate required guest fields
+            if (!fName || !lName || !email || !phone || !idType || !idNumber || !country) {
+                // Cleanup created user if guest data is insufficient
+                await promisePool.query('DELETE FROM users WHERE user_id = ?', [newUserId]);
+                return res.status(400).json({
+                    success: false,
+                    message: 'Missing required guest fields (firstName, lastName, idType, idNumber, country, phone, email) for Guest role'
+                });
+            }
+
+            try {
+                await promisePool.query(
+                    `INSERT INTO guests (user_id, first_name, last_name, email, phone, id_type, id_number, address, country, date_of_birth)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                    [
+                        newUserId,
+                        fName,
+                        lName,
+                        email,
+                        phone,
+                        idType,
+                        idNumber,
+                        address || null,
+                        country,
+                        dateOfBirth || null
+                    ]
+                );
+            } catch (guestErr) {
+                // Roll back user if guest insert fails
+                await promisePool.query('DELETE FROM users WHERE user_id = ?', [newUserId]);
+                throw guestErr;
+            }
+        }
+
         res.status(201).json({
             success: true,
             message: 'User registered successfully',
             data: {
-                user_id: result.insertId,
+                user_id: newUserId,
                 username,
                 email,
                 role
@@ -175,10 +221,13 @@ const register = async (req, res, next) => {
 const getMe = async (req, res, next) => {
     try {
         const [users] = await promisePool.query(
-            `SELECT u.user_id, u.username, u.email, u.full_name, u.role, u.phone, u.is_active,
-                    b.branch_id, b.branch_name, b.location
+            `SELECT 
+                u.user_id, u.username, u.email, u.full_name, u.role, u.phone, u.is_active,
+                b.branch_id, b.branch_name, b.location,
+                g.guest_id
              FROM users u
              LEFT JOIN hotel_branches b ON u.branch_id = b.branch_id
+             LEFT JOIN guests g ON g.email = u.email
              WHERE u.user_id = ?`,
             [req.user.user_id]
         );
@@ -207,7 +256,8 @@ const getMe = async (req, res, next) => {
                 role: user.role,
                 phone: user.phone,
                 is_active: user.is_active,
-                branch
+                branch,
+                ...(user.role === 'Guest' && user.guest_id ? { guest_id: user.guest_id } : {})
             }
         });
     } catch (error) {

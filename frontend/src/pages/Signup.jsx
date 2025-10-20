@@ -62,7 +62,11 @@ const Signup = () => {
                 dateOfBirth: formData.dateOfBirth || null
             });
 
-            toast.success('Account created successfully! Redirecting to login...');
+            const createdUsername = response?.data?.data?.username || (formData.email ? formData.email.split('@')[0] : '');
+            const message = createdUsername
+                ? `Account created successfully! Your username is ${createdUsername}. Redirecting to login...`
+                : 'Account created successfully! Redirecting to login...';
+            toast.success(message);
             setTimeout(() => {
                 navigate('/login');
             }, 1500);

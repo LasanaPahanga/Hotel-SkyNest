@@ -318,12 +318,35 @@ const getBranchServices = async (req, res, next) => {
             });
         }
         
-        const [services] = await promisePool.query('CALL get_branch_services(?)', [branchId]);
-        
+        // Direct query to avoid missing stored procedure dependency
+        const [services] = await promisePool.query(
+            `SELECT 
+                sc.service_id,
+                sc.service_name,
+                sc.service_category,
+                sc.description,
+                sc.unit_type,
+                sc.is_active,
+                bs.branch_service_id,
+                bs.is_available,
+                bs.custom_price,
+                COALESCE(bs.custom_price, sc.unit_price) AS unit_price,
+                hb.branch_id,
+                hb.branch_name
+             FROM service_catalogue sc
+             LEFT JOIN branch_services bs 
+               ON sc.service_id = bs.service_id AND bs.branch_id = ?
+             JOIN hotel_branches hb ON hb.branch_id = ?
+             WHERE sc.is_active = TRUE
+               AND (bs.is_available IS NULL OR bs.is_available = TRUE)
+             ORDER BY sc.service_category, sc.service_name`,
+            [branchId, branchId]
+        );
+
         res.json({
             success: true,
-            count: services[0].length,
-            data: services[0]
+            count: services.length,
+            data: services
         });
     } catch (error) {
         next(error);

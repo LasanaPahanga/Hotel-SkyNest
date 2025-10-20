@@ -138,13 +138,21 @@ const MyBookings = () => {
                         <h1>My Bookings</h1>
                         <p>View and manage your hotel reservations</p>
                     </div>
-                    <button 
-                        className="btn btn-secondary"
-                        onClick={() => fetchBookings(true)}
-                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-                    >
-                        <FaSync /> Refresh
-                    </button>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button 
+                            className="btn btn-secondary"
+                            onClick={() => fetchBookings(true)}
+                            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                        >
+                            <FaSync /> Refresh
+                        </button>
+                        <button 
+                            className="btn btn-primary"
+                            onClick={() => navigate('/guest/bookings/new')}
+                        >
+                            New Booking
+                        </button>
+                    </div>
                 </div>
 
                 {/* Filter Tabs */}
