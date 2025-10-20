@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Layout from '../../components/Layout';
+import GuestLayout from '../../components/GuestLayout';
 import Card from '../../components/Card';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { bookingAPI, paymentAPI, serviceAPI } from '../../utils/api';
@@ -43,22 +43,22 @@ const BookingDetails = () => {
 
     if (loading) {
         return (
-            <Layout>
+            <GuestLayout>
                 <LoadingSpinner message="Loading booking details..." />
-            </Layout>
+            </GuestLayout>
         );
     }
 
     if (!booking) {
         return (
-            <Layout>
+            <GuestLayout>
                 <div className="error-state">
                     <h2>Booking not found</h2>
                     <button className="btn btn-primary" onClick={() => navigate('/guest/bookings')}>
                         Back to My Bookings
                     </button>
                 </div>
-            </Layout>
+            </GuestLayout>
         );
     }
 
@@ -67,7 +67,7 @@ const BookingDetails = () => {
     const nights = Math.ceil((new Date(booking.check_out_date) - new Date(booking.check_in_date)) / (1000 * 60 * 60 * 24));
 
     return (
-        <Layout>
+        <GuestLayout>
             <div 
                 className="booking-details-page common-page" 
                 style={{ 
@@ -226,7 +226,7 @@ const BookingDetails = () => {
                     )}
                 </div>
             </div>
-        </Layout>
+        </GuestLayout>
     );
 };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Layout from '../../components/Layout';
+import GuestLayout from '../../components/GuestLayout';
 import Card from '../../components/Card';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { guestAPI } from '../../utils/api';
@@ -88,15 +88,15 @@ const MyProfile = () => {
 
     if (loading) {
         return (
-            <Layout>
+            <GuestLayout>
                 <LoadingSpinner />
-            </Layout>
+            </GuestLayout>
         );
     }
 
     if (!profile) {
         return (
-            <Layout>
+            <GuestLayout>
                 <div className="container">
                     <Card>
                         <div className="text-center py-5">
@@ -110,12 +110,12 @@ const MyProfile = () => {
                         </div>
                     </Card>
                 </div>
-            </Layout>
+            </GuestLayout>
         );
     }
 
     return (
-        <Layout>
+        <GuestLayout>
             <div 
                 className="my-profile-page common-page" 
                 style={{ 
@@ -448,7 +448,7 @@ const MyProfile = () => {
                     cursor: not-allowed;
                 }
             `}</style>
-        </Layout>
+        </GuestLayout>
     );
 };
 

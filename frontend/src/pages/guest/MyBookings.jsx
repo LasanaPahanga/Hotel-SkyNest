@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Layout from '../../components/Layout';
+import GuestLayout from '../../components/GuestLayout';
 import Card from '../../components/Card';
 import Modal from '../../components/Modal';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -114,14 +114,14 @@ const MyBookings = () => {
 
     if (loading) {
         return (
-            <Layout>
+            <GuestLayout>
                 <LoadingSpinner message="Loading your bookings..." />
-            </Layout>
+            </GuestLayout>
         );
     }
 
     return (
-        <Layout>
+        <GuestLayout>
             <div 
                 className="my-bookings-page common-page" 
                 style={{ 
@@ -406,7 +406,7 @@ const MyBookings = () => {
                     </Modal>
                 )}
             </div>
-        </Layout>
+        </GuestLayout>
     );
 };
 

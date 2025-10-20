@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Layout from '../../components/Layout';
+import GuestLayout from '../../components/GuestLayout';
 import Card from '../../components/Card';
 import { branchAPI, roomAPI, bookingAPI, guestAPI } from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
@@ -139,7 +139,7 @@ const GuestCreateBooking = () => {
   const selectedRoom = availableRooms.find(r => r.room_id === parseInt(formData.room_id));
 
   return (
-    <Layout>
+    <GuestLayout>
       <div
         className="create-booking-page common-page"
         style={{
@@ -304,7 +304,7 @@ const GuestCreateBooking = () => {
           </Card>
         )}
       </div>
-    </Layout>
+    </GuestLayout>
   );
 };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import Layout from '../../components/Layout';
+import GuestLayout from '../../components/GuestLayout';
 import Card from '../../components/Card';
 import Modal from '../../components/Modal';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -145,14 +145,14 @@ const ContactSupport = () => {
 
     if (loading) {
         return (
-            <Layout>
+            <GuestLayout>
                 <LoadingSpinner message="Loading support tickets..." />
-            </Layout>
+            </GuestLayout>
         );
     }
 
     return (
-        <Layout>
+        <GuestLayout>
             <div 
                 className="contact-support-page common-page" 
                 style={{ 
@@ -416,7 +416,7 @@ const ContactSupport = () => {
                     </Modal>
                 )}
             </div>
-        </Layout>
+        </GuestLayout>
     );
 };
 

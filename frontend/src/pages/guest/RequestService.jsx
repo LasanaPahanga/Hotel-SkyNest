@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import Layout from '../../components/Layout';
+import GuestLayout from '../../components/GuestLayout';
 import Card from '../../components/Card';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { serviceRequestAPI, bookingAPI, serviceAPI } from '../../utils/api';
@@ -129,27 +129,27 @@ const RequestService = () => {
 
     if (loading) {
         return (
-            <Layout>
+            <GuestLayout>
                 <LoadingSpinner message="Loading services..." />
-            </Layout>
+            </GuestLayout>
         );
     }
 
     if (!activeBooking) {
         return (
-            <Layout>
+            <GuestLayout>
                 <Card>
                     <p>No active booking found. You must be checked-in to request services.</p>
                     <button className="btn btn-primary" onClick={() => navigate('/guest/bookings')}>
                         View My Bookings
                     </button>
                 </Card>
-            </Layout>
+            </GuestLayout>
         );
     }
 
     return (
-        <Layout>
+        <GuestLayout>
             <div 
                 className="request-service-page common-page" 
                 style={{ 
@@ -350,7 +350,7 @@ const RequestService = () => {
                     </div>
                 </div>
             </div>
-        </Layout>
+        </GuestLayout>
     );
 };
 
