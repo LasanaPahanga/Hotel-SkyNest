@@ -110,11 +110,10 @@ const getTicketById = async (req, res, next) => {
         // Get responses
         const [responses] = await promisePool.query(
             `SELECT r.*, 
-                    u.full_name as user_name,
-                    CONCAT(g.first_name, ' ', g.last_name) as guest_name
+                    u.full_name as responder_name,
+                    r.is_staff_response
              FROM ticket_responses r
              LEFT JOIN users u ON r.user_id = u.user_id
-             LEFT JOIN guests g ON r.guest_id = g.guest_id
              WHERE r.ticket_id = ?
              ORDER BY r.created_at ASC`,
             [id]
@@ -188,30 +187,35 @@ const addResponse = async (req, res, next) => {
         const { id } = req.params;
         const { message } = req.body;
         
-        const user_id = req.user.role !== 'Guest' ? req.user.user_id : null;
-        const guest_id = req.user.role === 'Guest' ? req.user.guest_id : null;
-        const is_staff_response = req.user.role !== 'Guest';
-
-        await promisePool.query(
-            'CALL add_ticket_response(?, ?, ?, ?, ?, @response_id, @error_message)',
-            [id, user_id, guest_id, message, is_staff_response]
-        );
-
-        const [output] = await promisePool.query(
-            'SELECT @response_id as response_id, @error_message as error_message'
-        );
-
-        if (output[0].error_message) {
+        if (!message || message.trim() === '') {
             return res.status(400).json({
                 success: false,
-                message: output[0].error_message
+                message: 'Response message is required'
             });
         }
+
+        const user_id = req.user.role !== 'Guest' ? req.user.user_id : null;
+        const is_staff_response = req.user.role !== 'Guest';
+
+        // Insert response directly
+        const [result] = await promisePool.query(
+            `INSERT INTO ticket_responses (ticket_id, user_id, response_text, is_staff_response)
+             VALUES (?, ?, ?, ?)`,
+            [id, user_id, message, is_staff_response]
+        );
+
+        // Update ticket status to 'In Progress' if it was 'Open'
+        await promisePool.query(
+            `UPDATE support_tickets 
+             SET status = 'In Progress', updated_at = NOW()
+             WHERE ticket_id = ? AND status = 'Open'`,
+            [id]
+        );
 
         res.status(201).json({
             success: true,
             message: 'Response added successfully',
-            data: { response_id: output[0].response_id }
+            data: { response_id: result.insertId }
         });
     } catch (error) {
         next(error);
@@ -244,9 +248,8 @@ const updateTicket = async (req, res, next) => {
             params.push(assigned_to);
         }
 
-        if (status === 'Resolved' || status === 'Closed') {
-            updates.push('resolved_at = NOW()');
-        }
+        // Update timestamp
+        updates.push('updated_at = NOW()');
 
         if (updates.length === 0) {
             return res.status(400).json({

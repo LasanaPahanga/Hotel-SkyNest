@@ -279,9 +279,42 @@ const getRoomWithGuest = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        // Use the rooms_with_current_guest view
+        // Get room details with current guest information using JOIN
         const [rooms] = await promisePool.query(
-            `SELECT * FROM rooms_with_current_guest WHERE room_id = ?`,
+            `SELECT 
+                r.room_id,
+                r.room_number,
+                r.floor_number,
+                r.status,
+                rt.capacity,
+                rt.type_name as room_type,
+                rt.base_rate,
+                hb.branch_id,
+                hb.branch_name,
+                b.booking_id,
+                b.check_in_date,
+                b.check_out_date,
+                b.booking_status,
+                CONCAT(g.first_name, ' ', g.last_name) as current_guest_name,
+                g.email as guest_email,
+                g.phone as guest_phone,
+                DATEDIFF(b.check_out_date, CURDATE()) as days_remaining,
+                CASE 
+                    WHEN DATEDIFF(b.check_out_date, CURDATE()) < 0 THEN 'Overdue'
+                    WHEN DATEDIFF(b.check_out_date, CURDATE()) = 0 THEN 'Checkout Today'
+                    WHEN DATEDIFF(b.check_out_date, CURDATE()) <= 2 THEN 'Checkout Soon'
+                    ELSE 'Active'
+                END as occupancy_status
+            FROM rooms r
+            JOIN room_types rt ON r.room_type_id = rt.room_type_id
+            JOIN hotel_branches hb ON r.branch_id = hb.branch_id
+            LEFT JOIN bookings b ON r.room_id = b.room_id 
+                AND b.booking_status IN ('Checked-In', 'Booked')
+                AND b.check_out_date >= CURDATE()
+            LEFT JOIN guests g ON b.guest_id = g.guest_id
+            WHERE r.room_id = ?
+            ORDER BY b.check_in_date DESC
+            LIMIT 1`,
             [id]
         );
 

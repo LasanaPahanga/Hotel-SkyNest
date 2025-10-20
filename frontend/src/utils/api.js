@@ -68,6 +68,7 @@ export const roomAPI = {
     getAll: (params) => api.get('/rooms', { params }),
     getAvailable: (params) => api.get('/rooms/available', { params }),
     getById: (id) => api.get(`/rooms/${id}`),
+    getDetails: (id) => api.get(`/rooms/${id}/details`),
     create: (data) => api.post('/rooms', data),
     update: (id, data) => api.put(`/rooms/${id}`, data),
     delete: (id) => api.delete(`/rooms/${id}`),

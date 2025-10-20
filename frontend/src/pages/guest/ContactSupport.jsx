@@ -328,7 +328,7 @@ const ContactSupport = () => {
                                         </div>
                                     </div>
                                     <div style={{ padding: '1rem', backgroundColor: '#f9fafb', borderRadius: '0.5rem', borderLeft: '4px solid #3b82f6' }}>
-                                        <p style={{ margin: 0 }}>{ticketDetails.ticket.message}</p>
+                                        <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{ticketDetails.ticket.description}</p>
                                     </div>
                                 </div>
 
@@ -355,14 +355,14 @@ const ContactSupport = () => {
                                                 >
                                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
                                                         <strong style={{ color: resp.is_staff_response ? '#1e40af' : '#374151' }}>
-                                                            {resp.user_name || resp.guest_name}
+                                                            {resp.responder_name || 'Guest'}
                                                             {resp.is_staff_response && <span style={{ marginLeft: '0.5rem', fontSize: '0.75rem', color: '#3b82f6' }}>(Staff)</span>}
                                                         </strong>
                                                         <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>
                                                             {formatDateTime(resp.created_at)}
                                                         </span>
                                                     </div>
-                                                    <p style={{ margin: 0, color: '#374151' }}>{resp.message}</p>
+                                                    <p style={{ margin: 0, color: '#374151', whiteSpace: 'pre-wrap' }}>{resp.response_text}</p>
                                                 </div>
                                             ))
                                         )}

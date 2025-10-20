@@ -122,10 +122,10 @@ const SupportTickets = () => {
 
     const getStatusBadge = (status) => {
         const colors = {
-            'Open': 'bg-blue-500',
-            'In Progress': 'bg-yellow-500',
-            'Resolved': 'bg-green-500',
-            'Closed': 'bg-gray-500'
+            'Open': '#3b82f6',        // Blue
+            'In Progress': '#f59e0b', // Orange/Yellow
+            'Resolved': '#10b981',    // Green
+            'Closed': '#6b7280'       // Gray
         };
         return (
             <span style={{
@@ -134,7 +134,8 @@ const SupportTickets = () => {
                 fontSize: '0.75rem',
                 fontWeight: 600,
                 backgroundColor: colors[status] || '#6b7280',
-                color: 'white'
+                color: 'white',
+                display: 'inline-block'
             }}>
                 {status}
             </span>
@@ -447,12 +448,15 @@ const SupportTickets = () => {
                                                 }}
                                             >
                                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                                    <strong>{resp.user_name || resp.guest_name}</strong>
+                                                    <strong>
+                                                        {resp.responder_name || 'Guest'} 
+                                                        {resp.is_staff_response && <span style={{ marginLeft: '0.5rem', fontSize: '0.75rem', color: '#3b82f6' }}>(Staff)</span>}
+                                                    </strong>
                                                     <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>
                                                         {formatDateTime(resp.created_at)}
                                                     </span>
                                                 </div>
-                                                <p style={{ margin: 0 }}>{resp.message}</p>
+                                                <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{resp.response_text}</p>
                                             </div>
                                         ))
                                     )}

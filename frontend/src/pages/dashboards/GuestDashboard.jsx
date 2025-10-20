@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { useAuth } from '../../context/AuthContext';
 import { bookingAPI } from '../../utils/api';
 import { formatDate, formatCurrency } from '../../utils/helpers';
-import { FaCalendarCheck, FaConciergeBell, FaMoneyBillWave, FaUser, FaHotel, FaClock, FaSignOutAlt, FaHome } from 'react-icons/fa';
+import { FaCalendarCheck, FaConciergeBell, FaMoneyBillWave, FaUser, FaHotel, FaClock, FaSignOutAlt, FaHome, FaChevronDown, FaHeadset, FaFileInvoice } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import guestHeroImage from '../../assets/premium_photo-1661964071015-d97428970584.avif';
+import hotelVideo from '../../assets/WhatsApp Video 2025-10-20 at 21.26.12_d1af48f8.mp4';
 import '../../styles/ModernGuestDashboard.css';
 
 const GuestDashboard = () => {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
+    const contentRef = useRef(null);
     const [activeTab, setActiveTab] = useState('home');
     const [stats, setStats] = useState({
         activeBookings: 0,
@@ -22,6 +23,10 @@ const GuestDashboard = () => {
     const [currentBooking, setCurrentBooking] = useState(null);
     const [upcomingBookings, setUpcomingBookings] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const scrollToContent = () => {
+        contentRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
 
     const handleLogout = () => {
         logout();
@@ -182,6 +187,19 @@ const GuestDashboard = () => {
                     <FaConciergeBell style={{ marginRight: '0.5rem' }} /> Request Service
                 </button>
                 <button 
+                    className={`guest-tab ${activeTab === 'support' ? 'active' : ''}`}
+                    onClick={() => navigate('/guest/support')}
+                >
+                    <FaHeadset style={{ marginRight: '0.5rem' }} /> Support
+                </button>
+                <button 
+                    className={`guest-tab ${activeTab === 'bill' ? 'active' : ''}`}
+                    onClick={handleViewBill}
+                    disabled={!currentBooking}
+                >
+                    <FaFileInvoice style={{ marginRight: '0.5rem' }} /> View Bill
+                </button>
+                <button 
                     className={`guest-tab ${activeTab === 'profile' ? 'active' : ''}`}
                     onClick={() => navigate('/guest/profile')}
                 >
@@ -189,68 +207,69 @@ const GuestDashboard = () => {
                 </button>
             </div>
 
-            <div>
-                <div className="dashboard-header">
-                    <h1>Welcome to SkyNest Hotels, {user?.full_name}</h1>
-                    <p>Experience Luxury Beyond Expectations</p>
-                </div>
-
-                <div className="modern-hero-section">
-                    <img 
-                        src={guestHeroImage} 
-                        alt="Luxury Hotel Experience"
-                    />
-                    <div className="hero-overlay">
-                        <h2>Unparalleled Elegance</h2>
-                        <p>Discover a world where sophistication meets comfort. Our meticulously designed spaces and exceptional service create an unforgettable experience tailored to your every need.</p>
+            {/* Full-Screen Video Hero Section */}
+            <div className="video-hero-section">
+                <video 
+                    autoPlay 
+                    loop 
+                    muted 
+                    playsInline
+                    className="hero-video"
+                >
+                    <source src={hotelVideo} type="video/mp4" />
+                    Your browser does not support the video tag.
+                </video>
+                <div className="video-overlay">
+                    <div className="hero-content">
+                        <h1 className="hero-title">SkyNest Hotels</h1>
+                        <p className="hero-subtitle">Experience Luxury Beyond Expectations</p>
                     </div>
+                    <button className="scroll-down-btn" onClick={scrollToContent}>
+                        <FaChevronDown className="scroll-icon" />
+                    </button>
+                </div>
+            </div>
+
+            {/* Main Content Section */}
+            <div ref={contentRef}>
+                <div className="dashboard-header-white">
+                    <h1>Welcome, {user?.full_name}</h1>
+                    <p>Discover a world where sophistication meets comfort</p>
                 </div>
 
                 {/* Stats Cards */}
                 <div className="modern-stats-grid">
                     <div className="modern-stat-card">
+                        <div className="stat-content">
+                            <h3>{stats.activeBookings}</h3>
+                            <p>Active Bookings</p>
+                        </div>
                         <FaHotel className="stat-icon" />
-                        <h3>{stats.activeBookings}</h3>
-                        <p>Active Stays</p>
                     </div>
                     <div className="modern-stat-card">
+                        <div className="stat-content">
+                            <h3>{stats.upcomingBookings}</h3>
+                            <p>Upcoming Bookings</p>
+                        </div>
                         <FaClock className="stat-icon" />
-                        <h3>{stats.upcomingBookings}</h3>
-                        <p>Upcoming</p>
                     </div>
                     <div className="modern-stat-card">
+                        <div className="stat-content">
+                            <h3>{formatCurrency(stats.totalSpent)}</h3>
+                            <p>Total Spent</p>
+                        </div>
                         <FaMoneyBillWave className="stat-icon" />
-                        <h3>{formatCurrency(stats.totalSpent)}</h3>
-                        <p>Total Spent</p>
                     </div>
                     <div className="modern-stat-card">
+                        <div className="stat-content">
+                            <h3>{formatCurrency(stats.pendingPayments)}</h3>
+                            <p>Pending Payments</p>
+                        </div>
                         <FaConciergeBell className="stat-icon" />
-                        <h3>{formatCurrency(stats.pendingPayments)}</h3>
-                        <p>Pending</p>
                     </div>
                 </div>
 
                 <div className="modern-content-section">
-
-                    {/* Quick Actions - Simple Links */}
-                    <div className="modern-quick-actions">
-                        {quickActions.map((action, index) => (
-                            <div
-                                key={index}
-                                className={`action-link ${action.disabled ? 'disabled' : ''}`}
-                                onClick={() => {
-                                    if (!action.disabled && action.action) {
-                                        action.action();
-                                    }
-                                }}
-                            >
-                                <div className="action-icon">
-                                    {action.icon}
-                                </div>
-                                <h3>{action.title}</h3>
-                            </div>
-                        ))}
-                    </div>
 
                     {/* Current Stay */}
                     {currentBooking && (
