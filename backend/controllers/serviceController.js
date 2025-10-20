@@ -23,7 +23,7 @@ const getAllServices = async (req, res, next) => {
                 sc.service_name,
                 sc.service_category,
                 sc.description,
-                sc.unit_price,
+                COALESCE(bs.custom_price, sc.unit_price) AS unit_price,
                 sc.unit_type,
                 sc.is_active,
                 bs.branch_service_id,
@@ -40,6 +40,8 @@ const getAllServices = async (req, res, next) => {
         if (targetBranchId) {
             query += ' AND (bs.branch_id = ? OR bs.branch_id IS NULL)';
             params.push(targetBranchId);
+            // Filter out services that are explicitly disabled for this branch
+            query += ' AND (bs.is_available IS NULL OR bs.is_available = TRUE)';
         }
         
         if (category) {

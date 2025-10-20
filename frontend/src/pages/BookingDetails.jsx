@@ -58,7 +58,9 @@ const BookingDetails = () => {
                 params.branch_id = booking.branch_id;
             }
             const response = await serviceAPI.getAll(params);
-            setServices(response.data.data);
+            // Filter to only show active services
+            const activeServices = response.data.data.filter(service => service.is_active === 1 || service.is_active === true);
+            setServices(activeServices);
         } catch (error) {
             console.error('Error fetching services:', error);
         }
@@ -308,7 +310,7 @@ const BookingDetails = () => {
                     <Card 
                         title="Services Used"
                         actions={
-                            canManage && booking.booking_status === 'Checked-In' && (
+                            canManage && (booking.booking_status === 'Checked-In' || booking.booking_status === 'Booked') && (
                                 <button 
                                     className="btn btn-sm btn-primary"
                                     onClick={() => setShowServiceModal(true)}

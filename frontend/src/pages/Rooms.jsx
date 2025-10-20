@@ -122,7 +122,7 @@ const Rooms = () => {
     const handleViewRoom = async (room) => {
         try {
             // Fetch room details with current guest information
-            const response = await api.get(`/rooms/${room.room_id}/details`);
+            const response = await roomAPI.getDetails(room.room_id);
             setSelectedRoom(response.data.data);
             setShowViewModal(true);
         } catch (error) {
