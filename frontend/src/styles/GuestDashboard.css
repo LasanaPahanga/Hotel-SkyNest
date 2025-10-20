@@ -292,6 +292,14 @@
     gap: 0.75rem;
     padding-top: 1rem;
     border-top: 2px solid #e5e7eb;
+    position: relative;
+    z-index: 10;
+}
+
+.booking-card-footer .btn {
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
 }
 
 /* Status Badges - Black & White Theme */

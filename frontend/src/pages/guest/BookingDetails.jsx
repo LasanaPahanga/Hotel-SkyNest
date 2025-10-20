@@ -9,6 +9,7 @@ import dashboardImage from '../../assets/dashboard.jpeg';
 import '../../styles/GuestDashboard.css';
 import '../../styles/CommonPage.css';
 import '../../styles/GuestTheme.css';
+import '../../styles/BookingDetails.css';
 
 const BookingDetails = () => {
     const { id } = useParams();
@@ -76,8 +77,7 @@ const BookingDetails = () => {
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
                     backgroundAttachment: 'fixed',
-                    minHeight: '100vh',
-                    maxWidth: '1400px'
+                    minHeight: '100vh'
                 }}
             >
                 <div className="page-header">

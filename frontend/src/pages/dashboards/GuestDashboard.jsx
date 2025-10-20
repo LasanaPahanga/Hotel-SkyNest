@@ -349,12 +349,12 @@ const GuestDashboard = () => {
                                 <h2>CURRENT STAY</h2>
                                 <div className="stay-details-grid">
                                     <div className="stay-info">
-                                        <h3>{currentBooking.branch_name}</h3>
-                                        <p><strong>Room:</strong> {currentBooking.room_number} ({currentBooking.room_type})</p>
-                                        <p><strong>Check-in:</strong> {formatDate(currentBooking.check_in_date)}</p>
-                                        <p><strong>Check-out:</strong> {formatDate(currentBooking.check_out_date)}</p>
+                                        <h3 style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)' }}>{currentBooking.branch_name}</h3>
+                                        <p style={{ textShadow: '1px 1px 3px rgba(0, 0, 0, 0.8)' }}><strong>Room:</strong> {currentBooking.room_number} ({currentBooking.room_type})</p>
+                                        <p style={{ textShadow: '1px 1px 3px rgba(0, 0, 0, 0.8)' }}><strong>Check-in:</strong> {formatDate(currentBooking.check_in_date)}</p>
+                                        <p style={{ textShadow: '1px 1px 3px rgba(0, 0, 0, 0.8)' }}><strong>Check-out:</strong> {formatDate(currentBooking.check_out_date)}</p>
                                         {currentBooking.outstanding_amount > 0 && (
-                                            <p className="outstanding">
+                                            <p className="outstanding" style={{ textShadow: '1px 1px 3px rgba(0, 0, 0, 0.8)' }}>
                                                 <strong>Outstanding:</strong> {formatCurrency(currentBooking.outstanding_amount)}
                                             </p>
                                         )}
@@ -362,13 +362,13 @@ const GuestDashboard = () => {
                                     <div className="stay-actions">
                                         <button 
                                             className="modern-btn"
-                                            onClick={() => navigate(`/bookings/${currentBooking.booking_id}`)}
+                                            onClick={() => navigate(`/guest/bookings/${currentBooking.booking_id}`)}
                                         >
                                             VIEW DETAILS
                                         </button>
                                         <button 
                                             className="modern-btn modern-btn-secondary"
-                                            onClick={() => navigate(`/bookings/${currentBooking.booking_id}`)}
+                                            onClick={() => navigate(`/guest/request-service?booking=${currentBooking.booking_id}`)}
                                         >
                                             REQUEST SERVICE
                                         </button>
