@@ -1,0 +1,12 @@
+{
+  "name": "hotel-skynest",
+  "version": "1.0.0",
+  "description": "Hotel SkyNest Reservation and Management System",
+  "engines": {
+    "node": "18.x"
+  },
+  "scripts": {
+    "start": "cd backend && node server.js",
+    "build": "cd frontend && npm ci && npm run build"
+  }
+}

@@ -2,6 +2,19 @@
 
 A comprehensive hotel management system built with React, Node.js, Express, and MySQL. This system provides complete hotel operations management including bookings, payments, service requests, and financial reporting.
 
+Docker setup 
+go to root folder sky-nests
+
+docker build -t skynest-frontend -f Dockerfile.frontend .
+docker build -t skynest-backend -f Dockerfile.backend .
+docker-compose up -d
+
+Frontend Interface: Open your browser and navigate to http://localhost
+This should display your React-based frontend application.
+
+Backend API: Access your API at http://localhost:5000
+You can test endpoints like http://localhost:5000/api/health to verify it's working.
+
 ## 📋 Table of Contents
 
 - [Features](#features)
