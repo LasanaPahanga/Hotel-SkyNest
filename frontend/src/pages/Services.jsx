@@ -113,7 +113,8 @@ const ServicesNew = () => {
 
         console.log('Loading services for branch:', branchId);
         try {
-            const params = { branch_id: branchId };
+            // Include unavailable services so they can be toggled back on
+            const params = { branch_id: branchId, include_unavailable: 'true' };
             const response = await serviceAPI.getAll(params);
             console.log('Services loaded:', response.data.data);
             setServices(response.data.data || []);
@@ -406,11 +407,11 @@ const ServicesNew = () => {
                 </Card>
 
                 {/* Modal for Create/Edit */}
-                {showModal && (
-                    <Modal 
-                        onClose={() => setShowModal(false)} 
-                        title={modalMode === 'create' ? 'Add New Service' : 'Edit Service'}
-                    >
+                <Modal 
+                    isOpen={showModal}
+                    onClose={() => setShowModal(false)} 
+                    title={modalMode === 'create' ? 'Add New Service' : 'Edit Service'}
+                >
                         <form onSubmit={handleSubmit}>
                             <div style={{ marginBottom: '1rem' }}>
                                 <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
@@ -494,8 +495,7 @@ const ServicesNew = () => {
                                 </button>
                             </div>
                         </form>
-                    </Modal>
-                )}
+                </Modal>
             </div>
         </Layout>
     );

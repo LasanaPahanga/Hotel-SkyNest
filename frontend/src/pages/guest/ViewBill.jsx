@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GuestLayout from '../../components/GuestLayout';
 import Card from '../../components/Card';
@@ -7,16 +7,20 @@ import { bookingAPI, paymentAPI, serviceAPI } from '../../utils/api';
 import { formatDate, formatCurrency, formatDateTime } from '../../utils/helpers';
 import { FaFileInvoice, FaPrint, FaDownload } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import '../../styles/GuestDashboard.css';
 import '../../styles/GuestTheme.css';
 import '../../styles/ViewBill.css';
 
 const ViewBill = () => {
     const navigate = useNavigate();
+    const billRef = useRef(null);
     const [currentBooking, setCurrentBooking] = useState(null);
     const [services, setServices] = useState([]);
     const [payments, setPayments] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [downloading, setDownloading] = useState(false);
 
     useEffect(() => {
         fetchBillData();
@@ -79,8 +83,53 @@ const ViewBill = () => {
         window.print();
     };
 
-    const handleDownload = () => {
-        toast.info('Download feature coming soon!');
+    const handleDownload = async () => {
+        if (!billRef.current) return;
+        
+        try {
+            setDownloading(true);
+            toast.info('Generating PDF...');
+
+            // Hide the action buttons temporarily
+            const actionButtons = document.querySelector('.bill-actions');
+            if (actionButtons) {
+                actionButtons.style.display = 'none';
+            }
+
+            // Capture the bill content as canvas
+            const canvas = await html2canvas(billRef.current, {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                backgroundColor: '#ffffff'
+            });
+
+            // Show the action buttons again
+            if (actionButtons) {
+                actionButtons.style.display = 'flex';
+            }
+
+            // Calculate PDF dimensions
+            const imgWidth = 210; // A4 width in mm
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            
+            // Create PDF
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const imgData = canvas.toDataURL('image/png');
+            
+            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+            
+            // Download the PDF
+            const fileName = `Invoice_Booking_${currentBooking.booking_id}_${new Date().toISOString().split('T')[0]}.pdf`;
+            pdf.save(fileName);
+            
+            toast.success('Invoice downloaded successfully!');
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            toast.error('Failed to generate PDF. Please try again.');
+        } finally {
+            setDownloading(false);
+        }
     };
 
     if (loading) {
@@ -122,7 +171,7 @@ const ViewBill = () => {
 
     return (
         <GuestLayout>
-            <div className="view-bill-page">
+            <div className="view-bill-page" ref={billRef}>
                 {/* Page Header */}
                 <div className="bill-header">
                     <div>
@@ -141,8 +190,9 @@ const ViewBill = () => {
                         <button
                             onClick={handleDownload}
                             className="bill-action-btn"
+                            disabled={downloading}
                         >
-                            <FaDownload /> Download
+                            <FaDownload /> {downloading ? 'Generating...' : 'Download'}
                         </button>
                     </div>
                 </div>

@@ -5,7 +5,7 @@ const { promisePool } = require('../config/database');
 // @access  Private
 const getAllServices = async (req, res, next) => {
     try {
-        const { category, is_active, branch_id } = req.query;
+        const { category, is_active, branch_id, include_unavailable } = req.query;
         const userRole = req.user.role;
         const userBranchId = req.user.branch_id;
         
@@ -31,17 +31,29 @@ const getAllServices = async (req, res, next) => {
                 bs.custom_price,
                 b.branch_name
             FROM service_catalogue sc
-            LEFT JOIN branch_services bs ON sc.service_id = bs.service_id
-            LEFT JOIN hotel_branches b ON bs.branch_id = b.branch_id
-            WHERE 1=1
         `;
         const params = [];
         
         if (targetBranchId) {
-            query += ' AND (bs.branch_id = ? OR bs.branch_id IS NULL)';
-            params.push(targetBranchId);
-            // Filter out services that are explicitly disabled for this branch
-            query += ' AND (bs.is_available IS NULL OR bs.is_available = TRUE)';
+            // Join with branch_services ONLY for the specific branch
+            // This ensures all services are returned, with branch-specific data when available
+            query += `
+                LEFT JOIN branch_services bs ON sc.service_id = bs.service_id AND bs.branch_id = ?
+                LEFT JOIN hotel_branches b ON b.branch_id = ?
+            `;
+            params.push(targetBranchId, targetBranchId);
+            query += ' WHERE 1=1';
+            
+            // Filter unavailable services unless explicitly requested
+            if (include_unavailable !== 'true') {
+                query += ' AND (bs.is_available IS NULL OR bs.is_available = TRUE OR bs.is_available = 1)';
+            }
+        } else {
+            query += `
+                LEFT JOIN branch_services bs ON sc.service_id = bs.service_id
+                LEFT JOIN hotel_branches b ON bs.branch_id = b.branch_id
+                WHERE 1=1
+            `;
         }
         
         if (category) {
