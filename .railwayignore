@@ -1,0 +1,13 @@
+# Ignore development files
+node_modules
+.git
+.vscode
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Keep necessary files
+!frontend/dist
+!backend/node_modules
+!backend/server.js

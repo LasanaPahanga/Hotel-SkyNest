@@ -2,18 +2,52 @@
 
 A comprehensive hotel management system built with React, Node.js, Express, and MySQL. This system provides complete hotel operations management including bookings, payments, service requests, and financial reporting.
 
-Docker setup 
-go to root folder sky-nests
+## Docker Setup
+Go to root folder sky-nests:
 
+```bash
 docker build -t skynest-frontend -f Dockerfile.frontend .
 docker build -t skynest-backend -f Dockerfile.backend .
 docker-compose up -d
+```
 
 Frontend Interface: Open your browser and navigate to http://localhost
 This should display your React-based frontend application.
 
 Backend API: Access your API at http://localhost:5000
 You can test endpoints like http://localhost:5000/api/health to verify it's working.
+
+## Railway Deployment
+
+To deploy on Railway:
+
+1. **Connect your GitHub repository to Railway**
+   - Go to [railway.app](https://railway.app/)
+   - Sign up or log in
+   - Click "New Project" → "Deploy from GitHub repo"
+   - Select your Hotel-SkyNest repository
+
+2. **Add a MySQL database service**
+   - In your Railway project, click "New Service"
+   - Select "Database" → "MySQL"
+   - Railway will automatically create and connect the database
+
+3. **Set environment variables**
+   - Click on your service
+   - Go to the "Variables" tab
+   - Add the following variables:
+     - `JWT_SECRET`: A secure random string (e.g., generate one at random.org)
+     - `NODE_ENV`: `production`
+   
+   Note: Database variables (DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT) will be automatically set by Railway when you add the MySQL service.
+
+4. **Deploy**
+   - Railway will automatically build and deploy your application
+   - Once deployed, you'll get a URL to access your application
+
+5. **Initialize the database** (Optional)
+   - Connect to your Railway MySQL instance using the connection details
+   - Run the SQL scripts from the `database` folder to set up your schema and seed data
 
 ## 📋 Table of Contents
 
