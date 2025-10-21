@@ -23,12 +23,26 @@ To deploy on Railway:
 
 1. Push your code to GitHub
 2. Connect your GitHub repository to Railway
-3. Add the following variables in Railway:
-   - `JWT_SECRET`: Your secure JWT secret key
+3. Add the following environment variables in Railway:
+   - `JWT_SECRET`: Your secure JWT secret key (e.g., `your_secure_random_string`)
    - `NODE_ENV`: Set to "production"
 
-4. Add a MySQL database service in Railway
-5. Deploy your application
+4. Add a MySQL database service:
+   - Click "New Service" → "Database" → "MySQL"
+   - Railway will automatically connect your app with this database
+   - The required environment variables (`DB_HOST`, `DB_USER`, etc.) will be automatically configured
+
+5. Configure the deployment settings:
+   - In your project settings, ensure you're using the Dockerfile.railway
+   - Set the health check path to /api/health
+   - Railway will use port 5000 by default
+
+6. Deploy your application:
+   - Click "Deploy" and monitor the logs
+   - Once successful, you can access your application at the provided Railway URL
+
+7. Initialize the database:
+   - If you need to load your database schema, you can connect to the Railway MySQL instance using the details in the service's "Connect" tab
 
 ## 📋 Table of Contents
 
