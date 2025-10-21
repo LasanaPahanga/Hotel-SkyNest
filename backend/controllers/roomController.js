@@ -199,7 +199,7 @@ const createRoom = async (req, res, next) => {
 // @access  Private (Admin)
 const updateRoom = async (req, res, next) => {
     try {
-        const { status, floor_number } = req.body;
+        const { status, floor_number, base_price } = req.body;
         
         const updates = [];
         const params = [];
@@ -212,6 +212,11 @@ const updateRoom = async (req, res, next) => {
         if (floor_number) {
             updates.push('floor_number = ?');
             params.push(floor_number);
+        }
+        
+        if (base_price !== undefined && base_price !== null) {
+            updates.push('base_price = ?');
+            params.push(parseFloat(base_price));
         }
         
         if (updates.length === 0) {

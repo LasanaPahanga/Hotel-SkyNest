@@ -22,6 +22,7 @@ const Rooms = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [showViewModal, setShowViewModal] = useState(false);
     const [selectedRoom, setSelectedRoom] = useState(null);
+    const [editPrice, setEditPrice] = useState('');
     
     // Filters
     const [filters, setFilters] = useState({
@@ -134,6 +135,7 @@ const Rooms = () => {
     const handleEditRoom = (room) => {
         console.log('Edit room clicked:', room);
         setSelectedRoom(room);
+        setEditPrice(room.base_price || '');
         setShowEditModal(true);
     };
 
@@ -145,6 +147,21 @@ const Rooms = () => {
             fetchInitialData();
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to update room');
+        }
+    };
+
+    const handleUpdatePrice = async () => {
+        if (!editPrice || editPrice <= 0) {
+            toast.error('Please enter a valid price');
+            return;
+        }
+        try {
+            await roomAPI.update(selectedRoom.room_id, { base_price: editPrice });
+            toast.success('Room price updated successfully');
+            setShowEditModal(false);
+            fetchInitialData();
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to update price');
         }
     };
 
@@ -480,13 +497,14 @@ const Rooms = () => {
                     title={selectedRoom ? `Edit Room ${selectedRoom.room_number}` : 'Edit Room'}
                 >
                     {selectedRoom && (
-                        <div style={{ display: 'grid', gap: '1rem' }}>
+                        <div style={{ display: 'grid', gap: '1.5rem' }}>
                             <div>
                                 <strong>Current Status:</strong>{' '}
                                 <span className={`status-badge ${getStatusClass(selectedRoom.status)}`}>
                                     {selectedRoom.status}
                                 </span>
                             </div>
+                            
                             <div>
                                 <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
                                     Change Status:
@@ -508,7 +526,41 @@ const Rooms = () => {
                                     </button>
                                 </div>
                             </div>
-                            <div style={{ marginTop: '1rem', padding: '1rem', background: '#f9fafb', borderRadius: '0.5rem' }}>
+
+                            <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '1rem' }}>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
+                                    Room Price (LKR per night):
+                                </label>
+                                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        value={editPrice}
+                                        onChange={(e) => setEditPrice(e.target.value)}
+                                        style={{
+                                            flex: 1,
+                                            padding: '0.5rem',
+                                            borderRadius: '0.375rem',
+                                            border: '1px solid #d1d5db',
+                                            fontSize: '1rem'
+                                        }}
+                                        placeholder="Enter room price"
+                                    />
+                                    <button
+                                        className="btn btn-primary"
+                                        onClick={handleUpdatePrice}
+                                        style={{ whiteSpace: 'nowrap' }}
+                                    >
+                                        Update Price
+                                    </button>
+                                </div>
+                                <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.875rem', color: '#6b7280' }}>
+                                    Current: {formatCurrency(selectedRoom.base_price)}
+                                </p>
+                            </div>
+                            
+                            <div style={{ padding: '1rem', background: '#f9fafb', borderRadius: '0.5rem' }}>
                                 <p style={{ margin: 0, fontSize: '0.875rem', color: '#6b7280' }}>
                                     <strong>Note:</strong> Room status "Occupied" is automatically set when a guest checks in.
                                 </p>
