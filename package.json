@@ -7,6 +7,12 @@
   },
   "scripts": {
     "start": "cd backend && node server.js",
-    "build": "cd frontend && npm ci && npm run build"
-  }
+    "build": "cd frontend && npm ci && npm run build",
+    "install": "cd frontend && npm ci && cd ../backend && npm ci",
+    "postinstall": "npm run build"
+  },
+  "cacheDirectories": [
+    "frontend/node_modules",
+    "backend/node_modules"
+  ]
 }
