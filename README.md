@@ -21,8 +21,19 @@ You can test endpoints like http://localhost:5000/api/health to verify it's work
 
 To deploy on Railway:
 
-1. Push your code to GitHub
+1. First, prepare your repository for Railway deployment:
+   ```bash
+   # Run the Railway preparation script
+   bash prepare-for-railway.sh
+   
+   # Commit the changes
+   git add .
+   git commit -m "Prepare for Railway deployment"
+   git push
+   ```
+
 2. Connect your GitHub repository to Railway
+
 3. Add the following environment variables in Railway:
    - `JWT_SECRET`: Your secure JWT secret key (e.g., `your_secure_random_string`)
    - `NODE_ENV`: Set to "production"
