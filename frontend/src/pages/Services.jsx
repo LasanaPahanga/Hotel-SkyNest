@@ -254,11 +254,9 @@ const ServicesNew = () => {
             <div className="services-page common-page" style={{ backgroundImage: `url(${dashboardImage})` }}>
                 <div className="page-header">
                     <h1>Services Management</h1>
-                    {isAdmin && (
-                        <button className="btn btn-primary" onClick={handleCreateService}>
-                            + Add Service
-                        </button>
-                    )}
+                    <button className="btn btn-primary" onClick={handleCreateService}>
+                        + Add Service
+                    </button>
                 </div>
 
                 <Card>
@@ -380,22 +378,20 @@ const ServicesNew = () => {
                                                     >
                                                         Price
                                                     </button>
-                                                    {isAdmin && (
-                                                        <button
-                                                            onClick={() => handleDeleteService(service.service_id)}
-                                                            style={{
-                                                                padding: '0.25rem 0.75rem',
-                                                                fontSize: '0.875rem',
-                                                                backgroundColor: '#ef4444',
-                                                                color: 'white',
-                                                                border: 'none',
-                                                                borderRadius: '0.25rem',
-                                                                cursor: 'pointer'
-                                                            }}
-                                                        >
-                                                            Delete
-                                                        </button>
-                                                    )}
+                                                    <button
+                                                        onClick={() => handleDeleteService(service.service_id)}
+                                                        style={{
+                                                            padding: '0.25rem 0.75rem',
+                                                            fontSize: '0.875rem',
+                                                            backgroundColor: '#ef4444',
+                                                            color: 'white',
+                                                            border: 'none',
+                                                            borderRadius: '0.25rem',
+                                                            cursor: 'pointer'
+                                                        }}
+                                                    >
+                                                        Delete
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
