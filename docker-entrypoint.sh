@@ -7,5 +7,4 @@ echo "Starting SkyNest Hotels..."
 nginx
 
 # Start backend
-cd /app/backend
-exec node server.js
+exec node /app/backend/server.js
