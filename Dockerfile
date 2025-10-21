@@ -40,9 +40,6 @@ COPY backend/ ./
 # ============================================
 FROM node:18-alpine
 
-# Install nginx for serving frontend
-RUN apk add --no-cache nginx
-
 # Create app directory
 WORKDIR /app
 
@@ -52,21 +49,12 @@ COPY --from=backend-build /app/backend ./backend
 # Copy frontend build from build stage
 COPY --from=frontend-build /app/frontend/dist ./frontend/dist
 
-# Copy database scripts
-COPY database ./database
-
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
-
-# Create nginx directories
-RUN mkdir -p /run/nginx
-
-# Expose ports
-EXPOSE 80 5000
+# Expose port
+EXPOSE 5000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
   CMD node -e "require('http').get('http://localhost:5000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# Start both nginx and node server
-CMD ["sh", "-c", "nginx && node /app/backend/server.js"]
+# Start node server
+CMD ["node", "backend/server.js"]
