@@ -21,39 +21,33 @@ You can test endpoints like http://localhost:5000/api/health to verify it's work
 
 To deploy on Railway:
 
-1. First, prepare your repository for Railway deployment:
-   ```bash
-   # Run the Railway preparation script
-   bash prepare-for-railway.sh
+1. **Connect your GitHub repository to Railway**
+   - Go to [railway.app](https://railway.app/)
+   - Sign up or log in
+   - Click "New Project" → "Deploy from GitHub repo"
+   - Select your Hotel-SkyNest repository
+
+2. **Add a MySQL database service**
+   - In your Railway project, click "New Service"
+   - Select "Database" → "MySQL"
+   - Railway will automatically create and connect the database
+
+3. **Set environment variables**
+   - Click on your service
+   - Go to the "Variables" tab
+   - Add the following variables:
+     - `JWT_SECRET`: A secure random string (e.g., generate one at random.org)
+     - `NODE_ENV`: `production`
    
-   # Commit the changes
-   git add .
-   git commit -m "Prepare for Railway deployment"
-   git push
-   ```
+   Note: Database variables (DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT) will be automatically set by Railway when you add the MySQL service.
 
-2. Connect your GitHub repository to Railway
+4. **Deploy**
+   - Railway will automatically build and deploy your application
+   - Once deployed, you'll get a URL to access your application
 
-3. Add the following environment variables in Railway:
-   - `JWT_SECRET`: Your secure JWT secret key (e.g., `your_secure_random_string`)
-   - `NODE_ENV`: Set to "production"
-
-4. Add a MySQL database service:
-   - Click "New Service" → "Database" → "MySQL"
-   - Railway will automatically connect your app with this database
-   - The required environment variables (`DB_HOST`, `DB_USER`, etc.) will be automatically configured
-
-5. Configure the deployment settings:
-   - In your project settings, ensure you're using the Dockerfile.railway
-   - Set the health check path to /api/health
-   - Railway will use port 5000 by default
-
-6. Deploy your application:
-   - Click "Deploy" and monitor the logs
-   - Once successful, you can access your application at the provided Railway URL
-
-7. Initialize the database:
-   - If you need to load your database schema, you can connect to the Railway MySQL instance using the details in the service's "Connect" tab
+5. **Initialize the database** (Optional)
+   - Connect to your Railway MySQL instance using the connection details
+   - Run the SQL scripts from the `database` folder to set up your schema and seed data
 
 ## 📋 Table of Contents
 
